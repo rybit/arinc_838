@@ -7,7 +7,7 @@ A prototype system capable of installing various types of software onto a mock a
 
 License
 ---------
-All software is provided under the [MIT Software License](/https://github.com/squirrely/arinc_838/blob/master/LICENSE/)
+All software is provided under the [MIT Software License](/squirrely/arinc_838/blob/master/LICENSE)
 
 
 ARINC 838 is built by [CodeBetter](http://www.codebetter.com)'s [TeamCity continous integration server](http://www.jetbrains.com/teamcity).
