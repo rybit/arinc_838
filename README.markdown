@@ -3,7 +3,7 @@ ARINC 838
 
 About
 --------
-A prototype system capable of installing various types of software onto a mock avionics unit following the ARINC 838 standard. Watch the progress of the project with [Pivotal Tracker](https://www.pivotaltracker.com/projects/457281/overview)
+A prototype system capable of installing various types of software onto a mock avionics unit following the ARINC 838 standard. Watch the progress of the project with [Pivotal Tracker](https://www.pivotaltracker.com/projects/457281/overview).
 
 License
 ---------
