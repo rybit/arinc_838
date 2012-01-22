@@ -64,6 +64,14 @@ public class HelloTeamTest {
 	public void tearDown() throws Exception {
 		// This method runs after each test
 	}
+	
+	@Test
+	public void aSimpleTest()
+	{
+		int a = 1;
+		int b = a;
+		assertTrue("That shouldn't have happened", a == b);
+	}
 
 	@Test
 	public void testNoAssertions() {
@@ -134,8 +142,8 @@ public class HelloTeamTest {
 	@Test
 	public void assertionsWithDoubles1() {
 		// Doubles and floats require a delta parameter. This defines
-		// how much the numbers can differ. This parameter must be positive
-		// or the method will always fail
+		// the absolute value by which the numbers can differ. This 
+		// parameter must be positive or the method will always fail
 
 		// The 0.001 means the numbers can differ by up to 0.001. Since these
 		// numbers differ by 0.0005, this is fine
@@ -146,7 +154,7 @@ public class HelloTeamTest {
 		assertEquals("These should be equal", 1.2345, 1.234, 0.0006);
 
 		// In this case, the increased precision will cause this to fail
-		assertEquals("These should be equal", 1.2345, 1.234, 0.0001);
+		assertEquals("These should be equal", 1.2345, 1.234, 0.0001);		
 	}
 
 	@Test
@@ -154,8 +162,11 @@ public class HelloTeamTest {
 		// The precision factor works with larger values as well. This passes
 		// because the numbers differ by 1
 		assertEquals("These should be equal", 100, 99, 1.0);
+		
+		// Note that this also passes 
+		assertEquals("These should be equal", 99, 100, 1.0);
 
-		// This will fail because the difference is 2
+		// This will fail because the difference is > 1
 		assertEquals("These are not equal, but this passes?", 100, 98, 1.0);
 	}
 
