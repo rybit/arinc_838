@@ -1,7 +1,7 @@
 /*
  * Created on Jan 21, 2012
  */
-package cmu.arinc838;
+package cmu.edu.arinc838;
 
 import static org.junit.Assert.*;
 
@@ -10,6 +10,8 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import cmu.edu.arinc838.HelloTeam;
 
 /**
  * @author Mike Deats
