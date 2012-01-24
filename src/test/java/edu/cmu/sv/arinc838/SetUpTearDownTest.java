@@ -84,7 +84,7 @@ public class SetUpTearDownTest {
 
 		t1.start();
 
-		String s = null;
+		String s = "Hello W0Rld!";
 
 		assertEquals("HELLO WORLD!", s.toUpperCase());
 
