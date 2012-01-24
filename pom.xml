@@ -4,7 +4,6 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
   
-    <groupId>cmu</groupId>
     <artifactId>arinc838</artifactId>
     <version>1.0</version>
   
@@ -23,6 +22,20 @@
     </build>
 
     <dependencies>
+    <dependency>
+    	<groupId>junit</groupId>
+    	<artifactId>junit</artifactId>
+    	<version>4.10</version>
+    </dependency>
     </dependencies>
+    <groupId>edu.cmu.sv</groupId>
+    <name>ARINC 838</name>
+    <url>http://github.com/squirrely/arinc_838</url>
+    <scm>
+    	<url>git@github.com:squirrely/arinc_838.git</url>
+    	<connection>SSH</connection>
+    </scm>
+    <description>A prototype system capable of installing various types of software onto a mock avionics unit following the ARINC 838 standard</description>
+    <inceptionYear>16 January, 2012</inceptionYear>
 </project>
   
