@@ -60,7 +60,9 @@ public class SetUpTearDownTest {
 	@After
 	public void tearDown() throws Exception {
 
-
+		// all done, now close my thread
+		// comment this out to show the thread hanging
+		keepGoing1 = false;
 		try {
 			t1.join();
 		} catch (InterruptedException e) {
@@ -89,7 +91,7 @@ public class SetUpTearDownTest {
 		assertEquals("HELLO WORLD!", s.toUpperCase());
 
 		// all done, now close my thread
-		keepGoing1 = false;
+		//keepGoing1 = false;
 	}
 
 	@Test
