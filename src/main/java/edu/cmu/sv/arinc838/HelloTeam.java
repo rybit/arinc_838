@@ -1,4 +1,4 @@
-package cmu.edu.arinc838;
+package edu.cmu.sv.arinc838;
 
 public class HelloTeam {
 	

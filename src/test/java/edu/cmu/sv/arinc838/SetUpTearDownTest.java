@@ -7,7 +7,7 @@
  * 
  * Created on Jan 21, 2012
  */
-package cmu.edu.arinc838;
+package edu.cmu.sv.arinc838;
 
 import static org.junit.Assert.*;
 
