@@ -36,6 +36,6 @@
     	<connection>SSH</connection>
     </scm>
     <description>A prototype system capable of installing various types of software onto a mock avionics unit following the ARINC 838 standard</description>
-    <inceptionYear>16 January, 2012</inceptionYear>
+    <inceptionYear>2012</inceptionYear>
 </project>
   
