@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Prevents commits with no Pivotal Tracker ID
+
 denied=$(cat <<"EOF"
 Oh snapÉ
  ______   _______  __    _  ___   _______  ______   __  
