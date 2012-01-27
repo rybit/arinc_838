@@ -18,7 +18,7 @@ Example: git commit -m "I just fixed a bug. [123456]"
 EOF
 )
 
-result=`echo $1 | grep -e '\[[0-9]\{6,\}\]'`
+result=`grep -e '\[[0-9]\{6,\}\]' $1`
 if [ "$result" == "" ];
 then
   echo "$denied"

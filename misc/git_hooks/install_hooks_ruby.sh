@@ -1,1 +1,1 @@
-cp misc/git_hooks/commit-msg.rb .git/hooks/commit-msg
+cp commit-msg.rb ../../.git/hooks/commit-msg
