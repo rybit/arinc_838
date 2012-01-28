@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<crc_dataset 
+	name="ARINC 665 CRC calculation expected values"
+	source="http://www.arinc.com/aeec/tech_app_bulletin/05_054.pdf"
+>
+	<documentation>
+		This file contains verified expected values for ARINC 665-compliant
+		CRCs.  The 8-bit, 16-bit, and 32-bit expected values are listed here.
+		If an expected value of a certain CRC size is not available for a
+		particular file, that crc is listed as having an expected value of "N/A".
+	</documentation>
+	
+
+	<test_file 
+		name="CRC_T01A.rom"
+		size="0"
+		crc8="0x00"
+		crc16="0xFFFF"
+		crc32="0x00000000"
+	/>
+	
+	<test_file 
+		name="CRC_T02A.rom"
+		size="128"
+		crc8="0x00"
+		crc16="0x1DA3"
+		crc32="0x322AB4A6"
+	/>
+	
+	<test_file 
+		name="CRC_T03A.rom"
+		size="100"
+		crc8="0x00"
+		crc16="0x4634"
+		crc32="0x53631199"
+	/>
+	
+	<test_file 
+		name="CRC_T04A.rom"
+		size="256"
+		crc8="N/A"
+		crc16="0x1D7E"
+		crc32="0xC2F270BC"
+	/>
+	
+	<test_file 
+		name="CRC_T05A.rom"
+		size="3976"
+		crc8="N/A"
+		crc16="0xA208"
+		crc32="0x96142DCA"
+	/>
+	
+	<test_file 
+		name="CRC_T06A.rom"
+		size="18152"
+		crc8="N/A"
+		crc16="0xA12C"
+		crc32="0xAE34897C"
+	/>
+	
+	<test_file 
+		name="CRC_T07A.rom"
+		size="34816"
+		crc8="N/A"
+		crc16="0x2DA3"
+		crc32="0x55A1228D"
+	/>
+	
+	<test_file 
+		name="CRC_T08A.rom"
+		size="34817"
+		crc8="N/A"
+		crc16="0xCF07"
+		crc32="0x3109EB62"
+	/>
+	
+	<test_file 
+		name="CRC_T09A.rom"
+		size="1758480"
+		crc8="N/A"
+		crc16="0x9EB1"
+		crc32="0x239B226B"
+	/>
+	
+	<test_file 
+		name="CRC_T10A.rom"
+		size="61"
+		crc8="0xE8"
+		crc16="0xD8D2"
+		crc32="0xC0BB3B8E"
+	/>
+	
+	<test_file 
+		name="CRC_T11A.rom"
+		size="256"
+		crc8="N/A"
+		crc16="0x3FBD"
+		crc32="0xB6B5EE95"
+	/>
+	
+	<test_file 
+		name="CRC_T12A.rom"
+		size="11"
+		crc8="0x47"
+		crc16="0x1AB9"
+		crc32="0x8C3732D8"
+	/>
+	
+	<test_file 
+		name="CRC_T13A.rom"
+		size="15"
+		crc8="0x40"
+		crc16="0x96B3"
+		crc32="0x7CB0F16A"
+	/>
+
+</crc_dataset>
