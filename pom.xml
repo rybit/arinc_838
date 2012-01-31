@@ -23,10 +23,14 @@
 
     <dependencies>
     <dependency>
-    	<groupId>junit</groupId>
-    	<artifactId>junit</artifactId>
-    	<version>4.10</version>
-    	<scope>test</scope>
+    	<groupId>org.mockito</groupId>
+    	<artifactId>mockito-all</artifactId>
+    	<version>1.9.0</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.testng</groupId>
+    	<artifactId>testng</artifactId>
+    	<version>6.3.1</version>
     </dependency>
     </dependencies>
     <groupId>edu.cmu.sv</groupId>
@@ -38,5 +42,12 @@
     </scm>
     <description>A prototype system capable of installing various types of software onto a mock avionics unit following the ARINC 838 standard</description>
     <inceptionYear>2012</inceptionYear>
+    <issueManagement>
+    	<url>https://github.com/squirrely/arinc_838/issues</url>
+    	<system>GitHub</system>
+    </issueManagement>
+    <ciManagement>
+    	<system>TeamCity</system>
+    </ciManagement>
 </project>
   

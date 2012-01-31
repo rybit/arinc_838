@@ -9,13 +9,9 @@
  */
 package edu.cmu.sv.arinc838;
 
-import static org.junit.Assert.*;
+import static org.testng.Assert.*;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.testng.annotations.*;
 
 public class SetUpTearDownTest {
 
@@ -33,7 +29,7 @@ public class SetUpTearDownTest {
 	private Thread t1;
 	private Thread t2;
 
-	@Before
+	@BeforeMethod
 	public void setUp() throws Exception {
 		keepGoing1 = true;
 		keepGoing2 = true;
@@ -57,7 +53,7 @@ public class SetUpTearDownTest {
 		});
 	}
 
-	@After
+	@AfterMethod
 	public void tearDown() throws Exception {
 
 		// all done, now close my thread
