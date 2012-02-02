@@ -21,6 +21,13 @@ public class HelloTeam {
 		myNumber = newNumber;
 	}
 	
+	@Override
+	public String toString()
+	{
+		return "My spoon is too big.";
+	}
+	
+	
 	/**
 	 * Method for demonstrating testing for exceptions
 	 * @param o
