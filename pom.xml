@@ -87,7 +87,34 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-
+    <dependencies>
+    <dependency>
+    	<groupId>org.mockito</groupId>
+    	<artifactId>mockito-all</artifactId>
+    	<version>1.9.0</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.testng</groupId>
+    	<artifactId>testng</artifactId>
+    	<version>6.3.1</version>
+    </dependency>
+    </dependencies>
+    <groupId>edu.cmu.sv</groupId>
+    <name>ARINC 838</name>
+    <url>http://github.com/squirrely/arinc_838</url>
+    <scm>
+    	<url>git@github.com:squirrely/arinc_838.git</url>
+    	<connection>SSH</connection>
+    </scm>
+    <description>A prototype system capable of installing various types of software onto a mock avionics unit following the ARINC 838 standard</description>
+    <inceptionYear>2012</inceptionYear>
+    <issueManagement>
+    	<url>https://github.com/squirrely/arinc_838/issues</url>
+    	<system>GitHub</system>
+    </issueManagement>
+    <ciManagement>
+    	<system>TeamCity</system>
+    </ciManagement>
 	<repositories>
 		<repository>
 			<id>java.net</id>
@@ -96,29 +123,5 @@
 
 		</repository>
 	</repositories>
-
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.10</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.xml.bind</groupId>
-			<artifactId>jaxb-api</artifactId>
-			<version>2.0</version>
-		</dependency>
-
-	</dependencies>
-	<groupId>edu.cmu.sv</groupId>
-	<name>ARINC 838</name>
-	<url>http://github.com/squirrely/arinc_838</url>
-	<scm>
-		<url>git@github.com:squirrely/arinc_838.git</url>
-		<connection>SSH</connection>
-	</scm>
-	<description>A prototype system capable of installing various types of software onto a mock avionics unit following the ARINC 838 standard</description>
-	<inceptionYear>2012</inceptionYear>
 </project>
   

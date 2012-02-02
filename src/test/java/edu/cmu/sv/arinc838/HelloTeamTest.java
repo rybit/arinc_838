@@ -3,13 +3,9 @@
  */
 package edu.cmu.sv.arinc838;
 
-import static org.junit.Assert.*;
+import static org.testng.Assert.*;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.testng.annotations.*;
 
 import edu.cmu.sv.arinc838.HelloTeam;
 
@@ -47,7 +43,7 @@ public class HelloTeamTest {
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@Before
+	@BeforeMethod
 	public void setUp() throws Exception {
 		// This method runs before each tests
 		team1 = new HelloTeam(1);
@@ -60,17 +56,16 @@ public class HelloTeamTest {
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@After
+	@AfterMethod
 	public void tearDown() throws Exception {
 		// This method runs after each test
 	}
-	
+
 	@Test
-	public void aSimpleTest()
-	{
+	public void aSimpleTest() {
 		int a = 1;
 		int b = a;
-		assertTrue("That shouldn't have happened", a == b);
+		assertTrue(a == b, "That shouldn't have happened");
 	}
 
 	@Test
@@ -83,8 +78,8 @@ public class HelloTeamTest {
 		// Comparison assertions follow the pattern:
 		// <failure message>, <expected> <actual>
 		// You can assert equality with primatives and objects
-		assertEquals("This should pass", 7, staticVar1.intValue());
-		assertEquals("This too shall pass", new Integer(7), staticVar1);
+		assertEquals(7, staticVar1.intValue(), "This should pass");
+		assertEquals(new Integer(7), staticVar1, "This too shall pass");
 	}
 
 	@Test
@@ -92,15 +87,15 @@ public class HelloTeamTest {
 		// You can assert that something is null or not null
 
 		assertNull("This should not fail", null);
-		assertNotNull("This should pass", new Object());
-		assertNotNull("This should fail because null is not 'not null'", null);
+		assertNotNull(new Object(), "This should pass");
+		assertNotNull(null, "This should fail because null is not 'not null'");
 	}
 
 	@Test
 	public void assertionsWithBooleans() {
 		// These are pretty self-explanatory
-		assertTrue("Should pass", true);
-		assertFalse("Should pass", false);
+		assertTrue(true, "Should pass");
+		assertFalse(false, "Should pass");
 	}
 
 	@Test
@@ -109,7 +104,8 @@ public class HelloTeamTest {
 		assertTrue(true);
 		fail("YOU! SHALL NOT! PASS!");
 
-		// When a test fails, the method ends at the failure. This is why you should
+		// When a test fails, the method ends at the failure. This is why you
+		// should
 		// never release resources within a test method
 		System.out.println("You shouldn't see me");
 	}
@@ -119,19 +115,19 @@ public class HelloTeamTest {
 		System.out.println("If you see this message, you're already dead.");
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expectedExceptions = NullPointerException.class)
 	public void testThrowsException() {
 		// This test will pass if it catches a NullPointerException
 		throw new NullPointerException("I'm null!");
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expectedExceptions = NullPointerException.class)
 	public void testThrowsUnexpectedException() {
 		// This test will fail with an error because it has the wrong exception
 		throw new IllegalArgumentException("I am the wrong exception");
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expectedExceptions = NullPointerException.class)
 	public void testShouldThrowException() {
 		// This test will fail because the exception was not thrown, even though
 		// there is a passing assertion
@@ -142,44 +138,44 @@ public class HelloTeamTest {
 	@Test
 	public void assertionsWithDoubles1() {
 		// Doubles and floats require a delta parameter. This defines
-		// the absolute value by which the numbers can differ. This 
+		// the absolute value by which the numbers can differ. This
 		// parameter must be positive or the method will always fail
 
 		// The 0.001 means the numbers can differ by up to 0.001. Since these
 		// numbers differ by 0.0005, this is fine
-		assertEquals("These should be equal", 1.2345, 1.234, 0.001);
-		
+		assertEquals(1.2345, 1.234, 0.001, "These should be equal");
+
 		// Same thing here with 0.0005 and 0.0006
-		assertEquals("These should be equal", 1.2345, 1.234, 0.0005);
-		assertEquals("These should be equal", 1.2345, 1.234, 0.0006);
+		assertEquals(1.2345, 1.234, 0.0005, "These should be equal");
+		assertEquals(1.2345, 1.234, 0.0006, "These should be equal");
 
 		// In this case, the increased precision will cause this to fail
-		assertEquals("These should be equal", 1.2345, 1.234, 0.0001);		
+		assertEquals(1.2345, 1.234, 0.0001, "These should be equal");
 	}
 
 	@Test
 	public void assertionsWithDoubles2() {
 		// The precision factor works with larger values as well. This passes
 		// because the numbers differ by 1
-		assertEquals("These should be equal", 100, 99, 1.0);
-		
-		// Note that this also passes 
-		assertEquals("These should be equal", 99, 100, 1.0);
+		assertEquals(100, 99, 1.0, "These should be equal");
+
+		// Note that this also passes
+		assertEquals(99, 100, 1.0, "These should be equal");
 
 		// This will fail because the difference is > 1
-		assertEquals("These are not equal, but this passes?", 100, 98, 1.0);
+		assertEquals(100, 98, 1.0, "These are not equal, but this passes?");
 	}
 
 	@Test
 	public void testSetMyNumber() {
-		assertEquals("My number was incorrect", 1, team1.getMyNumber(), 0.01);
+		assertEquals(1, team1.getMyNumber(), 0.01, "My number was incorrect");
 		team1.setMyNumber(99);
-		assertEquals("My number was incorrect", 99, team1.getMyNumber(), 0.01);
+		assertEquals(99, team1.getMyNumber(), 0.01, "My number was incorrect");
 	}
 
 	@Test
 	public void testGetMyNumber() {
-		assertEquals("My number was incorrect", 1, team1.getMyNumber(), 0.01);
+		assertEquals(1, team1.getMyNumber(), 0.01, "My number was incorrect");
 	}
 
 }
