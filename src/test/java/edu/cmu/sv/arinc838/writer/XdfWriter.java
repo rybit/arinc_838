@@ -12,9 +12,9 @@ import edu.cmu.sv.arinc838.specification.SoftwareDefinition;
 
 public class XdfWriter {
 
-	private final SoftwareDefinition softwareDefinition;
+	private final SdfFile softwareDefinition;
 
-	public XdfWriter(SoftwareDefinition softwareDefinition) {
+	public XdfWriter(SdfFile softwareDefinition) {
 		this.softwareDefinition = softwareDefinition;
 	}
 

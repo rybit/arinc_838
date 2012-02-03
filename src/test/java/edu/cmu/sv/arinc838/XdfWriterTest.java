@@ -32,5 +32,4 @@ public class XdfWriterTest {
 		outputFile.delete();
 		assertEquals(outputDoc.toString(), inputDoc.toString());
 	}
-
 }

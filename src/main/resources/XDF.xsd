@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- update carsten schweigert 2010-11-08 -->
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.arinc.com/arinc838" targetNamespace="sdf">
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:sdf="http://www.arinc.com/arinc838">
 	<xsd:element name="sdf-file">
 		<xsd:complexType>
 			<xsd:sequence>
