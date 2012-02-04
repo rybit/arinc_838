@@ -10,6 +10,7 @@ import org.testng.annotations.*;
 import edu.cmu.sv.arinc838.HelloTeam;
 
 /**
+ * This is a demo test class for demonstrating TestNG
  * @author Mike Deats
  * 
  * 
