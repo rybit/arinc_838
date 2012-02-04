@@ -17,6 +17,7 @@ import edu.cmu.sv.arinc838.HelloTeam;
 public class HelloTeamTest {
 
 	private static Integer staticVar1;
+	private static Integer staticVar2;
 
 	/**
 	 * @throws java.lang.Exception
@@ -25,6 +26,7 @@ public class HelloTeamTest {
 	public static void setUpBeforeClass() throws Exception {
 		// This method runs before any tests. All references must be static
 		staticVar1 = 7;
+		staticVar2 = 9;
 	}
 
 	/**
@@ -84,9 +86,9 @@ public class HelloTeamTest {
 	public void assertionsWithNull() {
 		// You can assert that something is null or not null
 
-		assertNull(null, "This should not fail");
+		assertNull("This should not fail", null);
 		assertNotNull(new Object(), "This should pass");
-		// assertNotNull(null, "This should fail because null is not 'not null'");
+		assertNotNull(null, "This should fail because null is not 'not null'");
 	}
 
 	@Test
@@ -94,6 +96,18 @@ public class HelloTeamTest {
 		// These are pretty self-explanatory
 		assertTrue(true, "Should pass");
 		assertFalse(false, "Should pass");
+	}
+
+	@Test
+	public void testFail() {
+		// This test will always fail, even if you have assertions that pass
+		assertTrue(true);
+		fail("YOU! SHALL NOT! PASS!");
+
+		// When a test fails, the method ends at the failure. This is why you
+		// should
+		// never release resources within a test method
+		System.out.println("You shouldn't see me");
 	}
 
 	public void notATestMethod() {
@@ -105,6 +119,20 @@ public class HelloTeamTest {
 	public void testThrowsException() {
 		// This test will pass if it catches a NullPointerException
 		throw new NullPointerException("I'm null!");
+	}
+
+	@Test(expectedExceptions = NullPointerException.class)
+	public void testThrowsUnexpectedException() {
+		// This test will fail with an error because it has the wrong exception
+		throw new IllegalArgumentException("I am the wrong exception");
+	}
+
+	@Test(expectedExceptions = NullPointerException.class)
+	public void testShouldThrowException() {
+		// This test will fail because the exception was not thrown, even though
+		// there is a passing assertion
+
+		assertTrue(true);
 	}
 
 	@Test
@@ -122,7 +150,7 @@ public class HelloTeamTest {
 		assertEquals(1.2345, 1.234, 0.0006, "These should be equal");
 
 		// In this case, the increased precision will cause this to fail
-		// assertEquals(1.2345, 1.234, 0.0001, "These should be equal");
+		assertEquals(1.2345, 1.234, 0.0001, "These should be equal");
 	}
 
 	@Test
@@ -135,7 +163,7 @@ public class HelloTeamTest {
 		assertEquals(99, 100, 1.0, "These should be equal");
 
 		// This will fail because the difference is > 1
-		// assertEquals(100, 98, 1.0, "These are not equal, but this passes?");
+		assertEquals(100, 98, 1.0, "These are not equal, but this passes?");
 	}
 
 	@Test
