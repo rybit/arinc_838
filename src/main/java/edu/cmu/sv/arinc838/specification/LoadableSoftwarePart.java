@@ -16,7 +16,7 @@ public interface LoadableSoftwarePart {
 
 	public Collection<TargetHardwareDefinition> getThwDefinitions();
 
-	public void setTargetHardwareDefinitions(Collection value);
+	public void setTargetHardwareDefinitions(Collection<TargetHardwareDefinition> value);
 
 	public FileDefinitions getFileDefinitions();
 
