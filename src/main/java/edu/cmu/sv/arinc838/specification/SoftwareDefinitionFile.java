@@ -9,16 +9,14 @@
  */
 package edu.cmu.sv.arinc838.specification;
 
-import java.util.List;
+public interface SoftwareDefinitionFile {
+	
+    public long getFileFormatVersion();
 
-public interface TargetHardwareDefinition {
-
-	public String getId();
-
-	public void setId(String value);
-
-	public List<String> getPositions();
-
-	public void setPositions(List<String> value);
+    public void setFileFormatVersion(long version);
+	
+	public SoftwareDefinitionSections getSoftwareDefinitionSections();
+	
+	public void setSoftwareDefinitionSections(SoftwareDefinitionSections sdf);
 
 }

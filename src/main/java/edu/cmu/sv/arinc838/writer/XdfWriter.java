@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2012 Chris Ellison, Mike Deats, Liron Yahdav, Ryan Neal,
+ * Brandon Sutherlin, Scott Griffin
+ * 
+ * This software is released under the MIT license
+ * (http://www.opensource.org/licenses/mit-license.php) 
+ * 
+ * Created on Feb 6, 2012
+ */
 package edu.cmu.sv.arinc838.writer;
 
 import java.io.File;
@@ -7,8 +16,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import com.arinc.arinc838.SdfFile;
-
-import edu.cmu.sv.arinc838.specification.SoftwareDefinition;
 
 public class XdfWriter {
 

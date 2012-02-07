@@ -1,24 +1,30 @@
+/*
+ * Copyright (c) 2012 Chris Ellison, Mike Deats, Liron Yahdav, Ryan Neal,
+ * Brandon Sutherlin, Scott Griffin
+ * 
+ * This software is released under the MIT license
+ * (http://www.opensource.org/licenses/mit-license.php) 
+ * 
+ * Created on Feb 6, 2012
+ */
 package edu.cmu.sv.arinc838.specification;
-
-
-import com.arinc.arinc838.FileIntegrityDefinition;
 
 public interface FileDefinition {
 
 	public boolean isFileLoadable();
 
-	public void setFileLoadable(boolean value);
+	public void setFileLoadable(boolean loadable);
 
 	public String getFileName();
 
-	public void setFileName(String value);
+	public void setFileName(String fileName);
 
 	public long getFileSize();
 
-	public void setFileSize(long value);
+	public void setFileSize(long size);
 
-	public FileIntegrityDefinition getFileIntegrityDefinition();
+	public IntegrityDefinition getFileIntegrityDefinition();
 
-	public void setFileIntegrityDefinition(FileIntegrityDefinition value);
+	public void setFileIntegrityDefinition(IntegrityDefinition value);
 
 }

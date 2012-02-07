@@ -9,16 +9,12 @@
  */
 package edu.cmu.sv.arinc838.specification;
 
-import java.util.List;
+import org.testng.annotations.Test;
+import static org.testng.Assert.*;
 
-public interface TargetHardwareDefinition {
-
-	public String getId();
-
-	public void setId(String value);
-
-	public List<String> getPositions();
-
-	public void setPositions(List<String> value);
-
+public class LoadableSoftwarePartTest {
+  @Test
+  public void equalsTest() {
+	  fail("to do");
+  }
 }
