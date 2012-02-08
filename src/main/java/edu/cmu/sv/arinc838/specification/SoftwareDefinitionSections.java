@@ -9,7 +9,7 @@
  */
 package edu.cmu.sv.arinc838.specification;
 
-import java.util.Collection;
+import java.util.List;
 
 
 public interface SoftwareDefinitionSections {
@@ -18,13 +18,9 @@ public interface SoftwareDefinitionSections {
 
 	public void setSoftwareDescription(SoftwareDescription sd);
 
-	public Collection<TargetHardwareDefinition> getThwDefinitions();
+	public List<TargetHardwareDefinition> getTargetHardwareDefinitions();
 
-	public void setTargetHardwareDefinitions(Collection<TargetHardwareDefinition> thwDefs);
-
-	public Collection<FileDefinition> getFileDefinitions();
-
-	public void setFileDefinitions(Collection<FileDefinition> fileDefs);
+	public List<FileDefinition> getFileDefinitions();
 
 	public IntegrityDefinition getSdfIntegrityDefinition();
 
