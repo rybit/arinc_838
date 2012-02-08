@@ -7,7 +7,7 @@
  * 
  * Created on Feb 6, 2012
  */
-package edu.cmu.sv.arinc838.writer;
+package edu.cmu.sv.arinc838.xml;
 
 import nu.xom.Builder;
 import nu.xom.Document;
@@ -19,7 +19,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
 import com.arinc.arinc838.SdfFile;
-import edu.cmu.sv.arinc838.writer.XdfWriter;
+
+import edu.cmu.sv.arinc838.xml.XdfWriter;
 
 public class XdfWriterTest {
 
