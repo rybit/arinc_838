@@ -95,7 +95,7 @@ public class XmlIntegrityDefinitionTest {
 		a.setIntegrityValue("00012345");
 		
 		XmlIntegrityDefinition b = new XmlIntegrityDefinition();
-		b.setIntegrityType(3);
+		b.setIntegrityType(2);
 		b.setIntegrityValue("00012345");
 		
 		XmlIntegrityDefinition c = new XmlIntegrityDefinition();

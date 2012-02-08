@@ -18,8 +18,10 @@ public class XmlIntegrityDefinition implements IntegrityDefinition {
 
 	public XmlIntegrityDefinition(
 			com.arinc.arinc838.IntegrityDefinition fileIntegrityDefinition) {
-		integrityType = fileIntegrityDefinition.getIntegrityType();
-		integrityValue = fileIntegrityDefinition.getIntegrityValue();
+		if (fileIntegrityDefinition != null) {
+			integrityType = fileIntegrityDefinition.getIntegrityType();
+			integrityValue = fileIntegrityDefinition.getIntegrityValue();
+		}
 	}
 
 	public XmlIntegrityDefinition() {
@@ -49,10 +51,11 @@ public class XmlIntegrityDefinition implements IntegrityDefinition {
 	@Override
 	public boolean equals(Object o) {
 		boolean isEqual = false;
-		if (o instanceof XmlIntegrityDefinition) {
+		if (o != null && o instanceof XmlIntegrityDefinition) {
 			XmlIntegrityDefinition other = (XmlIntegrityDefinition) o;
 			isEqual = (other.getIntegrityType() == getIntegrityType())
-					&& (other.getIntegrityValue().equals(getIntegrityValue()));
+					&& (other.getIntegrityValue() == getIntegrityValue() || other
+							.getIntegrityValue().equals(getIntegrityValue()));
 		}
 
 		return isEqual;
@@ -60,7 +63,12 @@ public class XmlIntegrityDefinition implements IntegrityDefinition {
 
 	@Override
 	public int hashCode() {
-		return integrityValue.hashCode();
+		int hash = 1;
+		hash = hash * 31
+				+ (integrityValue == null ? 0 : integrityValue.hashCode());
+		hash = hash * 31 + new Long(integrityType).hashCode();
+
+		return hash;
 	}
 
 }
