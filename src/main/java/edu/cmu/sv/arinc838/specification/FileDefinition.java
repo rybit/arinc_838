@@ -21,7 +21,7 @@ public interface FileDefinition {
 
 	public long getFileSize();
 
-	public void setFileSize(long size);
+	public void setFileSize(long fileSize);
 
 	public IntegrityDefinition getFileIntegrityDefinition();
 

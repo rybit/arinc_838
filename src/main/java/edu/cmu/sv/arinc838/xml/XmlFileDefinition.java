@@ -3,72 +3,98 @@
  * Brandon Sutherlin, Scott Griffin
  * 
  * This software is released under the MIT license
- * (http://www.opensource.org/licenses/mit-license.php) 
+ * (http://www.opensource.org/licenses/mit-license.php)
  * 
  * Created on Feb 7, 2012
  */
 package edu.cmu.sv.arinc838.xml;
 
-import com.arinc.arinc838.FileDefinition;
-
 import edu.cmu.sv.arinc838.specification.IntegrityDefinition;
 
 public class XmlFileDefinition implements
 		edu.cmu.sv.arinc838.specification.FileDefinition {
-	
-	private FileDefinition fileDef;
 
-	public XmlFileDefinition(com.arinc.arinc838.FileDefinition fileDef)
-	{
-		this.fileDef = fileDef;
+	private XmlIntegrityDefinition fileIntegrityDef = new XmlIntegrityDefinition();
+	private boolean loadable;
+	private String fileName;
+	private long fileSize;
+
+	public XmlFileDefinition(com.arinc.arinc838.FileDefinition fileDef) {
+		fileIntegrityDef = new XmlIntegrityDefinition(
+				fileDef.getFileIntegrityDefinition());
+
+		loadable = fileDef.isFileLoadable();
+		fileName = fileDef.getFileName();
+		fileSize = fileDef.getFileSize();
+	}
+
+	public XmlFileDefinition() {
 	}
 
 	@Override
 	public void setFileIntegrityDefinition(IntegrityDefinition value) {
-		// TODO Auto-generated method stub
-
+		fileIntegrityDef.setIntegrityType(value.getIntegrityType());
+		fileIntegrityDef.setIntegrityValue(value.getIntegrityValue());
 	}
 
 	@Override
 	public boolean isFileLoadable() {
-		// TODO Auto-generated method stub
-		return false;
+		return loadable;
 	}
 
 	@Override
 	public void setFileLoadable(boolean loadable) {
-		// TODO Auto-generated method stub
-		
+		this.loadable = loadable;
 	}
 
 	@Override
 	public String getFileName() {
-		// TODO Auto-generated method stub
-		return null;
+		return fileName;
 	}
 
 	@Override
 	public void setFileName(String fileName) {
-		// TODO Auto-generated method stub
-		
+		this.fileName = fileName;
 	}
 
 	@Override
 	public long getFileSize() {
-		// TODO Auto-generated method stub
-		return 0;
+		return fileSize;
 	}
 
 	@Override
-	public void setFileSize(long size) {
-		// TODO Auto-generated method stub
-		
+	public void setFileSize(long fileSize) {
+		this.fileSize = fileSize;
 	}
 
 	@Override
 	public IntegrityDefinition getFileIntegrityDefinition() {
-		// TODO Auto-generated method stub
-		return null;
+		return fileIntegrityDef;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		boolean isEqual = false;
+		if (o instanceof XmlFileDefinition) {
+			XmlFileDefinition other = (XmlFileDefinition) o;
+
+			isEqual = (other.isFileLoadable() && isFileLoadable())
+					&& (other.getFileIntegrityDefinition()
+							.equals(getFileIntegrityDefinition()))
+					&& (other.getFileName().equals(getFileName()))
+					&& (other.getFileSize() == getFileSize());
+		}
+		return isEqual;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = fileIntegrityDef.hashCode();
+		hash = hash * 31 + new Boolean(loadable).hashCode();
+		hash = hash * 31 + fileName.hashCode();
+		hash = hash * 31 + new Long(fileSize).hashCode();
+
+		return hash;
 	}
 
 }
