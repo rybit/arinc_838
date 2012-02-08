@@ -19,6 +19,4 @@ public interface TargetHardwareDefinition {
 
 	public List<String> getPositions();
 
-	public void setPositions(List<String> value);
-
 }
