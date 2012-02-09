@@ -23,6 +23,10 @@ public class XmlSoftwareDescription implements SoftwareDescription {
 		this.softwareTypeId = softwareDescription.getSoftwareTypeId();
 	}
 	
+	public XmlSoftwareDescription() {
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	public String getSoftwarePartNumber() {
 		return this.softwarePartNumber;

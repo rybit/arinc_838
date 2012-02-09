@@ -35,6 +35,10 @@ public class XmlSoftwareDefinitionSections implements
 		softwareDescription = new XmlSoftwareDescription(sdfSections.getSoftwareDescription());
 	}
 
+	public XmlSoftwareDefinitionSections() {
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	public SoftwareDescription getSoftwareDescription() {
 		return softwareDescription;
