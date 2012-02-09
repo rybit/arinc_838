@@ -12,9 +12,9 @@ package edu.cmu.sv.arinc838.specification;
 
 public interface SoftwareDescription {
 
-	public String getSoftwarePartnumber();
+	public String getSoftwarePartNumber();
 
-	public void setSoftwarePartnumber(String value);
+	public void setSoftwarePartNumber(String value);
 
 	public String getSoftwareTypeDescription();
 

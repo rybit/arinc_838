@@ -13,46 +13,44 @@ import edu.cmu.sv.arinc838.specification.SoftwareDescription;
 
 public class XmlSoftwareDescription implements SoftwareDescription {
 
-	private com.arinc.arinc838.SoftwareDescription softwareDescription;
-
+	private String softwarePartNumber;
+	private String softwareTypeDescription;
+	private long softwareTypeId;
+	
 	public XmlSoftwareDescription(com.arinc.arinc838.SoftwareDescription softwareDescription) {
-		this.softwareDescription = softwareDescription;
+		this.softwarePartNumber = softwareDescription.getSoftwarePartnumber();
+		this.softwareTypeDescription = softwareDescription.getSoftwareTypeDescription();
+		this.softwareTypeId = softwareDescription.getSoftwareTypeId();
 	}
 	
 	@Override
-	public String getSoftwarePartnumber() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getSoftwarePartNumber() {
+		return this.softwarePartNumber;
 	}
 
 	@Override
-	public void setSoftwarePartnumber(String value) {
-		// TODO Auto-generated method stub
-
+	public void setSoftwarePartNumber(String value) {
+		this.softwarePartNumber = value;
 	}
 
 	@Override
 	public String getSoftwareTypeDescription() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.softwareTypeDescription;
 	}
 
 	@Override
 	public void setSoftwareTypeDescription(String value) {
-		// TODO Auto-generated method stub
-
+		this.softwareTypeDescription = value;
 	}
 
 	@Override
 	public long getSoftwareTypeId() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.softwareTypeId;
 	}
 
 	@Override
 	public void setSoftwareTypeId(long value) {
-		// TODO Auto-generated method stub
-
+		this.softwareTypeId = value;
 	}
 
 }
