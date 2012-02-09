@@ -17,21 +17,23 @@ import javax.xml.bind.Marshaller;
 
 import com.arinc.arinc838.SdfFile;
 
+import edu.cmu.sv.arinc838.specification.SoftwareDefinitionFile;
+
 public class XdfWriter {
 
-	private final SdfFile softwareDefinition;
+	private final SoftwareDefinitionFile softwareDefinition;
 
-	public XdfWriter(SdfFile softwareDefinition) {
+	public XdfWriter(SoftwareDefinitionFile softwareDefinition) {
 		this.softwareDefinition = softwareDefinition;
 	}
 
 	public void write(String fileName) throws JAXBException {
-		File file = new File(fileName);
-		JAXBContext jaxbContext = JAXBContext.newInstance(SdfFile.class);
-		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
- 
-		// output pretty printed
-		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
- 		jaxbMarshaller.marshal(softwareDefinition, file);
+//		File file = new File(fileName);
+//		JAXBContext jaxbContext = JAXBContext.newInstance(SdfFile.class);
+//		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+// 
+//		// output pretty printed
+//		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+// 		jaxbMarshaller.marshal(softwareDefinition, file);
 	}
 }

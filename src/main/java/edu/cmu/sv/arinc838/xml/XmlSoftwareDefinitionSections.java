@@ -29,15 +29,20 @@ public class XmlSoftwareDefinitionSections implements
 	private IntegrityDefinition lspIntegrityDefinition;
 	private IntegrityDefinition sdfIntegrityDefinition;
 
+	public XmlSoftwareDefinitionSections() {
+
+	}
+
 	public XmlSoftwareDefinitionSections(SdfSections sdfSections) {
 		for (com.arinc.arinc838.FileDefinition fileDefinition : sdfSections
 				.getFileDefinitions()) {
 			fileDefinitions.add(new XmlFileDefinition(fileDefinition));
 		}
-		
+
 		for (com.arinc.arinc838.ThwDefinition hardwareDefinition : sdfSections
 				.getThwDefinitions()) {
-			hardwareDefinitions.add(new XmlTargetHardwareDefinition(hardwareDefinition));
+			hardwareDefinitions.add(new XmlTargetHardwareDefinition(
+					hardwareDefinition));
 		}
 
 		softwareDescription = new XmlSoftwareDescription(
@@ -88,4 +93,34 @@ public class XmlSoftwareDefinitionSections implements
 		this.lspIntegrityDefinition = value;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} else if (obj instanceof SoftwareDefinitionSections) {
+			SoftwareDefinitionSections other = (SoftwareDefinitionSections) obj;
+
+			return this.getSoftwareDescription().equals(
+					other.getSoftwareDescription())
+					&& this.getLspIntegrityDefinition().equals(
+							other.getLspIntegrityDefinition())
+					&& this.getSdfIntegrityDefinition().equals(
+							other.getSdfIntegrityDefinition())
+					&& this.getFileDefinitions().equals(
+							other.getFileDefinitions())
+					&& this.getTargetHardwareDefinitions().equals(
+							other.getTargetHardwareDefinitions());
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return this.getSoftwareDescription().hashCode()
+				^ this.getLspIntegrityDefinition().hashCode()
+				^ this.getSdfIntegrityDefinition().hashCode()
+				^ this.getFileDefinitions().hashCode()
+				^ this.getTargetHardwareDefinitions().hashCode();
+	}
 }

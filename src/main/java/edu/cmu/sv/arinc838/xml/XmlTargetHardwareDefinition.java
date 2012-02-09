@@ -22,6 +22,10 @@ public class XmlTargetHardwareDefinition implements TargetHardwareDefinition {
 		}
 	}
 
+	public XmlTargetHardwareDefinition() {
+		
+	}
+
 	@Override
 	public String getId() {
 		return id;
@@ -36,5 +40,23 @@ public class XmlTargetHardwareDefinition implements TargetHardwareDefinition {
 	public List<String> getPositions() {
 		return positions;
 	}
-
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj){			
+			return true;
+		}else if (obj instanceof TargetHardwareDefinition){
+			TargetHardwareDefinition other = (TargetHardwareDefinition)obj;
+			
+			return this.getId().equals(other.getId()) &&
+				   this.getPositions().equals(other.getPositions());
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return getId().hashCode() ^ getPositions().hashCode();
+	}
 }

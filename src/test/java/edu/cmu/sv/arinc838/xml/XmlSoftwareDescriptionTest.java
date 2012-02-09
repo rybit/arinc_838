@@ -73,4 +73,64 @@ public class XmlSoftwareDescriptionTest {
 		
 		assertEquals(value, xmlDesc.getSoftwareTypeId());
 	}
+	
+	@Test
+	public void equalsSucceedsInUsingAllThreePropertiesForTestingEquality(){
+		XmlSoftwareDescription first = new XmlSoftwareDescription();
+		first.setSoftwarePartNumber("part");
+		first.setSoftwareTypeDescription("description");
+		first.setSoftwareTypeId(10l);
+		
+		XmlSoftwareDescription second = new XmlSoftwareDescription();
+		second.setSoftwarePartNumber("part");
+		second.setSoftwareTypeDescription("description");
+		second.setSoftwareTypeId(10l);
+		
+		assertEquals(first, second);
+	}
+	
+	@Test
+	public void equalsFailsInUsingAllThreePropertiesForTestingEquality(){
+		XmlSoftwareDescription first = new XmlSoftwareDescription();
+		first.setSoftwarePartNumber("part");
+		first.setSoftwareTypeDescription("description");
+		first.setSoftwareTypeId(10l);
+		
+		XmlSoftwareDescription second = new XmlSoftwareDescription();
+		second.setSoftwarePartNumber("part2");
+		second.setSoftwareTypeDescription("description");
+		second.setSoftwareTypeId(10l);
+		
+		assertNotEquals(first, second);
+	}
+	
+	@Test
+	public void equalsSucceedsIfObjectIsTheSame(){
+		XmlSoftwareDescription first = new XmlSoftwareDescription();
+		first.setSoftwarePartNumber("part");
+		first.setSoftwareTypeDescription("description");
+		first.setSoftwareTypeId(10l);
+		
+		assertEquals(first, first);
+	}
+	
+	@Test
+	public void equalsFailsIfObjectIsADifferentType(){
+		XmlSoftwareDescription first = new XmlSoftwareDescription();
+		first.setSoftwarePartNumber("part");
+		first.setSoftwareTypeDescription("description");
+		first.setSoftwareTypeId(10l);		
+		
+		assertNotEquals(first, new Object());
+	}
+	
+	@Test
+	public void hashCodeIsCombinationOfThreePropertiesHashCodes(){
+		XmlSoftwareDescription first = new XmlSoftwareDescription();
+		first.setSoftwarePartNumber("part");
+		first.setSoftwareTypeDescription("description");
+		first.setSoftwareTypeId(10l);	
+		
+		assertEquals(first.hashCode(), first.getSoftwarePartNumber().hashCode() ^ first.getSoftwareTypeDescription().hashCode() ^ first.getSoftwareTypeId());
+	}
 }
