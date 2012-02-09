@@ -24,15 +24,28 @@ public class XmlSoftwareDefinitionSections implements
 		SoftwareDefinitionSections {
 
 	private List<FileDefinition> fileDefinitions = new ArrayList<FileDefinition>();
+	private List<TargetHardwareDefinition> hardwareDefinitions = new ArrayList<TargetHardwareDefinition>();
 	private SoftwareDescription softwareDescription;
+	private IntegrityDefinition lspIntegrityDefinition;
+	private IntegrityDefinition sdfIntegrityDefinition;
 
 	public XmlSoftwareDefinitionSections(SdfSections sdfSections) {
 		for (com.arinc.arinc838.FileDefinition fileDefinition : sdfSections
 				.getFileDefinitions()) {
 			fileDefinitions.add(new XmlFileDefinition(fileDefinition));
 		}
+		
+		for (com.arinc.arinc838.ThwDefinition hardwareDefinition : sdfSections
+				.getThwDefinitions()) {
+			hardwareDefinitions.add(new XmlTargetHardwareDefinition(hardwareDefinition));
+		}
 
-		softwareDescription = new XmlSoftwareDescription(sdfSections.getSoftwareDescription());
+		softwareDescription = new XmlSoftwareDescription(
+				sdfSections.getSoftwareDescription());
+		lspIntegrityDefinition = new XmlIntegrityDefinition(
+				sdfSections.getLspIntegrityDefinition());
+		sdfIntegrityDefinition = new XmlIntegrityDefinition(
+				sdfSections.getSdfIntegrityDefinition());
 	}
 
 	@Override
@@ -47,8 +60,7 @@ public class XmlSoftwareDefinitionSections implements
 
 	@Override
 	public List<TargetHardwareDefinition> getTargetHardwareDefinitions() {
-		// TODO Auto-generated method stub
-		return null;
+		return hardwareDefinitions;
 	}
 
 	@Override
@@ -58,26 +70,22 @@ public class XmlSoftwareDefinitionSections implements
 
 	@Override
 	public IntegrityDefinition getSdfIntegrityDefinition() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.sdfIntegrityDefinition;
 	}
 
 	@Override
-	public void setSdfIntegrityDefinition(IntegrityDefinition sdfIntegDefs) {
-		// TODO Auto-generated method stub
-
+	public void setSdfIntegrityDefinition(IntegrityDefinition value) {
+		this.sdfIntegrityDefinition = value;
 	}
 
 	@Override
 	public IntegrityDefinition getLspIntegrityDefinition() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.lspIntegrityDefinition;
 	}
 
 	@Override
-	public void setLspIntegrityDefinition(IntegrityDefinition lspIntegDefs) {
-		// TODO Auto-generated method stub
-
+	public void setLspIntegrityDefinition(IntegrityDefinition value) {
+		this.lspIntegrityDefinition = value;
 	}
 
 }

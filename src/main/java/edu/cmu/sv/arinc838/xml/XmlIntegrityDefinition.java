@@ -24,9 +24,10 @@ public class XmlIntegrityDefinition implements IntegrityDefinition {
 		}
 	}
 
-	public XmlIntegrityDefinition() {
+	public XmlIntegrityDefinition(){
+		
 	}
-
+	
 	@Override
 	public long getIntegrityType() {
 		return integrityType;
