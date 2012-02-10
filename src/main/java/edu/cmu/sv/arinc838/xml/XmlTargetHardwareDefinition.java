@@ -3,7 +3,6 @@ package edu.cmu.sv.arinc838.xml;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.crypto.spec.PSource;
 
 import com.arinc.arinc838.ThwDefinition;
 

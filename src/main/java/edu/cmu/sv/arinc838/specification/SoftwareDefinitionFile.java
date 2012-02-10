@@ -11,9 +11,9 @@ package edu.cmu.sv.arinc838.specification;
 
 public interface SoftwareDefinitionFile {
 	
-    public long getFileFormatVersion();
+    public String getFileFormatVersion();
 
-    public void setFileFormatVersion(long version);
+    public void setFileFormatVersion(String version);
 	
 	public SoftwareDefinitionSections getSoftwareDefinitionSections();
 	
