@@ -24,7 +24,14 @@ public class XmlSoftwareDefinitionSections implements
 		SoftwareDefinitionSections {
 
 	private List<FileDefinition> fileDefinitions = new ArrayList<FileDefinition>();
+	private List<TargetHardwareDefinition> hardwareDefinitions = new ArrayList<TargetHardwareDefinition>();
 	private SoftwareDescription softwareDescription;
+	private IntegrityDefinition lspIntegrityDefinition;
+	private IntegrityDefinition sdfIntegrityDefinition;
+
+	public XmlSoftwareDefinitionSections() {
+
+	}
 
 	public XmlSoftwareDefinitionSections(SdfSections sdfSections) {
 		for (com.arinc.arinc838.FileDefinition fileDefinition : sdfSections
@@ -32,11 +39,18 @@ public class XmlSoftwareDefinitionSections implements
 			fileDefinitions.add(new XmlFileDefinition(fileDefinition));
 		}
 
-		softwareDescription = new XmlSoftwareDescription(sdfSections.getSoftwareDescription());
-	}
+		for (com.arinc.arinc838.ThwDefinition hardwareDefinition : sdfSections
+				.getThwDefinitions()) {
+			hardwareDefinitions.add(new XmlTargetHardwareDefinition(
+					hardwareDefinition));
+		}
 
-	public XmlSoftwareDefinitionSections() {
-		// TODO Auto-generated constructor stub
+		softwareDescription = new XmlSoftwareDescription(
+				sdfSections.getSoftwareDescription());
+		lspIntegrityDefinition = new XmlIntegrityDefinition(
+				sdfSections.getLspIntegrityDefinition());
+		sdfIntegrityDefinition = new XmlIntegrityDefinition(
+				sdfSections.getSdfIntegrityDefinition());
 	}
 
 	@Override
@@ -51,8 +65,7 @@ public class XmlSoftwareDefinitionSections implements
 
 	@Override
 	public List<TargetHardwareDefinition> getTargetHardwareDefinitions() {
-		// TODO Auto-generated method stub
-		return null;
+		return hardwareDefinitions;
 	}
 
 	@Override
@@ -62,26 +75,52 @@ public class XmlSoftwareDefinitionSections implements
 
 	@Override
 	public IntegrityDefinition getSdfIntegrityDefinition() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.sdfIntegrityDefinition;
 	}
 
 	@Override
-	public void setSdfIntegrityDefinition(IntegrityDefinition sdfIntegDefs) {
-		// TODO Auto-generated method stub
-
+	public void setSdfIntegrityDefinition(IntegrityDefinition value) {
+		this.sdfIntegrityDefinition = value;
 	}
 
 	@Override
 	public IntegrityDefinition getLspIntegrityDefinition() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.lspIntegrityDefinition;
 	}
 
 	@Override
-	public void setLspIntegrityDefinition(IntegrityDefinition lspIntegDefs) {
-		// TODO Auto-generated method stub
-
+	public void setLspIntegrityDefinition(IntegrityDefinition value) {
+		this.lspIntegrityDefinition = value;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} else if (obj instanceof SoftwareDefinitionSections) {
+			SoftwareDefinitionSections other = (SoftwareDefinitionSections) obj;
+
+			return this.getSoftwareDescription().equals(
+					other.getSoftwareDescription())
+					&& this.getLspIntegrityDefinition().equals(
+							other.getLspIntegrityDefinition())
+					&& this.getSdfIntegrityDefinition().equals(
+							other.getSdfIntegrityDefinition())
+					&& this.getFileDefinitions().equals(
+							other.getFileDefinitions())
+					&& this.getTargetHardwareDefinitions().equals(
+							other.getTargetHardwareDefinitions());
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return this.getSoftwareDescription().hashCode()
+				^ this.getLspIntegrityDefinition().hashCode()
+				^ this.getSdfIntegrityDefinition().hashCode()
+				^ this.getFileDefinitions().hashCode()
+				^ this.getTargetHardwareDefinitions().hashCode();
+	}
 }

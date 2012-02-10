@@ -16,15 +16,17 @@ public class XmlSoftwareDescription implements SoftwareDescription {
 	private String softwarePartNumber;
 	private String softwareTypeDescription;
 	private long softwareTypeId;
-	
-	public XmlSoftwareDescription(com.arinc.arinc838.SoftwareDescription softwareDescription) {
+
+	public XmlSoftwareDescription(
+			com.arinc.arinc838.SoftwareDescription softwareDescription) {
 		this.softwarePartNumber = softwareDescription.getSoftwarePartnumber();
-		this.softwareTypeDescription = softwareDescription.getSoftwareTypeDescription();
+		this.softwareTypeDescription = softwareDescription
+				.getSoftwareTypeDescription();
 		this.softwareTypeId = softwareDescription.getSoftwareTypeId();
 	}
-	
+
 	public XmlSoftwareDescription() {
-		// TODO Auto-generated constructor stub
+
 	}
 
 	@Override
@@ -57,4 +59,27 @@ public class XmlSoftwareDescription implements SoftwareDescription {
 		this.softwareTypeId = value;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this) {
+			return true;
+		} else if (obj instanceof SoftwareDescription) {
+			SoftwareDescription other = (SoftwareDescription) obj;
+
+			return this.getSoftwareTypeDescription().equals(
+					other.getSoftwareTypeDescription())
+					&& this.getSoftwarePartNumber().equals(
+							other.getSoftwarePartNumber())
+					&& this.getSoftwareTypeId() == other.getSoftwareTypeId();
+
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return (int) (getSoftwarePartNumber().hashCode()
+				^ getSoftwareTypeDescription().hashCode() ^ getSoftwareTypeId());
+	}
 }

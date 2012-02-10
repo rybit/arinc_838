@@ -1,6 +1,6 @@
 package edu.cmu.sv.arinc838.xml;
 
-import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.*;
 
 import org.testng.annotations.Test;
 
@@ -52,4 +52,79 @@ public class XmlTargetHardwareDefinitionTest {
 		
 		assertEquals(xmlDef.getPositions().size(), 0);		
 	}	
+	
+	@Test
+	public void equalsUsesIdAndPositions(){
+		XmlTargetHardwareDefinition first = new XmlTargetHardwareDefinition();
+		first.setId("first");
+		first.getPositions().add("one");
+		first.getPositions().add("two");
+		
+		XmlTargetHardwareDefinition second = new XmlTargetHardwareDefinition();
+		second.setId("first");
+		second.getPositions().add("one");
+		second.getPositions().add("two");
+		
+		assertEquals(first, second);
+	}
+	
+	@Test
+	public void equalsFailsIfIdIsDifferent(){
+		XmlTargetHardwareDefinition first = new XmlTargetHardwareDefinition();
+		first.setId("first");
+		first.getPositions().add("one");
+		first.getPositions().add("two");
+		
+		XmlTargetHardwareDefinition second = new XmlTargetHardwareDefinition();
+		second.setId("second");
+		second.getPositions().add("one");
+		second.getPositions().add("two");
+		
+		assertNotEquals(first, second);
+	}
+	
+	@Test
+	public void equalsFailsIfPositionsAreNotSame(){
+		XmlTargetHardwareDefinition first = new XmlTargetHardwareDefinition();
+		first.setId("first");
+		first.getPositions().add("one");
+		first.getPositions().add("two");
+		
+		XmlTargetHardwareDefinition second = new XmlTargetHardwareDefinition();
+		second.setId("first");
+		second.getPositions().add("two");
+		second.getPositions().add("one");
+		
+		assertNotEquals(first, second);
+	}
+		
+	@Test
+	public void equalsFailsForDifferentTypes(){
+		XmlTargetHardwareDefinition first = new XmlTargetHardwareDefinition();
+		first.setId("first");
+		first.getPositions().add("one");
+		first.getPositions().add("two");
+		
+		assertNotEquals(first, new Object());
+	}
+	
+	@Test
+	public void equalsWorksForSameObject(){
+		XmlTargetHardwareDefinition first = new XmlTargetHardwareDefinition();
+		first.setId("first");
+		first.getPositions().add("one");
+		first.getPositions().add("two");
+		
+		assertEquals(first, first);
+	}
+	
+	@Test
+	public void hashcodeIsCombinationOfIdAndPositions(){
+		XmlTargetHardwareDefinition first = new XmlTargetHardwareDefinition();
+		first.setId("first");
+		first.getPositions().add("one");
+		first.getPositions().add("two");
+		
+		assertEquals(first.hashCode(), first.getId().hashCode() ^ first.getPositions().hashCode());
+	}
 }
