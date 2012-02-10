@@ -65,7 +65,7 @@ public class XdfWriterTest {
 			}
 
 			@Override
-			public void setFileFormatVersion(long version) {
+			public void setFileFormatVersion(String version) {
 				throw new UnsupportedOperationException();
 			}
 
@@ -75,8 +75,8 @@ public class XdfWriterTest {
 			}
 
 			@Override
-			public long getFileFormatVersion() {
-				return 10l;
+			public String getFileFormatVersion() {
+				return "version";
 			}
 		};
 
