@@ -24,15 +24,13 @@ import javax.xml.bind.Unmarshaller;
 import com.arinc.arinc838.SdfFile;
 
 import edu.cmu.sv.arinc838.builder.SoftwareDefinitionSectionsBuilder;
-import edu.cmu.sv.arinc838.specification.SoftwareDefinitionFile;
-import edu.cmu.sv.arinc838.specification.SoftwareDefinitionSections;
 import edu.cmu.sv.arinc838.xml.XdfWriter;
 
 public class XdfWriterTest {
 
 	@Test
 	public void xdfWritesFileFormatVersionTest() throws Exception {
-		SoftwareDefinitionFile file = getTestFile();
+		SdfFile file = getTestFile();
 		String filename = "test_xdf_writer.xml";
 		
 		new XdfWriter(file).write(filename);
@@ -41,9 +39,8 @@ public class XdfWriterTest {
 		
 		SdfFile jaxbFile = readJaxb(writtenXmlFile);
 		
-		SoftwareDefinitionFile writtenFile = new XmlSoftwareDefinitionFile(jaxbFile);
 		
-		assertEquals(file, writtenFile);
+		assertEquals(file, jaxbFile);
 		
 		writtenXmlFile.delete();
 	}
@@ -54,33 +51,9 @@ public class XdfWriterTest {
 		return (SdfFile) jaxbUnmarshaller.unmarshal(writtenXmlFile);		
 	}
 
-	private static SoftwareDefinitionFile getTestFile() {
-		final SoftwareDefinitionSections sections = new SoftwareDefinitionSectionsBuilder();
-
-		SoftwareDefinitionFile file = new SoftwareDefinitionFile() {
-
-			@Override
-			public void setSoftwareDefinitionSections(
-					SoftwareDefinitionSections sdf) {
-				throw new UnsupportedOperationException();
-			}
-
-			@Override
-			public void setFileFormatVersion(String version) {
-				throw new UnsupportedOperationException();
-			}
-
-			@Override
-			public SoftwareDefinitionSections getSoftwareDefinitionSections() {
-				return sections;
-			}
-
-			@Override
-			public String getFileFormatVersion() {
-				return "version";
-			}
-		};
-
+	private static SdfFile getTestFile() {
+		SdfFile file = new SdfFile();
+		file.setFileFormatVersion("version");
 		return file;
 	}
 }

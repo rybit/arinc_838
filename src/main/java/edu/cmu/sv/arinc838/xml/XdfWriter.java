@@ -11,13 +11,14 @@ package edu.cmu.sv.arinc838.xml;
 
 import javax.xml.bind.JAXBException;
 
-import edu.cmu.sv.arinc838.specification.SoftwareDefinitionFile;
+import com.arinc.arinc838.SdfFile;
+
 
 public class XdfWriter {
 
-	private final SoftwareDefinitionFile softwareDefinition;
+	private final SdfFile softwareDefinition;
 
-	public XdfWriter(SoftwareDefinitionFile softwareDefinition) {
+	public XdfWriter(SdfFile softwareDefinition) {
 		this.softwareDefinition = softwareDefinition;
 	}
 

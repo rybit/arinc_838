@@ -22,6 +22,9 @@ import com.arinc.arinc838.ThwDefinition;
 import static org.mockito.Mockito.*;
 
 import edu.cmu.sv.arinc838.builder.SoftwareDefinitionSectionsBuilder;
+import edu.cmu.sv.arinc838.builder.SoftwareDescriptionBuilder;
+import edu.cmu.sv.arinc838.builder.TargetHardwareDefinitionBuilder;
+
 
 
 public class SoftwareDefinitionSectionsTest {
@@ -198,6 +201,7 @@ public class SoftwareDefinitionSectionsTest {
 
 		SoftwareDescription newDesc = new SoftwareDescriptionBuilder(desc).build();
 		newDesc.setSoftwarePartnumber("new part");
+
 		newDesc.setSoftwareTypeDescription("new desc");
 		newDesc.setSoftwareTypeId(10l);
 
@@ -243,69 +247,11 @@ public class SoftwareDefinitionSectionsTest {
 
 		ThwDefinition expectedHardwareDefinition = new TargetHardwareDefinitionBuilder(
 				new ThwDefinition()).build();
+
 		xmlSoftwareDefinitionSections.getTargetHardwareDefinitions().add(
 				expectedHardwareDefinition);
 		ThwDefinition actualHardwareDefinition = xmlSoftwareDefinitionSections
 				.getTargetHardwareDefinitions().get(0);
 		assertEquals(actualHardwareDefinition, expectedHardwareDefinition);
-	}
-
-	@Test
-	public void equalsReturnsTrueForSameObjects() {
-		SoftwareDefinitionSectionsBuilder first = new SoftwareDefinitionSectionsBuilder();
-
-		assertEquals(first, first);
-	}
-
-	@Test
-	public void equalsComparesAllChildren() {
-		SoftwareDefinitionSectionsBuilder first = new SoftwareDefinitionSectionsBuilder();
-		SoftwareDefinitionSectionsBuilder second = new SoftwareDefinitionSectionsBuilder();
-
-		SoftwareDescription desc = mock(SoftwareDescription.class);
-		first.setSoftwareDescription(desc);
-		second.setSoftwareDescription(desc);
-
-		IntegrityDefinition integrity = mock(IntegrityDefinition.class);
-
-		first.setLspIntegrityDefinition(integrity);
-		first.setSdfIntegrityDefinition(integrity);
-		second.setLspIntegrityDefinition(integrity);
-		second.setSdfIntegrityDefinition(integrity);
-
-		FileDefinition fileDef = mock(FileDefinition.class);
-		first.getFileDefinitions().add(fileDef);
-		second.getFileDefinitions().add(fileDef);
-
-		ThwDefinition hardwareDef = mock(ThwDefinition.class);
-		first.getTargetHardwareDefinitions().add(hardwareDef);
-		second.getTargetHardwareDefinitions().add(hardwareDef);
-
-		assertEquals(first, second);
-	}
-
-	@Test
-	public void hashcodeIsCombinationOfChildrensHashCodes() {
-		SoftwareDefinitionSectionsBuilder first = new SoftwareDefinitionSectionsBuilder();
-		SoftwareDescription desc = mock(SoftwareDescription.class);
-		first.setSoftwareDescription(desc);
-
-		IntegrityDefinition integrity = mock(IntegrityDefinition.class);
-
-		first.setLspIntegrityDefinition(integrity);
-		first.setSdfIntegrityDefinition(integrity);
-
-		FileDefinition fileDef = mock(FileDefinition.class);
-		first.getFileDefinitions().add(fileDef);
-
-		ThwDefinition hardwareDef = mock(ThwDefinition.class);
-		first.getTargetHardwareDefinitions().add(hardwareDef);
-
-		assertEquals(first.hashCode(), first.getSoftwareDescription()
-				.hashCode()
-				^ first.getLspIntegrityDefinition().hashCode()
-				^ first.getSdfIntegrityDefinition().hashCode()
-				^ first.getFileDefinitions().hashCode()
-				^ first.getTargetHardwareDefinitions().hashCode());
-	}
+	}	
 }

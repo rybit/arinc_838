@@ -44,7 +44,7 @@ import com.arinc.arinc838.IntegrityDefinition;
  * @author ryan
  * 
  */
-public class FileDefinitionBuilder {
+public class FileDefinitionBuilder implements Builder<FileDefinition>{
 	private IntegrityDefinition integDef;
 	private boolean loadable;
 	private String fileName;
@@ -93,6 +93,7 @@ public class FileDefinitionBuilder {
 		this.fileSize = fileSize;
 	}
 
+	@Override
 	public FileDefinition build() {
 		FileDefinition retDef = new FileDefinition();
 

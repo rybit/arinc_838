@@ -18,7 +18,7 @@ import com.arinc.arinc838.SdfSections;
 import com.arinc.arinc838.SoftwareDescription;
 import com.arinc.arinc838.ThwDefinition;
 
-public class SoftwareDefinitionSectionsBuilder {
+public class SoftwareDefinitionSectionsBuilder implements Builder<SdfSections> {
 
 	private List<FileDefinition> fileDefinitions = new ArrayList<FileDefinition>();
 	private List<ThwDefinition> thwDefinitions = new ArrayList<ThwDefinition>();
@@ -43,23 +43,17 @@ public class SoftwareDefinitionSectionsBuilder {
 
 	private void copyFileDefitions(List<FileDefinition> srcList,
 			List<FileDefinition> destList) {
-
-		if (srcList != null && destList != null) {
-			destList.clear();
-			for (FileDefinition fileDef : srcList) {
-				destList.add(new FileDefinitionBuilder(fileDef).build());
-			}
+		destList.clear();
+		for (FileDefinition fileDef : srcList) {
+			destList.add(new FileDefinitionBuilder(fileDef).build());
 		}
 	}
 
 	private void copyThwDefitions(List<ThwDefinition> srcList,
 			List<ThwDefinition> destList) {
-
-		if (srcList != null && destList != null) {
-			destList.clear();
-			for (ThwDefinition thwDef : srcList) {
-				destList.add(new ThwDefinitionBuilder(thwDef).build());
-			}
+		destList.clear();
+		for (ThwDefinition thwDef : srcList) {
+			destList.add(new TargetHardwareDefinitionBuilder(thwDef).build());
 		}
 	}
 

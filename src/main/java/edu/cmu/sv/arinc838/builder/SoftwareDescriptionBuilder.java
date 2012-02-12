@@ -7,79 +7,59 @@
  * 
  * Created on Feb 7, 2012
  */
-package edu.cmu.sv.arinc838.xml;
+package edu.cmu.sv.arinc838.builder;
 
-import edu.cmu.sv.arinc838.specification.SoftwareDescription;
+import com.arinc.arinc838.SoftwareDescription;
 
-public class XmlSoftwareDescription implements SoftwareDescription {
+public class SoftwareDescriptionBuilder implements Builder<SoftwareDescription> {
 
 	private String softwarePartNumber;
 	private String softwareTypeDescription;
 	private long softwareTypeId;
 
-	public XmlSoftwareDescription(
-			com.arinc.arinc838.SoftwareDescription softwareDescription) {
+	public SoftwareDescriptionBuilder(SoftwareDescription softwareDescription) {
 		this.softwarePartNumber = softwareDescription.getSoftwarePartnumber();
 		this.softwareTypeDescription = softwareDescription
 				.getSoftwareTypeDescription();
 		this.softwareTypeId = softwareDescription.getSoftwareTypeId();
 	}
 
-	public XmlSoftwareDescription() {
+	public SoftwareDescriptionBuilder() {
 
 	}
 
-	@Override
 	public String getSoftwarePartNumber() {
 		return this.softwarePartNumber;
 	}
 
-	@Override
 	public void setSoftwarePartNumber(String value) {
 		this.softwarePartNumber = value;
 	}
 
-	@Override
 	public String getSoftwareTypeDescription() {
 		return this.softwareTypeDescription;
 	}
 
-	@Override
 	public void setSoftwareTypeDescription(String value) {
 		this.softwareTypeDescription = value;
 	}
 
-	@Override
 	public long getSoftwareTypeId() {
 		return this.softwareTypeId;
 	}
 
-	@Override
 	public void setSoftwareTypeId(long value) {
 		this.softwareTypeId = value;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (obj == this) {
-			return true;
-		} else if (obj instanceof SoftwareDescription) {
-			SoftwareDescription other = (SoftwareDescription) obj;
+	public SoftwareDescription build() {
+		SoftwareDescription desc = new SoftwareDescription();
 
-			return this.getSoftwareTypeDescription().equals(
-					other.getSoftwareTypeDescription())
-					&& this.getSoftwarePartNumber().equals(
-							other.getSoftwarePartNumber())
-					&& this.getSoftwareTypeId() == other.getSoftwareTypeId();
+		desc.setSoftwarePartnumber(this.getSoftwarePartNumber());
+		desc.setSoftwareTypeDescription(this.getSoftwareTypeDescription());
+		desc.setSoftwareTypeId(this.getSoftwareTypeId());
 
-		}
-
-		return false;
-	}
-
-	@Override
-	public int hashCode() {
-		return (int) (getSoftwarePartNumber().hashCode()
-				^ getSoftwareTypeDescription().hashCode() ^ getSoftwareTypeId());
+		return desc;
 	}
 }
