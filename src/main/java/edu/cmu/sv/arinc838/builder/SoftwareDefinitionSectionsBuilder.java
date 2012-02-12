@@ -13,7 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.arinc.arinc838.FileDefinition;
+import com.arinc.arinc838.IntegrityDefinition;
 import com.arinc.arinc838.SdfSections;
+import com.arinc.arinc838.SoftwareDescription;
 import com.arinc.arinc838.ThwDefinition;
 
 public class SoftwareDefinitionSectionsBuilder implements Builder<SdfSections> {

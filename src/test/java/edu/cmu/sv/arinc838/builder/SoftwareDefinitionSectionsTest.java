@@ -30,7 +30,7 @@ public class SoftwareDefinitionSectionsTest {
 	private SoftwareDefinitionSectionsBuilder xmlSoftwareDefinitionSections;
 
 	@BeforeMethod
-	public void setup() {
+	private void setup() {
 		integrity = new com.arinc.arinc838.IntegrityDefinition();
 		integrity.setIntegrityType(9);
 		integrity.setIntegrityValue("test");
