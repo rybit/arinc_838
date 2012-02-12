@@ -6,11 +6,11 @@ import com.arinc.arinc838.SdfSections;
 public class SoftwareDefinitionFileBuilder implements Builder<SdfFile>{
 
 	private String fileFormatVersion;
-	private SdfSections sections;
+	private SoftwareDefinitionSectionsBuilder sections;
 
 	public SoftwareDefinitionFileBuilder(SdfFile swDefFile) {
 		fileFormatVersion = swDefFile.getFileFormatVersion();
-		sections = new SoftwareDefinitionSectionsBuilder(swDefFile.getSdfSections()).build();
+		sections = new SoftwareDefinitionSectionsBuilder(swDefFile.getSdfSections());
 	}
 
 	public String getFileFormatVersion() {
@@ -21,11 +21,11 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile>{
 		this.fileFormatVersion = value;
 	}
 
-	public SdfSections getSoftwareDefinitionSections() {
+	public SoftwareDefinitionSectionsBuilder getSoftwareDefinitionSections() {
 		return sections;
 	}
 
-	public void setSoftwareDefinitionSections(SdfSections value) {
+	public void setSoftwareDefinitionSections(SoftwareDefinitionSectionsBuilder value) {
 		this.sections = value;
 	}
 
@@ -33,7 +33,7 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile>{
 	public SdfFile build() {
 		SdfFile file = new SdfFile();
 		file.setFileFormatVersion(this.getFileFormatVersion());
-		file.setSdfSections(new SoftwareDefinitionSectionsBuilder(sections).build());
+		file.setSdfSections(sections.build());
 		
 		return file;
 	}

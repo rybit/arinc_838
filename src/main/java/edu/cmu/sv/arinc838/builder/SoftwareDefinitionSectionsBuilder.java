@@ -20,86 +20,80 @@ import com.arinc.arinc838.ThwDefinition;
 
 public class SoftwareDefinitionSectionsBuilder implements Builder<SdfSections> {
 
-	private List<FileDefinition> fileDefinitions = new ArrayList<FileDefinition>();
-	private List<ThwDefinition> thwDefinitions = new ArrayList<ThwDefinition>();
-	private SoftwareDescription softwareDescription;
-	private IntegrityDefinition lspIntegrityDefinition;
-	private IntegrityDefinition sdfIntegrityDefinition;
+	private List<FileDefinitionBuilder> fileDefinitions = new ArrayList<FileDefinitionBuilder>();
+	private List<TargetHardwareDefinitionBuilder> thwDefinitions = new ArrayList<TargetHardwareDefinitionBuilder>();
+	private SoftwareDescriptionBuilder softwareDescription;
+	private IntegrityDefinitionBuilder lspIntegrityDefinition;
+	private IntegrityDefinitionBuilder sdfIntegrityDefinition;
 
 	public SoftwareDefinitionSectionsBuilder() {
 	}
 
 	public SoftwareDefinitionSectionsBuilder(SdfSections sdfSections) {
-		copyFileDefitions(sdfSections.getFileDefinitions(), fileDefinitions);
-		copyThwDefitions(sdfSections.getThwDefinitions(), thwDefinitions);
+		
+		for (FileDefinition fileDef : sdfSections.getFileDefinitions()) {
+			fileDefinitions.add(new FileDefinitionBuilder(fileDef));
+		}
+		
+		for (ThwDefinition thwDef : sdfSections.getThwDefinitions()) {
+			thwDefinitions.add(new TargetHardwareDefinitionBuilder(thwDef));
+		}
 
 		softwareDescription = new SoftwareDescriptionBuilder(
-				sdfSections.getSoftwareDescription()).build();
+				sdfSections.getSoftwareDescription());
 		lspIntegrityDefinition = new IntegrityDefinitionBuilder(
-				sdfSections.getLspIntegrityDefinition()).build();
+				sdfSections.getLspIntegrityDefinition());
 		sdfIntegrityDefinition = new IntegrityDefinitionBuilder(
-				sdfSections.getSdfIntegrityDefinition()).build();
+				sdfSections.getSdfIntegrityDefinition());
 	}
-
-	private void copyFileDefitions(List<FileDefinition> srcList,
-			List<FileDefinition> destList) {
-		destList.clear();
-		for (FileDefinition fileDef : srcList) {
-			destList.add(new FileDefinitionBuilder(fileDef).build());
-		}
-	}
-
-	private void copyThwDefitions(List<ThwDefinition> srcList,
-			List<ThwDefinition> destList) {
-		destList.clear();
-		for (ThwDefinition thwDef : srcList) {
-			destList.add(new TargetHardwareDefinitionBuilder(thwDef).build());
-		}
-	}
-
-	public SoftwareDescription getSoftwareDescription() {
+	
+	public SoftwareDescriptionBuilder getSoftwareDescription() {
 		return softwareDescription;
 	}
 
-	public void setSoftwareDescription(SoftwareDescription sd) {
+	public void setSoftwareDescription(SoftwareDescriptionBuilder sd) {
 		softwareDescription = sd;
 	}
 
-	public List<ThwDefinition> getTargetHardwareDefinitions() {
+	public List<TargetHardwareDefinitionBuilder> getTargetHardwareDefinitions() {
 		return thwDefinitions;
 	}
 
-	public List<FileDefinition> getFileDefinitions() {
+	public List<FileDefinitionBuilder> getFileDefinitions() {
 		return fileDefinitions;
 	}
 
-	public IntegrityDefinition getSdfIntegrityDefinition() {
+	public IntegrityDefinitionBuilder getSdfIntegrityDefinition() {
 		return this.sdfIntegrityDefinition;
 	}
 
-	public void setSdfIntegrityDefinition(IntegrityDefinition value) {
+	public void setSdfIntegrityDefinition(IntegrityDefinitionBuilder value) {
 		this.sdfIntegrityDefinition = value;
 	}
 
-	public IntegrityDefinition getLspIntegrityDefinition() {
+	public IntegrityDefinitionBuilder getLspIntegrityDefinition() {
 		return this.lspIntegrityDefinition;
 	}
 
-	public void setLspIntegrityDefinition(IntegrityDefinition value) {
+	public void setLspIntegrityDefinition(IntegrityDefinitionBuilder value) {
 		this.lspIntegrityDefinition = value;
 	}
 
 	@Override
 	public SdfSections build() {
 		SdfSections sdfSections = new SdfSections();
-		copyFileDefitions(fileDefinitions, sdfSections.getFileDefinitions());
-		copyThwDefitions(thwDefinitions, sdfSections.getThwDefinitions());
-		sdfSections.setLspIntegrityDefinition(new IntegrityDefinitionBuilder(
-				lspIntegrityDefinition).build());
-		sdfSections.setSdfIntegrityDefinition(new IntegrityDefinitionBuilder(
-				sdfIntegrityDefinition).build());
-		sdfSections.setSoftwareDescription(new SoftwareDescriptionBuilder(
-				softwareDescription).build());
+		
+		for (FileDefinitionBuilder fileDef : 			fileDefinitions) {
+			sdfSections.getFileDefinitions().add(fileDef.build());
+		}
+		
+		for (TargetHardwareDefinitionBuilder thwDef : thwDefinitions) {
+			sdfSections.getThwDefinitions().add(thwDef.build());
+		}
+		
+		sdfSections.setLspIntegrityDefinition(				lspIntegrityDefinition.build());
+		sdfSections.setSdfIntegrityDefinition(sdfIntegrityDefinition.build());
+		sdfSections.setSoftwareDescription(softwareDescription.build());
 
 		return sdfSections;
 	}

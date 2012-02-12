@@ -9,39 +9,60 @@
  */
 package edu.cmu.sv.arinc838.builder;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.arinc.arinc838.FileDefinition;
-import com.arinc.arinc838.IntegrityDefinition;
 import com.arinc.arinc838.SdfSections;
 import com.arinc.arinc838.SoftwareDescription;
 import com.arinc.arinc838.ThwDefinition;
 
-import static org.mockito.Mockito.*;
-
-import edu.cmu.sv.arinc838.builder.SoftwareDefinitionSectionsBuilder;
-import edu.cmu.sv.arinc838.builder.SoftwareDescriptionBuilder;
-import edu.cmu.sv.arinc838.builder.TargetHardwareDefinitionBuilder;
-
-
-
 public class SoftwareDefinitionSectionsTest {
+
+	private com.arinc.arinc838.IntegrityDefinition integrity;
+	private SdfSections jaxbSections;
+	private SoftwareDescription description;
+	private com.arinc.arinc838.FileDefinition fileDef;
+	private com.arinc.arinc838.ThwDefinition hardwareDef;
+	private SoftwareDefinitionSectionsBuilder xmlSoftwareDefinitionSections;
+
+	@BeforeMethod
+	private void setup() {
+		integrity = new com.arinc.arinc838.IntegrityDefinition();
+		integrity.setIntegrityType(9);
+		integrity.setIntegrityValue("test");
+
+		description = new SoftwareDescription();
+		description.setSoftwarePartnumber("part");
+		description.setSoftwareTypeDescription("desc");
+		description.setSoftwareTypeId(10l);
+
+		fileDef = new com.arinc.arinc838.FileDefinition();
+		fileDef.setFileName("file");
+		
+		hardwareDef = new ThwDefinition();
+		hardwareDef.setThwId("hardware");
+
+		jaxbSections = new SdfSections();
+		jaxbSections.setSdfIntegrityDefinition(integrity);
+		jaxbSections.setLspIntegrityDefinition(integrity);
+		jaxbSections.setSoftwareDescription(description);
+
+		jaxbSections.getFileDefinitions().add(fileDef);
+		jaxbSections.getFileDefinitions().add(fileDef);
+		
+		jaxbSections.getThwDefinitions().add(hardwareDef);
+		jaxbSections.getThwDefinitions().add(hardwareDef);
+
+		xmlSoftwareDefinitionSections = new SoftwareDefinitionSectionsBuilder(
+				jaxbSections);
+	}
 
 	@Test
 	public void getFileDefinitions() {
-		SdfSections jaxbSdfSections = new SdfSections();
-		jaxbSdfSections.setSoftwareDescription(mock(SoftwareDescription.class));
-		com.arinc.arinc838.FileDefinition fileDef = new com.arinc.arinc838.FileDefinition();
-		fileDef.setFileName("file");
-
-		jaxbSdfSections.getFileDefinitions().add(fileDef);
-		jaxbSdfSections.getFileDefinitions().add(fileDef);
-
-		SoftwareDefinitionSectionsBuilder xmlSoftwareDefinitionSections = new SoftwareDefinitionSectionsBuilder(
-				jaxbSdfSections);
-
 		assertEquals(xmlSoftwareDefinitionSections.getFileDefinitions().size(),
 				2);
 
@@ -53,205 +74,114 @@ public class SoftwareDefinitionSectionsTest {
 
 	@Test
 	public void addFileDefinition() {
-		SdfSections jaxbSdfSections = new SdfSections();
-		jaxbSdfSections
-				.setSoftwareDescription(mock(com.arinc.arinc838.SoftwareDescription.class));
-		SoftwareDefinitionSectionsBuilder xmlSoftwareDefinitionSections = new SoftwareDefinitionSectionsBuilder(
-				jaxbSdfSections);
-		FileDefinition expectedFileDefinition = new FileDefinition();
-		xmlSoftwareDefinitionSections.getFileDefinitions().add(
-				expectedFileDefinition);
-		FileDefinition actualFileDefinition = xmlSoftwareDefinitionSections
+		xmlSoftwareDefinitionSections.getFileDefinitions().clear();
+
+		FileDefinitionBuilder expected = mock(FileDefinitionBuilder.class);
+
+		xmlSoftwareDefinitionSections.getFileDefinitions().add(expected);
+		FileDefinitionBuilder actualFileDefinition = xmlSoftwareDefinitionSections
 				.getFileDefinitions().get(0);
-		assertEquals(actualFileDefinition, expectedFileDefinition);
+		assertEquals(actualFileDefinition, expected);
 	}
 
 	@Test
 	public void getLspIntegrityDefinition() {
-		com.arinc.arinc838.IntegrityDefinition integrity = new com.arinc.arinc838.IntegrityDefinition();
-		integrity.setIntegrityType(9);
-		integrity.setIntegrityValue("test");
-
-		SdfSections jaxbSections = new SdfSections();
-		jaxbSections.setLspIntegrityDefinition(integrity);
-		jaxbSections
-				.setSoftwareDescription(mock(com.arinc.arinc838.SoftwareDescription.class));
-
-		SoftwareDefinitionSectionsBuilder xmlSections = new SoftwareDefinitionSectionsBuilder(
-				jaxbSections);
-
-		assertEquals(
-				xmlSections.getLspIntegrityDefinition().getIntegrityType(),
-				integrity.getIntegrityType());
-		assertEquals(xmlSections.getLspIntegrityDefinition()
+		assertEquals(xmlSoftwareDefinitionSections.getLspIntegrityDefinition()
+				.getIntegrityType(), integrity.getIntegrityType());
+		assertEquals(xmlSoftwareDefinitionSections.getLspIntegrityDefinition()
 				.getIntegrityValue(), integrity.getIntegrityValue());
 	}
 
 	@Test
 	public void setLspIntegrityDefinition() {
-		com.arinc.arinc838.IntegrityDefinition integrity = new com.arinc.arinc838.IntegrityDefinition();
-		integrity.setIntegrityType(9);
-		integrity.setIntegrityValue("test");
 
-		SdfSections jaxbSections = new SdfSections();
-		jaxbSections.setLspIntegrityDefinition(integrity);
-		jaxbSections
-				.setSoftwareDescription(mock(com.arinc.arinc838.SoftwareDescription.class));
-
-		SoftwareDefinitionSectionsBuilder xmlSections = new SoftwareDefinitionSectionsBuilder(
-				jaxbSections);
-
-		IntegrityDefinition newDef = mock(IntegrityDefinition.class);
+		IntegrityDefinitionBuilder newDef = mock(IntegrityDefinitionBuilder.class);
 		when(newDef.getIntegrityType()).thenReturn(10l);
 		when(newDef.getIntegrityValue()).thenReturn("new test");
 
-		xmlSections.setLspIntegrityDefinition(newDef);
+		xmlSoftwareDefinitionSections.setLspIntegrityDefinition(newDef);
 
-		assertEquals(
-				xmlSections.getLspIntegrityDefinition().getIntegrityType(),
-				newDef.getIntegrityType());
-		assertEquals(xmlSections.getLspIntegrityDefinition()
+		assertEquals(xmlSoftwareDefinitionSections.getLspIntegrityDefinition()
+				.getIntegrityType(), newDef.getIntegrityType());
+		assertEquals(xmlSoftwareDefinitionSections.getLspIntegrityDefinition()
 				.getIntegrityValue(), newDef.getIntegrityValue());
 	}
 
 	@Test
 	public void getSdfIntegrityDefinition() {
-		com.arinc.arinc838.IntegrityDefinition integrity = new com.arinc.arinc838.IntegrityDefinition();
-		integrity.setIntegrityType(9);
-		integrity.setIntegrityValue("test");
-
-		SdfSections jaxbSections = new SdfSections();
-		jaxbSections.setSdfIntegrityDefinition(integrity);
-		jaxbSections
-				.setLspIntegrityDefinition(mock(com.arinc.arinc838.IntegrityDefinition.class));
-		jaxbSections
-				.setSoftwareDescription(mock(com.arinc.arinc838.SoftwareDescription.class));
-
-		SoftwareDefinitionSectionsBuilder xmlSections = new SoftwareDefinitionSectionsBuilder(
-				jaxbSections);
-
-		assertEquals(
-				xmlSections.getSdfIntegrityDefinition().getIntegrityType(),
-				integrity.getIntegrityType());
-		assertEquals(xmlSections.getSdfIntegrityDefinition()
+		assertEquals(xmlSoftwareDefinitionSections.getSdfIntegrityDefinition()
+				.getIntegrityType(), integrity.getIntegrityType());
+		assertEquals(xmlSoftwareDefinitionSections.getSdfIntegrityDefinition()
 				.getIntegrityValue(), integrity.getIntegrityValue());
 	}
 
 	@Test
 	public void setSdfIntegrityDefinition() {
-		com.arinc.arinc838.IntegrityDefinition integrity = new com.arinc.arinc838.IntegrityDefinition();
-		integrity.setIntegrityType(9);
-		integrity.setIntegrityValue("test");
 
-		SdfSections jaxbSections = new SdfSections();
-		jaxbSections.setSdfIntegrityDefinition(integrity);
-		jaxbSections
-				.setSoftwareDescription(mock(com.arinc.arinc838.SoftwareDescription.class));
-
-		SoftwareDefinitionSectionsBuilder xmlSections = new SoftwareDefinitionSectionsBuilder(
-				jaxbSections);
-
-		IntegrityDefinition newDef = mock(IntegrityDefinition.class);
+		IntegrityDefinitionBuilder newDef = mock(IntegrityDefinitionBuilder.class);
 		when(newDef.getIntegrityType()).thenReturn(10l);
 		when(newDef.getIntegrityValue()).thenReturn("new test");
 
-		xmlSections.setSdfIntegrityDefinition(newDef);
+		xmlSoftwareDefinitionSections.setSdfIntegrityDefinition(newDef);
 
-		assertEquals(
-				xmlSections.getSdfIntegrityDefinition().getIntegrityType(),
-				newDef.getIntegrityType());
-		assertEquals(xmlSections.getSdfIntegrityDefinition()
+		assertEquals(xmlSoftwareDefinitionSections.getSdfIntegrityDefinition()
+				.getIntegrityType(), newDef.getIntegrityType());
+		assertEquals(xmlSoftwareDefinitionSections.getSdfIntegrityDefinition()
 				.getIntegrityValue(), newDef.getIntegrityValue());
 	}
 
 	@Test
 	public void getSoftwareDescription() {
-		SoftwareDescription desc = mock(SoftwareDescription.class);
-		when(desc.getSoftwarePartnumber()).thenReturn("part");
-		when(desc.getSoftwareTypeDescription()).thenReturn("desc");
-		when(desc.getSoftwareTypeId()).thenReturn(7l);
-
-		SdfSections jaxbSections = new SdfSections();
-		jaxbSections.setSoftwareDescription(desc);
-
-		SoftwareDefinitionSectionsBuilder xmlSections = new SoftwareDefinitionSectionsBuilder(
-				jaxbSections);
-
-		assertEquals(xmlSections.getSoftwareDescription()
-				.getSoftwarePartnumber(), desc.getSoftwarePartnumber());
-		assertEquals(xmlSections.getSoftwareDescription()
+		assertEquals(xmlSoftwareDefinitionSections.getSoftwareDescription()
+				.getSoftwarePartNumber(), description.getSoftwarePartnumber());
+		assertEquals(xmlSoftwareDefinitionSections.getSoftwareDescription()
 				.getSoftwareTypeDescription(),
-				desc.getSoftwareTypeDescription());
-		assertEquals(xmlSections.getSoftwareDescription().getSoftwareTypeId(),
-				desc.getSoftwareTypeId());
+				description.getSoftwareTypeDescription());
+		assertEquals(xmlSoftwareDefinitionSections.getSoftwareDescription()
+				.getSoftwareTypeId(), description.getSoftwareTypeId());
 	}
 
 	@Test
 	public void setSoftwareDescription() {
-		SoftwareDescription desc = mock(SoftwareDescription.class);
-		when(desc.getSoftwarePartnumber()).thenReturn("part");
-		when(desc.getSoftwareTypeDescription()).thenReturn("desc");
-		when(desc.getSoftwareTypeId()).thenReturn(7l);
-
-		SdfSections jaxbSections = new SdfSections();
-		jaxbSections.setSoftwareDescription(desc);
-
-		SoftwareDefinitionSectionsBuilder xmlSections = new SoftwareDefinitionSectionsBuilder(
-				jaxbSections);
-
-		SoftwareDescription newDesc = new SoftwareDescriptionBuilder(desc).build();
-		newDesc.setSoftwarePartnumber("new part");
+		SoftwareDescriptionBuilder newDesc = new SoftwareDescriptionBuilder();
+		newDesc.setSoftwarePartNumber("new part");
 
 		newDesc.setSoftwareTypeDescription("new desc");
 		newDesc.setSoftwareTypeId(10l);
 
-		xmlSections.setSoftwareDescription(newDesc);
+		xmlSoftwareDefinitionSections.setSoftwareDescription(newDesc);
 
-		assertEquals(xmlSections.getSoftwareDescription()
-				.getSoftwarePartnumber(), newDesc.getSoftwarePartnumber());
-		assertEquals(xmlSections.getSoftwareDescription()
+		assertEquals(xmlSoftwareDefinitionSections.getSoftwareDescription()
+				.getSoftwarePartNumber(), newDesc.getSoftwarePartNumber());
+		assertEquals(xmlSoftwareDefinitionSections.getSoftwareDescription()
 				.getSoftwareTypeDescription(),
 				newDesc.getSoftwareTypeDescription());
-		assertEquals(xmlSections.getSoftwareDescription().getSoftwareTypeId(),
-				newDesc.getSoftwareTypeId());
+		assertEquals(xmlSoftwareDefinitionSections.getSoftwareDescription()
+				.getSoftwareTypeId(), newDesc.getSoftwareTypeId());
 	}
 
 	@Test
 	public void getTargetHardwareDefinitions() {
-		SdfSections jaxbSdfSections = new SdfSections();
-		jaxbSdfSections.setSoftwareDescription(mock(SoftwareDescription.class));
-		ThwDefinition hardwareDef = new ThwDefinition();
-		hardwareDef.setThwId("hardware");
-
-		jaxbSdfSections.getThwDefinitions().add(hardwareDef);
-		jaxbSdfSections.getThwDefinitions().add(hardwareDef);
-
-		SoftwareDefinitionSectionsBuilder xmlSoftwareDefinitionSections = new SoftwareDefinitionSectionsBuilder(
-				jaxbSdfSections);
-
+		
 		assertEquals(xmlSoftwareDefinitionSections
 				.getTargetHardwareDefinitions().size(), 2);
 
 		assertEquals(xmlSoftwareDefinitionSections
-				.getTargetHardwareDefinitions().get(0).getThwId(), "hardware");
+				.getTargetHardwareDefinitions().get(0).getId(), "hardware");
 		assertEquals(xmlSoftwareDefinitionSections
-				.getTargetHardwareDefinitions().get(1).getThwId(), "hardware");
+				.getTargetHardwareDefinitions().get(1).getId(), "hardware");
 	}
 
 	@Test
 	public void addTargetHardwareDefinitions() {
-		SdfSections jaxbSdfSections = new SdfSections();
-		jaxbSdfSections.setSoftwareDescription(mock(SoftwareDescription.class));
-		SoftwareDefinitionSectionsBuilder xmlSoftwareDefinitionSections = new SoftwareDefinitionSectionsBuilder(
-				jaxbSdfSections);
-
-		ThwDefinition expectedHardwareDefinition = new TargetHardwareDefinitionBuilder(
-				new ThwDefinition()).build();
+		xmlSoftwareDefinitionSections.getTargetHardwareDefinitions().clear();
+		
+		TargetHardwareDefinitionBuilder expectedHardwareDefinition = new TargetHardwareDefinitionBuilder();
 
 		xmlSoftwareDefinitionSections.getTargetHardwareDefinitions().add(
 				expectedHardwareDefinition);
-		ThwDefinition actualHardwareDefinition = xmlSoftwareDefinitionSections
+		TargetHardwareDefinitionBuilder actualHardwareDefinition = xmlSoftwareDefinitionSections
 				.getTargetHardwareDefinitions().get(0);
 		assertEquals(actualHardwareDefinition, expectedHardwareDefinition);
-	}	
+	}
 }
