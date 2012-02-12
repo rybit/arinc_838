@@ -7,12 +7,13 @@
  * 
  * Created on Feb 7, 2012
  */
-package edu.cmu.sv.arinc838.xml;
+package edu.cmu.sv.arinc838.builder;
 
 import static org.testng.Assert.assertEquals;
 
 import org.testng.annotations.Test;
 
+import com.arinc.arinc838.FileDefinition;
 import com.arinc.arinc838.IntegrityDefinition;
 import com.arinc.arinc838.SdfSections;
 import com.arinc.arinc838.SoftwareDescription;
@@ -20,10 +21,10 @@ import com.arinc.arinc838.ThwDefinition;
 
 import static org.mockito.Mockito.*;
 
-import edu.cmu.sv.arinc838.specification.FileDefinition;
-import edu.cmu.sv.arinc838.specification.TargetHardwareDefinition;
+import edu.cmu.sv.arinc838.builder.SoftwareDefinitionSectionsBuilder;
 
-public class XmlSoftwareDefinitionSectionsTest {
+
+public class SoftwareDefinitionSectionsTest {
 
 	@Test
 	public void getFileDefinitions() {
@@ -35,7 +36,7 @@ public class XmlSoftwareDefinitionSectionsTest {
 		jaxbSdfSections.getFileDefinitions().add(fileDef);
 		jaxbSdfSections.getFileDefinitions().add(fileDef);
 
-		XmlSoftwareDefinitionSections xmlSoftwareDefinitionSections = new XmlSoftwareDefinitionSections(
+		SoftwareDefinitionSectionsBuilder xmlSoftwareDefinitionSections = new SoftwareDefinitionSectionsBuilder(
 				jaxbSdfSections);
 
 		assertEquals(xmlSoftwareDefinitionSections.getFileDefinitions().size(),
@@ -52,10 +53,9 @@ public class XmlSoftwareDefinitionSectionsTest {
 		SdfSections jaxbSdfSections = new SdfSections();
 		jaxbSdfSections
 				.setSoftwareDescription(mock(com.arinc.arinc838.SoftwareDescription.class));
-		XmlSoftwareDefinitionSections xmlSoftwareDefinitionSections = new XmlSoftwareDefinitionSections(
+		SoftwareDefinitionSectionsBuilder xmlSoftwareDefinitionSections = new SoftwareDefinitionSectionsBuilder(
 				jaxbSdfSections);
-		XmlFileDefinition expectedFileDefinition = new XmlFileDefinition(
-				new com.arinc.arinc838.FileDefinition());
+		FileDefinition expectedFileDefinition = new FileDefinition();
 		xmlSoftwareDefinitionSections.getFileDefinitions().add(
 				expectedFileDefinition);
 		FileDefinition actualFileDefinition = xmlSoftwareDefinitionSections
@@ -74,7 +74,7 @@ public class XmlSoftwareDefinitionSectionsTest {
 		jaxbSections
 				.setSoftwareDescription(mock(com.arinc.arinc838.SoftwareDescription.class));
 
-		XmlSoftwareDefinitionSections xmlSections = new XmlSoftwareDefinitionSections(
+		SoftwareDefinitionSectionsBuilder xmlSections = new SoftwareDefinitionSectionsBuilder(
 				jaxbSections);
 
 		assertEquals(
@@ -95,10 +95,10 @@ public class XmlSoftwareDefinitionSectionsTest {
 		jaxbSections
 				.setSoftwareDescription(mock(com.arinc.arinc838.SoftwareDescription.class));
 
-		XmlSoftwareDefinitionSections xmlSections = new XmlSoftwareDefinitionSections(
+		SoftwareDefinitionSectionsBuilder xmlSections = new SoftwareDefinitionSectionsBuilder(
 				jaxbSections);
 
-		edu.cmu.sv.arinc838.specification.IntegrityDefinition newDef = mock(edu.cmu.sv.arinc838.specification.IntegrityDefinition.class);
+		IntegrityDefinition newDef = mock(IntegrityDefinition.class);
 		when(newDef.getIntegrityType()).thenReturn(10l);
 		when(newDef.getIntegrityValue()).thenReturn("new test");
 
@@ -124,7 +124,7 @@ public class XmlSoftwareDefinitionSectionsTest {
 		jaxbSections
 				.setSoftwareDescription(mock(com.arinc.arinc838.SoftwareDescription.class));
 
-		XmlSoftwareDefinitionSections xmlSections = new XmlSoftwareDefinitionSections(
+		SoftwareDefinitionSectionsBuilder xmlSections = new SoftwareDefinitionSectionsBuilder(
 				jaxbSections);
 
 		assertEquals(
@@ -145,10 +145,10 @@ public class XmlSoftwareDefinitionSectionsTest {
 		jaxbSections
 				.setSoftwareDescription(mock(com.arinc.arinc838.SoftwareDescription.class));
 
-		XmlSoftwareDefinitionSections xmlSections = new XmlSoftwareDefinitionSections(
+		SoftwareDefinitionSectionsBuilder xmlSections = new SoftwareDefinitionSectionsBuilder(
 				jaxbSections);
 
-		edu.cmu.sv.arinc838.specification.IntegrityDefinition newDef = mock(edu.cmu.sv.arinc838.specification.IntegrityDefinition.class);
+		IntegrityDefinition newDef = mock(IntegrityDefinition.class);
 		when(newDef.getIntegrityType()).thenReturn(10l);
 		when(newDef.getIntegrityValue()).thenReturn("new test");
 
@@ -171,11 +171,11 @@ public class XmlSoftwareDefinitionSectionsTest {
 		SdfSections jaxbSections = new SdfSections();
 		jaxbSections.setSoftwareDescription(desc);
 
-		XmlSoftwareDefinitionSections xmlSections = new XmlSoftwareDefinitionSections(
+		SoftwareDefinitionSectionsBuilder xmlSections = new SoftwareDefinitionSectionsBuilder(
 				jaxbSections);
 
 		assertEquals(xmlSections.getSoftwareDescription()
-				.getSoftwarePartNumber(), desc.getSoftwarePartnumber());
+				.getSoftwarePartnumber(), desc.getSoftwarePartnumber());
 		assertEquals(xmlSections.getSoftwareDescription()
 				.getSoftwareTypeDescription(),
 				desc.getSoftwareTypeDescription());
@@ -193,18 +193,18 @@ public class XmlSoftwareDefinitionSectionsTest {
 		SdfSections jaxbSections = new SdfSections();
 		jaxbSections.setSoftwareDescription(desc);
 
-		XmlSoftwareDefinitionSections xmlSections = new XmlSoftwareDefinitionSections(
+		SoftwareDefinitionSectionsBuilder xmlSections = new SoftwareDefinitionSectionsBuilder(
 				jaxbSections);
 
-		XmlSoftwareDescription newDesc = new XmlSoftwareDescription(desc);
-		newDesc.setSoftwarePartNumber("new part");
+		SoftwareDescription newDesc = new SoftwareDescriptionBuilder(desc).build();
+		newDesc.setSoftwarePartnumber("new part");
 		newDesc.setSoftwareTypeDescription("new desc");
 		newDesc.setSoftwareTypeId(10l);
 
 		xmlSections.setSoftwareDescription(newDesc);
 
 		assertEquals(xmlSections.getSoftwareDescription()
-				.getSoftwarePartNumber(), newDesc.getSoftwarePartNumber());
+				.getSoftwarePartnumber(), newDesc.getSoftwarePartnumber());
 		assertEquals(xmlSections.getSoftwareDescription()
 				.getSoftwareTypeDescription(),
 				newDesc.getSoftwareTypeDescription());
@@ -222,51 +222,51 @@ public class XmlSoftwareDefinitionSectionsTest {
 		jaxbSdfSections.getThwDefinitions().add(hardwareDef);
 		jaxbSdfSections.getThwDefinitions().add(hardwareDef);
 
-		XmlSoftwareDefinitionSections xmlSoftwareDefinitionSections = new XmlSoftwareDefinitionSections(
+		SoftwareDefinitionSectionsBuilder xmlSoftwareDefinitionSections = new SoftwareDefinitionSectionsBuilder(
 				jaxbSdfSections);
 
 		assertEquals(xmlSoftwareDefinitionSections
 				.getTargetHardwareDefinitions().size(), 2);
 
 		assertEquals(xmlSoftwareDefinitionSections
-				.getTargetHardwareDefinitions().get(0).getId(), "hardware");
+				.getTargetHardwareDefinitions().get(0).getThwId(), "hardware");
 		assertEquals(xmlSoftwareDefinitionSections
-				.getTargetHardwareDefinitions().get(1).getId(), "hardware");
+				.getTargetHardwareDefinitions().get(1).getThwId(), "hardware");
 	}
 
 	@Test
 	public void addTargetHardwareDefinitions() {
 		SdfSections jaxbSdfSections = new SdfSections();
 		jaxbSdfSections.setSoftwareDescription(mock(SoftwareDescription.class));
-		XmlSoftwareDefinitionSections xmlSoftwareDefinitionSections = new XmlSoftwareDefinitionSections(
+		SoftwareDefinitionSectionsBuilder xmlSoftwareDefinitionSections = new SoftwareDefinitionSectionsBuilder(
 				jaxbSdfSections);
 
-		XmlTargetHardwareDefinition expectedHardwareDefinition = new XmlTargetHardwareDefinition(
-				new ThwDefinition());
+		ThwDefinition expectedHardwareDefinition = new TargetHardwareDefinitionBuilder(
+				new ThwDefinition()).build();
 		xmlSoftwareDefinitionSections.getTargetHardwareDefinitions().add(
 				expectedHardwareDefinition);
-		TargetHardwareDefinition actualHardwareDefinition = xmlSoftwareDefinitionSections
+		ThwDefinition actualHardwareDefinition = xmlSoftwareDefinitionSections
 				.getTargetHardwareDefinitions().get(0);
 		assertEquals(actualHardwareDefinition, expectedHardwareDefinition);
 	}
 
 	@Test
 	public void equalsReturnsTrueForSameObjects() {
-		XmlSoftwareDefinitionSections first = new XmlSoftwareDefinitionSections();
+		SoftwareDefinitionSectionsBuilder first = new SoftwareDefinitionSectionsBuilder();
 
 		assertEquals(first, first);
 	}
 
 	@Test
 	public void equalsComparesAllChildren() {
-		XmlSoftwareDefinitionSections first = new XmlSoftwareDefinitionSections();
-		XmlSoftwareDefinitionSections second = new XmlSoftwareDefinitionSections();
+		SoftwareDefinitionSectionsBuilder first = new SoftwareDefinitionSectionsBuilder();
+		SoftwareDefinitionSectionsBuilder second = new SoftwareDefinitionSectionsBuilder();
 
-		edu.cmu.sv.arinc838.specification.SoftwareDescription desc = mock(edu.cmu.sv.arinc838.specification.SoftwareDescription.class);
+		SoftwareDescription desc = mock(SoftwareDescription.class);
 		first.setSoftwareDescription(desc);
 		second.setSoftwareDescription(desc);
 
-		edu.cmu.sv.arinc838.specification.IntegrityDefinition integrity = mock(edu.cmu.sv.arinc838.specification.IntegrityDefinition.class);
+		IntegrityDefinition integrity = mock(IntegrityDefinition.class);
 
 		first.setLspIntegrityDefinition(integrity);
 		first.setSdfIntegrityDefinition(integrity);
@@ -277,7 +277,7 @@ public class XmlSoftwareDefinitionSectionsTest {
 		first.getFileDefinitions().add(fileDef);
 		second.getFileDefinitions().add(fileDef);
 
-		TargetHardwareDefinition hardwareDef = mock(TargetHardwareDefinition.class);
+		ThwDefinition hardwareDef = mock(ThwDefinition.class);
 		first.getTargetHardwareDefinitions().add(hardwareDef);
 		second.getTargetHardwareDefinitions().add(hardwareDef);
 
@@ -286,11 +286,11 @@ public class XmlSoftwareDefinitionSectionsTest {
 
 	@Test
 	public void hashcodeIsCombinationOfChildrensHashCodes() {
-		XmlSoftwareDefinitionSections first = new XmlSoftwareDefinitionSections();
-		edu.cmu.sv.arinc838.specification.SoftwareDescription desc = mock(edu.cmu.sv.arinc838.specification.SoftwareDescription.class);
+		SoftwareDefinitionSectionsBuilder first = new SoftwareDefinitionSectionsBuilder();
+		SoftwareDescription desc = mock(SoftwareDescription.class);
 		first.setSoftwareDescription(desc);
 
-		edu.cmu.sv.arinc838.specification.IntegrityDefinition integrity = mock(edu.cmu.sv.arinc838.specification.IntegrityDefinition.class);
+		IntegrityDefinition integrity = mock(IntegrityDefinition.class);
 
 		first.setLspIntegrityDefinition(integrity);
 		first.setSdfIntegrityDefinition(integrity);
@@ -298,7 +298,7 @@ public class XmlSoftwareDefinitionSectionsTest {
 		FileDefinition fileDef = mock(FileDefinition.class);
 		first.getFileDefinitions().add(fileDef);
 
-		TargetHardwareDefinition hardwareDef = mock(TargetHardwareDefinition.class);
+		ThwDefinition hardwareDef = mock(ThwDefinition.class);
 		first.getTargetHardwareDefinitions().add(hardwareDef);
 
 		assertEquals(first.hashCode(), first.getSoftwareDescription()

@@ -23,6 +23,7 @@ import javax.xml.bind.Unmarshaller;
 
 import com.arinc.arinc838.SdfFile;
 
+import edu.cmu.sv.arinc838.builder.SoftwareDefinitionSectionsBuilder;
 import edu.cmu.sv.arinc838.specification.SoftwareDefinitionFile;
 import edu.cmu.sv.arinc838.specification.SoftwareDefinitionSections;
 import edu.cmu.sv.arinc838.xml.XdfWriter;
@@ -54,7 +55,7 @@ public class XdfWriterTest {
 	}
 
 	private static SoftwareDefinitionFile getTestFile() {
-		final SoftwareDefinitionSections sections = new XmlSoftwareDefinitionSections();
+		final SoftwareDefinitionSections sections = new SoftwareDefinitionSectionsBuilder();
 
 		SoftwareDefinitionFile file = new SoftwareDefinitionFile() {
 

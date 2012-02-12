@@ -9,6 +9,7 @@ import org.testng.annotations.BeforeMethod;
 import com.arinc.arinc838.SdfFile;
 import com.arinc.arinc838.SdfSections;
 
+import edu.cmu.sv.arinc838.builder.SoftwareDefinitionSectionsBuilder;
 import edu.cmu.sv.arinc838.specification.SoftwareDefinitionSections;
 import edu.cmu.sv.arinc838.specification.SoftwareDescription;
 
@@ -64,7 +65,7 @@ public class XmlSoftwareDefinitionFileTest {
 		assertEquals(xmlSwDefFile.getSoftwareDefinitionSections().getSoftwareDescription().getSoftwareTypeId(),
 				swDefFile.getSdfSections().getSoftwareDescription().getSoftwareTypeId(), "Expecteed software type IDs to be equal");
 		
-		SoftwareDefinitionSections tmp = new XmlSoftwareDefinitionSections();
+		SoftwareDefinitionSections tmp = new SoftwareDefinitionSectionsBuilder();
 		SoftwareDescription swDestmp = new XmlSoftwareDescription();
 		swDestmp.setSoftwarePartNumber(xmlSwDefFile.getSoftwareDefinitionSections().getSoftwareDescription().getSoftwarePartNumber() + "_some_new_string");
 		tmp.setSoftwareDescription(swDestmp);
