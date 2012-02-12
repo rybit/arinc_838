@@ -7,17 +7,17 @@
  * 
  * Created on Feb 7, 2012
  */
-package edu.cmu.sv.arinc838.xml;
+package edu.cmu.sv.arinc838.builder;
 
 import edu.cmu.sv.arinc838.specification.SoftwareDescription;
 
-public class XmlSoftwareDescription implements SoftwareDescription {
+public class SoftwareDescriptionBuilder implements SoftwareDescription {
 
 	private String softwarePartNumber;
 	private String softwareTypeDescription;
 	private long softwareTypeId;
 
-	public XmlSoftwareDescription(
+	public SoftwareDescriptionBuilder(
 			com.arinc.arinc838.SoftwareDescription softwareDescription) {
 		this.softwarePartNumber = softwareDescription.getSoftwarePartnumber();
 		this.softwareTypeDescription = softwareDescription
@@ -25,7 +25,7 @@ public class XmlSoftwareDescription implements SoftwareDescription {
 		this.softwareTypeId = softwareDescription.getSoftwareTypeId();
 	}
 
-	public XmlSoftwareDescription() {
+	public SoftwareDescriptionBuilder() {
 
 	}
 
@@ -81,5 +81,15 @@ public class XmlSoftwareDescription implements SoftwareDescription {
 	public int hashCode() {
 		return (int) (getSoftwarePartNumber().hashCode()
 				^ getSoftwareTypeDescription().hashCode() ^ getSoftwareTypeId());
+	}
+
+	public com.arinc.arinc838.SoftwareDescription build() {
+		com.arinc.arinc838.SoftwareDescription desc = new com.arinc.arinc838.SoftwareDescription();
+		
+		desc.setSoftwarePartnumber(this.getSoftwarePartNumber());
+		desc.setSoftwareTypeDescription(this.getSoftwareTypeDescription());
+		desc.setSoftwareTypeId(this.getSoftwareTypeId());
+		
+		return desc;
 	}
 }

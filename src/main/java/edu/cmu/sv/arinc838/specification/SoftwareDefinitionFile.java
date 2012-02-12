@@ -9,6 +9,8 @@
  */
 package edu.cmu.sv.arinc838.specification;
 
+import java.io.File;
+
 public interface SoftwareDefinitionFile {
 	
     public String getFileFormatVersion();
@@ -17,6 +19,5 @@ public interface SoftwareDefinitionFile {
 	
 	public SoftwareDefinitionSections getSoftwareDefinitionSections();
 	
-	public void setSoftwareDefinitionSections(SoftwareDefinitionSections sdf);
-
+	public void setSoftwareDefinitionSections(SoftwareDefinitionSections sdf);	
 }

@@ -14,6 +14,8 @@ import java.util.List;
 
 import com.arinc.arinc838.SdfSections;
 
+import edu.cmu.sv.arinc838.builder.SoftwareDescriptionBuilder;
+import edu.cmu.sv.arinc838.builder.TargetHardwareDefinitionBuilder;
 import edu.cmu.sv.arinc838.specification.FileDefinition;
 import edu.cmu.sv.arinc838.specification.IntegrityDefinition;
 import edu.cmu.sv.arinc838.specification.SoftwareDefinitionSections;
@@ -41,11 +43,11 @@ public class XmlSoftwareDefinitionSections implements
 
 		for (com.arinc.arinc838.ThwDefinition hardwareDefinition : sdfSections
 				.getThwDefinitions()) {
-			hardwareDefinitions.add(new XmlTargetHardwareDefinition(
+			hardwareDefinitions.add(new TargetHardwareDefinitionBuilder(
 					hardwareDefinition));
 		}
 
-		softwareDescription = new XmlSoftwareDescription(
+		softwareDescription = new SoftwareDescriptionBuilder(
 				sdfSections.getSoftwareDescription());
 		lspIntegrityDefinition = new XmlIntegrityDefinition(
 				sdfSections.getLspIntegrityDefinition());

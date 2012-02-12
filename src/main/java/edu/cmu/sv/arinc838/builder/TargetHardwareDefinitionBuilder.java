@@ -1,4 +1,4 @@
-package edu.cmu.sv.arinc838.xml;
+package edu.cmu.sv.arinc838.builder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,12 +8,12 @@ import com.arinc.arinc838.ThwDefinition;
 
 import edu.cmu.sv.arinc838.specification.TargetHardwareDefinition;
 
-public class XmlTargetHardwareDefinition implements TargetHardwareDefinition {
+public class TargetHardwareDefinitionBuilder implements TargetHardwareDefinition {
 
 	private String id;
 	private List<String> positions = new ArrayList<String>();
 
-	public XmlTargetHardwareDefinition(ThwDefinition jaxbDef) {
+	public TargetHardwareDefinitionBuilder(ThwDefinition jaxbDef) {
 		this.id = jaxbDef.getThwId();
 		
 		for(String position : jaxbDef.getThwPosition()){
@@ -21,7 +21,7 @@ public class XmlTargetHardwareDefinition implements TargetHardwareDefinition {
 		}
 	}
 
-	public XmlTargetHardwareDefinition() {
+	public TargetHardwareDefinitionBuilder() {
 		
 	}
 
@@ -57,5 +57,16 @@ public class XmlTargetHardwareDefinition implements TargetHardwareDefinition {
 	@Override
 	public int hashCode() {
 		return getId().hashCode() ^ getPositions().hashCode();
+	}
+
+	public ThwDefinition build() {
+		ThwDefinition def = new ThwDefinition();
+		
+		def.setThwId(this.getId());
+		for(String position : this.getPositions()){
+			def.getThwPosition().add(position);
+		}
+		
+		return def;
 	}
 }

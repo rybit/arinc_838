@@ -20,6 +20,8 @@ import com.arinc.arinc838.ThwDefinition;
 
 import static org.mockito.Mockito.*;
 
+import edu.cmu.sv.arinc838.builder.SoftwareDescriptionBuilder;
+import edu.cmu.sv.arinc838.builder.TargetHardwareDefinitionBuilder;
 import edu.cmu.sv.arinc838.specification.FileDefinition;
 import edu.cmu.sv.arinc838.specification.TargetHardwareDefinition;
 
@@ -196,7 +198,7 @@ public class XmlSoftwareDefinitionSectionsTest {
 		XmlSoftwareDefinitionSections xmlSections = new XmlSoftwareDefinitionSections(
 				jaxbSections);
 
-		XmlSoftwareDescription newDesc = new XmlSoftwareDescription(desc);
+		SoftwareDescriptionBuilder newDesc = new SoftwareDescriptionBuilder(desc);
 		newDesc.setSoftwarePartNumber("new part");
 		newDesc.setSoftwareTypeDescription("new desc");
 		newDesc.setSoftwareTypeId(10l);
@@ -241,7 +243,7 @@ public class XmlSoftwareDefinitionSectionsTest {
 		XmlSoftwareDefinitionSections xmlSoftwareDefinitionSections = new XmlSoftwareDefinitionSections(
 				jaxbSdfSections);
 
-		XmlTargetHardwareDefinition expectedHardwareDefinition = new XmlTargetHardwareDefinition(
+		TargetHardwareDefinitionBuilder expectedHardwareDefinition = new TargetHardwareDefinitionBuilder(
 				new ThwDefinition());
 		xmlSoftwareDefinitionSections.getTargetHardwareDefinitions().add(
 				expectedHardwareDefinition);
