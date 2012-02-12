@@ -9,7 +9,12 @@
  */
 package edu.cmu.sv.arinc838.xml;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 
 import com.arinc.arinc838.SdfFile;
 
@@ -22,13 +27,14 @@ public class XdfWriter {
 		this.softwareDefinition = softwareDefinition;
 	}
 
-	public void write(String fileName) throws JAXBException {
-//		File file = new File(fileName);
-//		JAXBContext jaxbContext = JAXBContext.newInstance(SdfFile.class);
-//		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-// 
-//		// output pretty printed
-//		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-// 		jaxbMarshaller.marshal(softwareDefinition, file);
+	public void write(String fileName) throws JAXBException, FileNotFoundException {
+		File file = new File(fileName);
+
+		JAXBContext jaxbContext = JAXBContext.newInstance(SdfFile.class);
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+ 
+		// output pretty printed
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+ 		jaxbMarshaller.marshal(softwareDefinition, file);
 	}
 }

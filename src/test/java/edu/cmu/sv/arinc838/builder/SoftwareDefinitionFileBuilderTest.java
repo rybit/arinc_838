@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import com.arinc.arinc838.IntegrityDefinition;
 import com.arinc.arinc838.SdfFile;
 import com.arinc.arinc838.SdfSections;
 import com.arinc.arinc838.SoftwareDescription;
@@ -17,11 +18,24 @@ public class SoftwareDefinitionFileBuilderTest {
 	@BeforeMethod
 	public void beforeMethod() {
 		swDefFile = new SdfFile();
-		swDefSects = mock(SdfSections.class);
-		com.arinc.arinc838.SoftwareDescription desc = mock(com.arinc.arinc838.SoftwareDescription.class);
-		when(desc.getSoftwarePartnumber()).thenReturn("desc");
-		when(swDefSects.getSoftwareDescription()).thenReturn(desc);
+		swDefSects = new SdfSections();
+		IntegrityDefinition lspInteg = new IntegrityDefinition();
+		lspInteg.setIntegrityType(2);
+		lspInteg.setIntegrityValue("DEADBEEF");
+		IntegrityDefinition sdfInteg = new IntegrityDefinition();
+		sdfInteg.setIntegrityType(2);
+		sdfInteg.setIntegrityValue("DEADBEEF");
+		
+		swDefSects.setLspIntegrityDefinition(lspInteg);
+		swDefSects.setSdfIntegrityDefinition(sdfInteg);
 
+		SoftwareDescription swDesc = new SoftwareDescription();
+		swDesc.setSoftwarePartnumber("1234");
+		swDesc.setSoftwareTypeDescription("type");
+		swDesc.setSoftwareTypeId(2);
+		
+		swDefSects.setSoftwareDescription(swDesc);
+		
 		swDefFile.setFileFormatVersion("VersionTest");
 		swDefFile.setSdfSections(swDefSects);
 		swDefFileBuilder = new SoftwareDefinitionFileBuilder(swDefFile);

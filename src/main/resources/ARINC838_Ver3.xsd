@@ -1,110 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- update carsten schweigert,                                      2011-02-13 -->
+<!-- update carsten schweigert, 2011-02-13 -->
 <!-- Update Timo Nußbaumer, Vector Informatik GmbH (www.vector.com), 2011-10-27 -->
-<!--<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.arinc.com/arinc838" targetNamespace="http://www.arinc.com/arinc838">-->
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.arinc.com/arinc838" xmlns:sdf="http://www.arinc.com/arinc838">
-  <!--SIMPLE TYPE DEFINITIONS-->
-    <xsd:annotation>
-    	<xsd:documentation>a</xsd:documentation></xsd:annotation>
-    <xsd:simpleType name="STR64K">
-    <xsd:restriction base="xsd:string">
-      <xsd:maxLength value="65535"/>
-    </xsd:restriction>
-  </xsd:simpleType>
+<!--<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.arinc.com/arinc838" 
+	targetNamespace="http://www.arinc.com/arinc838"> -->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.arinc.com/arinc838" xmlns:sdf="http://www.arinc.com/arinc838">
+	<!--SIMPLE TYPE DEFINITIONS -->
+	<xsd:annotation>
+		<xsd:documentation>a</xsd:documentation>
+	</xsd:annotation>
+	<xsd:simpleType name="STR64K">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="65535" />
+		</xsd:restriction>
+	</xsd:simpleType>
 
-  <xsd:simpleType name="UINT32">
-    <xsd:restriction base="xsd:unsignedInt"/>
-  </xsd:simpleType>
+	<xsd:simpleType name="UINT32">
+		<xsd:restriction base="xsd:unsignedInt" />
+	</xsd:simpleType>
 
-  <xsd:simpleType name="SOFTWARE-PARTNUMBER">
-    <xsd:restriction base="xsd:string">
-      <xsd:pattern value="[0-9A-Z]{3}[0-9A-F]{2}-[0-9A-HJ-NPR-Y]{4}-[0-9A-HJ-NPR-Y]{4}"/>
-    </xsd:restriction>
-  </xsd:simpleType>
+	<xsd:simpleType name="SOFTWARE-PARTNUMBER">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern
+				value="[0-9A-Z]{3}[0-9A-F]{2}-[0-9A-HJ-NPR-Y]{4}-[0-9A-HJ-NPR-Y]{4}" />
+		</xsd:restriction>
+	</xsd:simpleType>
 
-  <xsd:simpleType name="FILENAME">
-    <xsd:restriction base="xsd:string">
-      <xsd:maxLength value="255"/>
-      <!--<xsd:pattern value="[0-9a-zA-Z_-]+(\.[0-9a-zA-Z_-]+)?"/>-->
-      <xsd:pattern value="[^&quot;\*&lt;\.&gt;\?\\\|~]+(\.[^&quot;\*&lt;\.&gt;\?\\\|~]+)?"/>
-    </xsd:restriction>
-  </xsd:simpleType>
+	<xsd:simpleType name="FILENAME">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="255" />
+			<!--<xsd:pattern value="[0-9a-zA-Z_-]+(\.[0-9a-zA-Z_-]+)?"/> -->
+			<xsd:pattern
+				value="[^&quot;\*&lt;\.&gt;\?\\\|~]+(\.[^&quot;\*&lt;\.&gt;\?\\\|~]+)?" />
+		</xsd:restriction>
+	</xsd:simpleType>
 
-  <xsd:simpleType name="INTEGRITY-TYPE">
-    <xsd:restriction base="xsd:unsignedInt"/>
-  </xsd:simpleType>
+	<xsd:simpleType name="INTEGRITY-TYPE">
+		<xsd:restriction base="xsd:unsignedInt" />
+	</xsd:simpleType>
 
-  <xsd:simpleType name="INTEGRITY-VALUE">
-    <xsd:restriction base="xsd:string"/>
-  </xsd:simpleType>
+	<xsd:simpleType name="INTEGRITY-VALUE">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
 
-  <!--COMPLEX TYPE DEFINITIONS-->
-  <xsd:complexType name="integrity-definition">
-    <xsd:sequence>
-      <xsd:element name="integrity-type"  type="sdf:INTEGRITY-TYPE"/>
-      <xsd:element name="integrity-value" type="sdf:INTEGRITY-VALUE"/>
-    </xsd:sequence>
-  </xsd:complexType>
-  
-  <xsd:complexType name="thw-definition">
-  	<xsd:sequence>
-  		<xsd:element name="thw-id" type="sdf:STR64K"></xsd:element>
-  		<xsd:element minOccurs="0" maxOccurs="unbounded"
-  			name="thw-position" type="sdf:STR64K">
-  		</xsd:element>
-  	</xsd:sequence>
-  </xsd:complexType>
-  
-  <xsd:complexType name="file-definition">
-  	<xsd:sequence>
-  		<xsd:element name="file-loadable" type="xsd:boolean"></xsd:element>
-  		<xsd:element name="file-name" type="sdf:FILENAME"></xsd:element>
-  		<xsd:element name="file-size" type="sdf:UINT32"></xsd:element>
-  		<xsd:element name="file-integrity-definition"
-  			type="sdf:integrity-definition">
-  		</xsd:element>
-  	</xsd:sequence>
-  </xsd:complexType>
-  
-  <xsd:complexType name="sdf-sections">
-  	<xsd:sequence>
-  		<xsd:element name="software-description" type="sdf:software-description">
-  		</xsd:element>
-  		<xsd:element minOccurs="0" maxOccurs="unbounded"
-  			name="thw-definitions" type="sdf:thw-definition">
-  		</xsd:element>
-  		<xsd:element minOccurs="1" maxOccurs="unbounded"
-  			name="file-definitions" type="sdf:file-definition">
-  		</xsd:element>
-  		<xsd:element name="sdf-integrity-definition"
-  			type="sdf:integrity-definition">
-  		</xsd:element>
-  		<xsd:element name="lsp-integrity-definition"
-  			type="sdf:integrity-definition">
-  		</xsd:element>
-  	</xsd:sequence>
-  </xsd:complexType>
-  
-  <xsd:complexType name="sdf-file">
-  	<xsd:sequence>
-  		<xsd:element name="file-format-version" type="sdf:STR64K"></xsd:element>
-  		<xsd:element name="sdf-sections"
-  			type="sdf:sdf-sections">
-  		</xsd:element>
-  	</xsd:sequence>
-  </xsd:complexType>
-  
-  <xsd:complexType name="software-description">
-  	<xsd:sequence>
-  		<xsd:element name="software-partnumber"
-  			type="sdf:SOFTWARE-PARTNUMBER">
-  		</xsd:element>
-  		<xsd:element name="software-type-description" type="sdf:STR64K"></xsd:element>
-  		<xsd:element name="software-type-id" type="sdf:UINT32"></xsd:element>
-  	</xsd:sequence>
-  </xsd:complexType>
-  
-  <!--XML SCHEMA DEFINITION-->
-  <xsd:element name="sdf-file" type="sdf:sdf-file">
-  </xsd:element>
+	<!--COMPLEX TYPE DEFINITIONS -->
+	<xsd:complexType name="integrity-definition">
+		<xsd:sequence>
+			<xsd:element name="integrity-type" type="sdf:INTEGRITY-TYPE" />
+			<xsd:element name="integrity-value" type="sdf:INTEGRITY-VALUE" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="thw-definition">
+		<xsd:sequence>
+			<xsd:element name="thw-id" type="sdf:STR64K"></xsd:element>
+			<xsd:element minOccurs="0" maxOccurs="unbounded" name="thw-position"
+				type="sdf:STR64K">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="file-definition">
+		<xsd:sequence>
+			<xsd:element name="file-loadable" type="xsd:boolean"></xsd:element>
+			<xsd:element name="file-name" type="sdf:FILENAME"></xsd:element>
+			<xsd:element name="file-size" type="sdf:UINT32"></xsd:element>
+			<xsd:element name="file-integrity-definition" type="sdf:integrity-definition">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="sdf-sections">
+		<xsd:sequence>
+			<xsd:element name="software-description" type="sdf:software-description">
+			</xsd:element>
+			<xsd:element minOccurs="0" maxOccurs="unbounded" name="thw-definitions"
+				type="sdf:thw-definition">
+			</xsd:element>
+			<xsd:element minOccurs="1" maxOccurs="unbounded" name="file-definitions"
+				type="sdf:file-definition">
+			</xsd:element>
+			<xsd:element name="sdf-integrity-definition" type="sdf:integrity-definition">
+			</xsd:element>
+			<xsd:element name="lsp-integrity-definition" type="sdf:integrity-definition">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+
+	<xsd:complexType name="software-description">
+		<xsd:sequence>
+			<xsd:element name="software-partnumber" type="sdf:SOFTWARE-PARTNUMBER">
+			</xsd:element>
+			<xsd:element name="software-type-description" type="sdf:STR64K"></xsd:element>
+			<xsd:element name="software-type-id" type="sdf:UINT32"></xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<!--XML SCHEMA DEFINITION -->
+	<xsd:element name="sdf-file">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="file-format-version" type="sdf:STR64K"></xsd:element>
+				<xsd:element name="sdf-sections" type="sdf:sdf-sections">
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
 </xsd:schema>
