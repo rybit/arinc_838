@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import com.arinc.arinc838.IntegrityDefinition;
 import com.arinc.arinc838.SdfFile;
 import com.arinc.arinc838.SdfSections;
 import com.arinc.arinc838.SoftwareDescription;
@@ -21,6 +22,8 @@ public class SoftwareDefinitionFileBuilderTest {
 		com.arinc.arinc838.SoftwareDescription desc = mock(com.arinc.arinc838.SoftwareDescription.class);
 		when(desc.getSoftwarePartnumber()).thenReturn("desc");
 		when(swDefSects.getSoftwareDescription()).thenReturn(desc);
+		when(swDefSects.getLspIntegrityDefinition()).thenReturn(mock(IntegrityDefinition.class));
+		when(swDefSects.getSdfIntegrityDefinition()).thenReturn(mock(IntegrityDefinition.class));
 
 		swDefFile.setFileFormatVersion("VersionTest");
 		swDefFile.setSdfSections(swDefSects);
@@ -35,7 +38,7 @@ public class SoftwareDefinitionFileBuilderTest {
 
 	@Test
 	public void getSoftwareDefinitionSections() {
-		assertEquals(swDefFileBuilder.getSoftwareDefinitionSections().getSoftwareDescription().getSoftwarePartnumber(),
+		assertEquals(swDefFileBuilder.getSoftwareDefinitionSections().getSoftwareDescription().getSoftwarePartNumber(),
 				swDefFile.getSdfSections().getSoftwareDescription().getSoftwarePartnumber());
 	}
 
@@ -55,7 +58,7 @@ public class SoftwareDefinitionFileBuilderTest {
 	public void setSoftwareDefinitionSections() {
 
 		assertEquals(swDefFileBuilder.getSoftwareDefinitionSections()
-				.getSoftwareDescription().getSoftwarePartnumber(), swDefFile
+				.getSoftwareDescription().getSoftwarePartNumber(), swDefFile
 				.getSdfSections().getSoftwareDescription()
 				.getSoftwarePartnumber(),
 				"Exepected sofware part numbers to be equal");
@@ -65,11 +68,11 @@ public class SoftwareDefinitionFileBuilderTest {
 				.getSdfSections().getSoftwareDescription().getSoftwareTypeId(),
 				"Expecteed software type IDs to be equal");
 
-		SdfSections tmp = new SdfSections();
-		SoftwareDescription swDestmp = new SoftwareDescription();
-		swDestmp.setSoftwarePartnumber(swDefFileBuilder
+		SoftwareDefinitionSectionsBuilder tmp = new SoftwareDefinitionSectionsBuilder();
+		SoftwareDescriptionBuilder swDestmp = new SoftwareDescriptionBuilder();
+		swDestmp.setSoftwarePartNumber(swDefFileBuilder
 				.getSoftwareDefinitionSections().getSoftwareDescription()
-				.getSoftwarePartnumber()
+				.getSoftwarePartNumber()
 				+ "_some_new_string");
 		tmp.setSoftwareDescription(swDestmp);
 
@@ -79,7 +82,7 @@ public class SoftwareDefinitionFileBuilderTest {
 				"Expected the set to value to equal the returned value");
 
 		assertNotEquals(swDefFileBuilder.getSoftwareDefinitionSections()
-				.getSoftwareDescription().getSoftwarePartnumber(), swDefFile
+				.getSoftwareDescription().getSoftwarePartNumber(), swDefFile
 				.getSdfSections().getSoftwareDescription()
 				.getSoftwarePartnumber(),
 				"Exepected sofware part numbers to not be equal");
