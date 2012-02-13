@@ -2,6 +2,8 @@ package edu.cmu.sv.arinc838.builder;
 
 import com.arinc.arinc838.IntegrityDefinition;
 
+import edu.cmu.sv.arinc838.validation.DataValidator;
+
 public class IntegrityDefinitionBuilder implements Builder<IntegrityDefinition> {
 
 	private long integType;
@@ -11,12 +13,12 @@ public class IntegrityDefinitionBuilder implements Builder<IntegrityDefinition> 
 	}
 
 	public IntegrityDefinitionBuilder(IntegrityDefinition integDef) {
-		integType = integDef.getIntegrityType();
-		integValue = integDef.getIntegrityValue();
+		setIntegrityType(integDef.getIntegrityType());
+		setIntegrityValue(integDef.getIntegrityValue());
 	}
 
 	public void setIntegrityType(long value) {
-		integType = value;
+		integType = DataValidator.validateUint32(value);
 	}
 
 	public long getIntegrityType() {
@@ -24,7 +26,7 @@ public class IntegrityDefinitionBuilder implements Builder<IntegrityDefinition> 
 	}
 
 	public void setIntegrityValue(String value) {
-		integValue = value;
+		integValue = DataValidator.validateStr64k(value);
 	}
 
 	public String getIntegrityValue() {

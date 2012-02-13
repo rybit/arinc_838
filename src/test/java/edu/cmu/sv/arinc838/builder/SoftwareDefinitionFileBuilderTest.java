@@ -22,8 +22,11 @@ public class SoftwareDefinitionFileBuilderTest {
 		com.arinc.arinc838.SoftwareDescription desc = mock(com.arinc.arinc838.SoftwareDescription.class);
 		when(desc.getSoftwarePartnumber()).thenReturn("desc");
 		when(swDefSects.getSoftwareDescription()).thenReturn(desc);
-		when(swDefSects.getLspIntegrityDefinition()).thenReturn(mock(IntegrityDefinition.class));
-		when(swDefSects.getSdfIntegrityDefinition()).thenReturn(mock(IntegrityDefinition.class));
+		IntegrityDefinition integDef = new IntegrityDefinition();
+		integDef.setIntegrityType(123);
+		integDef.setIntegrityValue("hello");
+		when(swDefSects.getLspIntegrityDefinition()).thenReturn(integDef);
+		when(swDefSects.getSdfIntegrityDefinition()).thenReturn(integDef);
 
 		swDefFile.setFileFormatVersion("VersionTest");
 		swDefFile.setSdfSections(swDefSects);
