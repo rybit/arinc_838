@@ -7,9 +7,6 @@ public class IntegrityDefinitionBuilder implements Builder<IntegrityDefinition> 
 	private long integType;
 	private String integValue;
 
-	public IntegrityDefinitionBuilder() {
-	}
-
 	public IntegrityDefinitionBuilder(IntegrityDefinition integDef) {
 		integType = integDef.getIntegrityType();
 		integValue = integDef.getIntegrityValue();

@@ -29,10 +29,24 @@ public class IntegrityDefinitionBuilderTest {
 	}
 
 	@Test
-	public void testSetIntegrityType() {
+	public void testGetIntegrityType() {
 		IntegrityDefinition def = builder.build();
 
 		assertEquals(def.getIntegrityType(), builder.getIntegrityType());
 		assertEquals(def.getIntegrityValue(), builder.getIntegrityValue());
+	}
+
+	@Test
+	public void testSetIntegrityType() {
+		builder.setIntegrityType(12);
+
+		assertEquals(builder.getIntegrityType(), 12);
+	}
+
+	@Test
+	public void testSetIntegrityValue() {
+		builder.setIntegrityValue("val");
+
+		assertEquals(builder.getIntegrityValue(), "val");
 	}
 }
