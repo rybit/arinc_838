@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2012 Chris Ellison, Mike Deats, Liron Yahdav, Ryan Neal,
+ * Brandon Sutherlin, Scott Griffin
+ * 
+ * This software is released under the MIT license
+ * (http://www.opensource.org/licenses/mit-license.php)
+ * 
+ * Created on Feb 12, 2012
+ */
 package edu.cmu.sv.arinc838.builder;
 
 import static org.testng.Assert.*;
@@ -8,7 +17,9 @@ import org.testng.annotations.Test;
 import com.arinc.arinc838.IntegrityDefinition;
 import com.arinc.arinc838.SdfFile;
 import com.arinc.arinc838.SdfSections;
-import com.arinc.arinc838.SoftwareDescription;
+
+import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder.IntegrityType;
+
 
 public class SoftwareDefinitionFileBuilderTest {
 	private SdfFile swDefFile;
@@ -23,12 +34,12 @@ public class SoftwareDefinitionFileBuilderTest {
 		when(desc.getSoftwarePartnumber()).thenReturn("desc");
 		when(swDefSects.getSoftwareDescription()).thenReturn(desc);
 		IntegrityDefinition integDef = new IntegrityDefinition();
-		integDef.setIntegrityType(123);
-		integDef.setIntegrityValue("hello");
+		integDef.setIntegrityType(IntegrityType.CRC16.getType());
+		integDef.setIntegrityValue("0xABCD");
 		when(swDefSects.getLspIntegrityDefinition()).thenReturn(integDef);
 		when(swDefSects.getSdfIntegrityDefinition()).thenReturn(integDef);
 
-		swDefFile.setFileFormatVersion("VersionTest");
+		swDefFile.setFileFormatVersion(SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION);
 		swDefFile.setSdfSections(swDefSects);
 		swDefFileBuilder = new SoftwareDefinitionFileBuilder(swDefFile);
 	}
@@ -41,20 +52,27 @@ public class SoftwareDefinitionFileBuilderTest {
 
 	@Test
 	public void getSoftwareDefinitionSections() {
-		assertEquals(swDefFileBuilder.getSoftwareDefinitionSections().getSoftwareDescription().getSoftwarePartNumber(),
-				swDefFile.getSdfSections().getSoftwareDescription().getSoftwarePartnumber());
+		assertEquals(swDefFileBuilder.getSoftwareDefinitionSections()
+				.getSoftwareDescription().getSoftwarePartNumber(), swDefFile
+				.getSdfSections().getSoftwareDescription()
+				.getSoftwarePartnumber());
 	}
 
 	@Test
 	public void setFileFormatVersion() {
-		String newString = swDefFile.getFileFormatVersion()
-				+ "_some_new_string";
-		swDefFileBuilder.setFileFormatVersion(newString);
+		// This is kind of dumb because the file format version can only have 1
+		// value
+		swDefFileBuilder
+				.setFileFormatVersion(SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION);
+		assertEquals(SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION,
+				swDefFileBuilder.getFileFormatVersion());
+	}
 
-		assertEquals(swDefFileBuilder.getFileFormatVersion(), newString);
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void setFileFormatVersionInvalid() {
+		swDefFileBuilder
+				.setFileFormatVersion(SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION + 1);
 
-		assertNotEquals(swDefFileBuilder.getFileFormatVersion(),
-				swDefFile.getFileFormatVersion());
 	}
 
 	@Test
@@ -90,18 +108,21 @@ public class SoftwareDefinitionFileBuilderTest {
 				.getSoftwarePartnumber(),
 				"Exepected sofware part numbers to not be equal");
 	}
-	
+
 	@Test
-	public void testBuildAddsFileFormatVersion(){
-		SdfFile file =	swDefFileBuilder.build();
-		
-		assertEquals(swDefFile.getFileFormatVersion(), file.getFileFormatVersion());
-	}
-	
-	@Test
-	public void testBuildAddsSection(){
+	public void testBuildAddsFileFormatVersion() {
 		SdfFile file = swDefFileBuilder.build();
-		
-		assertEquals(file.getSdfSections().getSoftwareDescription().getSoftwarePartnumber(), swDefSects.getSoftwareDescription().getSoftwarePartnumber());
+
+		assertEquals(swDefFile.getFileFormatVersion(),
+				file.getFileFormatVersion());
+	}
+
+	@Test
+	public void testBuildAddsSection() {
+		SdfFile file = swDefFileBuilder.build();
+
+		assertEquals(file.getSdfSections().getSoftwareDescription()
+				.getSoftwarePartnumber(), swDefSects.getSoftwareDescription()
+				.getSoftwarePartnumber());
 	}
 }

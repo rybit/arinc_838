@@ -12,6 +12,8 @@ package edu.cmu.sv.arinc838.builder;
 import com.arinc.arinc838.FileDefinition;
 import com.arinc.arinc838.IntegrityDefinition;
 
+import edu.cmu.sv.arinc838.validation.DataValidator;
+
 /**
  * The builder paradigm is that all the fields will be extracted and stored in
  * their native data types and then stuffed back in at build time. This means
@@ -45,7 +47,7 @@ import com.arinc.arinc838.IntegrityDefinition;
  * 
  */
 public class FileDefinitionBuilder implements Builder<FileDefinition>{
-	private IntegrityDefinition integDef;
+	private IntegrityDefinitionBuilder integDef;
 	private boolean loadable;
 	private String fileName;
 	private long fileSize;
@@ -55,17 +57,17 @@ public class FileDefinitionBuilder implements Builder<FileDefinition>{
 	}
 
 	public FileDefinitionBuilder(FileDefinition fileDef) {
-		integDef = fileDef.getFileIntegrityDefinition();
+		integDef = new IntegrityDefinitionBuilder(fileDef.getFileIntegrityDefinition());
 		loadable = fileDef.isFileLoadable();
-		fileName = fileDef.getFileName();
-		fileSize = fileDef.getFileSize();
+		setFileName(fileDef.getFileName());
+		setFileSize(fileDef.getFileSize());
 	}
 
-	public IntegrityDefinition getFileIntegrityDefinition() {
+	public IntegrityDefinitionBuilder getFileIntegrityDefinition() {
 		return integDef;
 	}
 
-	public void setFileIntegrityDefinition(IntegrityDefinition value) {
+	public void setFileIntegrityDefinition(IntegrityDefinitionBuilder value) {
 		this.integDef = value;
 	}
 
@@ -82,7 +84,7 @@ public class FileDefinitionBuilder implements Builder<FileDefinition>{
 	}
 
 	public void setFileName(String fileName) {
-		this.fileName = fileName;
+		this.fileName = DataValidator.validateStr64k(fileName);
 	}
 
 	public long getFileSize() {
@@ -90,7 +92,7 @@ public class FileDefinitionBuilder implements Builder<FileDefinition>{
 	}
 
 	public void setFileSize(long fileSize) {
-		this.fileSize = fileSize;
+		this.fileSize = DataValidator.validateUint32(fileSize);
 	}
 
 	@Override
@@ -101,7 +103,7 @@ public class FileDefinitionBuilder implements Builder<FileDefinition>{
 		retDef.setFileName(fileName);
 		retDef.setFileSize(fileSize);
 
-		retDef.setFileIntegrityDefinition(new IntegrityDefinitionBuilder(integDef).build());
+		retDef.setFileIntegrityDefinition(integDef.build());
 
 		return retDef;
 	}

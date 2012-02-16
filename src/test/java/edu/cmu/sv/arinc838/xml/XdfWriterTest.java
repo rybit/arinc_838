@@ -28,6 +28,8 @@ import com.arinc.arinc838.SdfSections;
 import com.arinc.arinc838.SoftwareDescription;
 import com.arinc.arinc838.ThwDefinition;
 
+import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
+
 public class XdfWriterTest {
 
 	@Test
@@ -120,7 +122,7 @@ public class XdfWriterTest {
 
 		swDefSects.setSoftwareDescription(swDesc);
 
-		swDefFile.setFileFormatVersion("VersionTest");
+		swDefFile.setFileFormatVersion(SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION);
 		swDefFile.setSdfSections(swDefSects);
 		return swDefFile;
 	}

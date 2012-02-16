@@ -9,6 +9,11 @@
  */
 package edu.cmu.sv.arinc838.validation;
 
+import java.util.List;
+
+import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder.IntegrityType;
+import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
+
 public class DataValidator {
 
 	/**
@@ -50,6 +55,25 @@ public class DataValidator {
 		}
 	}
 
+	/**
+	 * Validates that the list has a least 1 element
+	 * 
+	 * @param value
+	 * @return
+	 */
+	public static List<?> validateList1(List<?> value) {
+
+		if (value == null) {
+			throw new IllegalArgumentException("A LIST1 cannot be null");
+		}
+
+		if (value.size() < 1) {
+			throw new IllegalArgumentException("A LIST1 must have a size >= 1.");
+
+		}
+		return value;
+	}
+
 	private static String checkForEscapedXMLChars(String value) {
 		int idx = value.indexOf('<');
 		if (idx != -1) {
@@ -67,6 +91,74 @@ public class DataValidator {
 		if (idx != -1 && !value.matches(".*((&amp)|(&lt)|(&gt)).*")) {
 			throw new IllegalArgumentException(
 					"Found unescaped '&' char at index " + idx);
+		}
+
+		return value;
+	}
+
+	/**
+	 * Validates the file format version value
+	 * 
+	 * @param version
+	 * @return
+	 */
+	public static long validateFileFormatVersion(long version) {
+
+		if (version != SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION) {
+			throw new IllegalArgumentException(
+					"File format version was set to "
+							+ version
+							+ ", expected "
+							+ SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION);
+		}
+		return version;
+	}
+
+	/**
+	 * Validates the integrity type represents the CRC16, 32, or 64.
+	 * 
+	 * @param type
+	 * @return
+	 */
+	public static long validateIntegrityType(long type) {
+		if (IntegrityType.fromLong(type) == null) {
+			throw new IllegalArgumentException(
+					"Integrity type was invalid. Got " + type + ", expected "
+							+ IntegrityType.asString());
+		}
+		return type;
+	}
+
+	/**
+	 * Validates that the integrity value is a valid hexadecimal number that is
+	 * either 4, 6, or 10 digits long (not including the '0x' prefix)
+	 * 
+	 * @param value
+	 * @return
+	 */
+	public static String validateIntegrityValue(String value) {
+		if (value == null) {
+			throw new IllegalArgumentException("Integrity value cannot be null");
+		}
+
+		int size = value.length();
+
+		if (size != 6 && size != 8 && size != 12) {
+			throw new IllegalArgumentException(
+					"Incorrect number of characters for integrity value. Got "
+							+ size + ", expcted 4, 6, or 10");
+
+		}
+
+		if (!value.matches("0x.*")) {
+			throw new IllegalArgumentException(
+					"Integrity value not prefixed with 0x");
+		}
+
+		if (value.substring(2).matches(".*[^0-9&&[^a-fA-F]].*")) {
+			throw new IllegalArgumentException(
+					"Invalid characters found in integrity value! Got " + value
+							+ ", expected 0-9, or A-F");
 		}
 
 		return value;

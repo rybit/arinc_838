@@ -20,6 +20,8 @@ import com.arinc.arinc838.SdfSections;
 import com.arinc.arinc838.SoftwareDescription;
 import com.arinc.arinc838.ThwDefinition;
 
+import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder.IntegrityType;
+
 public class SoftwareDefinitionSectionsTest {
 
 	private com.arinc.arinc838.IntegrityDefinition integrity;
@@ -32,8 +34,8 @@ public class SoftwareDefinitionSectionsTest {
 	@BeforeMethod
 	private void setup() {
 		integrity = new com.arinc.arinc838.IntegrityDefinition();
-		integrity.setIntegrityType(9);
-		integrity.setIntegrityValue("test");
+		integrity.setIntegrityType(IntegrityType.CRC16.getType());
+		integrity.setIntegrityValue("0xABCD");
 
 		description = new SoftwareDescription();
 		description.setSoftwarePartnumber("part");
@@ -42,6 +44,7 @@ public class SoftwareDefinitionSectionsTest {
 
 		fileDef = new com.arinc.arinc838.FileDefinition();
 		fileDef.setFileName("file");
+		fileDef.setFileIntegrityDefinition(integrity);
 		
 		hardwareDef = new ThwDefinition();
 		hardwareDef.setThwId("hardware");

@@ -6,6 +6,7 @@ import org.testng.annotations.*;
 import com.arinc.arinc838.IntegrityDefinition;
 
 import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder;
+import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder.IntegrityType;
 
 public class IntegrityDefinitionBuilderTest {
 
@@ -15,8 +16,8 @@ public class IntegrityDefinitionBuilderTest {
 	@BeforeMethod
 	public void setup() {
 		integDef = new IntegrityDefinition();
-		integDef.setIntegrityType(1234);
-		integDef.setIntegrityValue("fml");
+		integDef.setIntegrityType(IntegrityType.CRC16.getType());
+		integDef.setIntegrityValue("0xDEADBEEF01");
 
 		builder = new IntegrityDefinitionBuilder(integDef);
 	}
@@ -30,15 +31,25 @@ public class IntegrityDefinitionBuilderTest {
 
 	@Test
 	public void testSetIntegrityType() {
+		
 		IntegrityDefinition def = builder.build();
 
 		assertEquals(def.getIntegrityType(), builder.getIntegrityType());
 		
-		long newType = def.getIntegrityType() + 1;
+		long newType = IntegrityType.CRC64.getType();
 		builder.setIntegrityType(newType);
+		
+		assertNotEquals(def.getIntegrityType(), builder.getIntegrityType());
+		
 		def = builder.build();
 		
 		assertEquals(def.getIntegrityType(), builder.getIntegrityType());
+	}
+	
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testSetIntegrityTypeInvalid()
+	{
+		builder.setIntegrityType(IntegrityType.CRC64.getType() + 123);
 	}
 	
 	@Test
@@ -47,18 +58,10 @@ public class IntegrityDefinitionBuilderTest {
 
 		assertEquals(def.getIntegrityValue(), builder.getIntegrityValue());
 		
-		// <old_string&new_string>
-		String newType = "&lt" + def.getIntegrityValue() + "&ampnew_string&gt";
-		builder.setIntegrityValue(newType);
+		builder.setIntegrityValue("0xFEED");
 		def = builder.build();
 		
 		assertEquals(def.getIntegrityValue(), builder.getIntegrityValue());
-	}
-	
-	@Test(expectedExceptions = IllegalArgumentException.class)
-	public void testSetIntegrityTypeInvalid()
-	{
-		builder.setIntegrityType(-1);
 	}
 	
 	@Test(expectedExceptions = IllegalArgumentException.class)
@@ -70,6 +73,23 @@ public class IntegrityDefinitionBuilderTest {
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void testSetIntegrityValueInvalid()
 	{
-		builder.setIntegrityValue("abc & 123 &lt&gt <<");
+		builder.setIntegrityValue("0xA<CDZZ&4");
+	}
+	
+	@Test
+	public void testIntegrityTypeEnum()
+	{
+		assertEquals(2, IntegrityDefinitionBuilder.IntegrityType.CRC16.getType());
+		assertEquals(3, IntegrityDefinitionBuilder.IntegrityType.CRC32.getType());
+		assertEquals(6, IntegrityDefinitionBuilder.IntegrityType.CRC64.getType());		
+	}
+	
+	@Test
+	public void testIntegrityTypeEnumFromLong()
+	{
+		assertEquals(IntegrityDefinitionBuilder.IntegrityType.CRC16, IntegrityDefinitionBuilder.IntegrityType.fromLong(2));
+		assertEquals(IntegrityDefinitionBuilder.IntegrityType.CRC32, IntegrityDefinitionBuilder.IntegrityType.fromLong(3));
+		assertEquals(IntegrityDefinitionBuilder.IntegrityType.CRC64, IntegrityDefinitionBuilder.IntegrityType.fromLong(6));
+		assertNull(IntegrityDefinitionBuilder.IntegrityType.fromLong(-1));
 	}
 }
