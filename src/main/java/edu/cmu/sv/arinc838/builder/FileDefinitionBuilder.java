@@ -10,7 +10,6 @@
 package edu.cmu.sv.arinc838.builder;
 
 import com.arinc.arinc838.FileDefinition;
-import com.arinc.arinc838.IntegrityDefinition;
 
 /**
  * The builder paradigm is that all the fields will be extracted and stored in
@@ -45,7 +44,7 @@ import com.arinc.arinc838.IntegrityDefinition;
  * 
  */
 public class FileDefinitionBuilder implements Builder<FileDefinition>{
-	private IntegrityDefinition integDef;
+	private IntegrityDefinitionBuilder integDefBuilder;
 	private boolean loadable;
 	private String fileName;
 	private long fileSize;
@@ -55,18 +54,19 @@ public class FileDefinitionBuilder implements Builder<FileDefinition>{
 	}
 
 	public FileDefinitionBuilder(FileDefinition fileDef) {
-		integDef = fileDef.getFileIntegrityDefinition();
 		loadable = fileDef.isFileLoadable();
 		fileName = fileDef.getFileName();
 		fileSize = fileDef.getFileSize();
+		
+		integDefBuilder = new IntegrityDefinitionBuilder(fileDef.getFileIntegrityDefinition());
 	}
 
-	public IntegrityDefinition getFileIntegrityDefinition() {
-		return integDef;
+	public IntegrityDefinitionBuilder getFileIntegrityDefinition() {
+		return integDefBuilder;
 	}
 
-	public void setFileIntegrityDefinition(IntegrityDefinition value) {
-		this.integDef = value;
+	public void setFileIntegrityDefinition(IntegrityDefinitionBuilder value) {
+		this.integDefBuilder = value;
 	}
 
 	public boolean isFileLoadable() {
@@ -101,7 +101,8 @@ public class FileDefinitionBuilder implements Builder<FileDefinition>{
 		retDef.setFileName(fileName);
 		retDef.setFileSize(fileSize);
 
-		retDef.setFileIntegrityDefinition(new IntegrityDefinitionBuilder(integDef).build());
+		
+		retDef.setFileIntegrityDefinition(integDefBuilder.build ());
 
 		return retDef;
 	}

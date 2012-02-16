@@ -28,21 +28,23 @@ public class FileDefinitionBuilderTest {
 
 	@BeforeMethod
 	public void setUp() {
-		IntegrityDefinition integBuilder = new IntegrityDefinition();
-		integBuilder.setIntegrityType(123);
-		integBuilder.setIntegrityValue("1234");
+		IntegrityDefinition integDef = new IntegrityDefinition();
+		integDef.setIntegrityType(123);
+		integDef.setIntegrityValue("1234");
 		
 		xmlFileDef = new FileDefinition ();
 		xmlFileDef.setFileLoadable(false);
 		xmlFileDef.setFileName("testFile");
 		xmlFileDef.setFileSize(1234);
-		xmlFileDef.setFileIntegrityDefinition(integBuilder);
+		xmlFileDef.setFileIntegrityDefinition(integDef);
 
 		fileBuilder = new FileDefinitionBuilder ();
 		fileBuilder.setFileLoadable(xmlFileDef.isFileLoadable());
 		fileBuilder.setFileName(xmlFileDef.getFileName());
 		fileBuilder.setFileSize(xmlFileDef.getFileSize());
-		fileBuilder.setFileIntegrityDefinition(xmlFileDef.getFileIntegrityDefinition());
+		
+		IntegrityDefinitionBuilder integBuilder = new IntegrityDefinitionBuilder (integDef);
+		fileBuilder.setFileIntegrityDefinition(integBuilder);
 	}
 
 	/**
@@ -56,18 +58,16 @@ public class FileDefinitionBuilderTest {
 		assertEquals (xmlFileDef.getFileName(), tmpBuilder.getFileName());
 		assertEquals (xmlFileDef.getFileSize(), tmpBuilder.getFileSize());
 		assertEquals (xmlFileDef.isFileLoadable(), tmpBuilder.isFileLoadable());
-		
-		assertEquals (xmlFileDef.getFileIntegrityDefinition(), tmpBuilder.getFileIntegrityDefinition());
 	}
 
 	@Test
 	public void testFileIntegrityDefinitionAccessors () {
-		IntegrityDefinition integDef = new IntegrityDefinition();
+		IntegrityDefinitionBuilder integBuilder = new IntegrityDefinitionBuilder();
 		
-		assertNotEquals (integDef, fileBuilder.getFileIntegrityDefinition());
+		assertNotEquals (integBuilder, fileBuilder.getFileIntegrityDefinition());
 		
-		fileBuilder.setFileIntegrityDefinition(integDef);
-		assertEquals (integDef, fileBuilder.getFileIntegrityDefinition(), 
+		fileBuilder.setFileIntegrityDefinition(integBuilder);
+		assertEquals (integBuilder, fileBuilder.getFileIntegrityDefinition(), 
 				      "Should be the same, the set keeps a reference");
 	}
 	
