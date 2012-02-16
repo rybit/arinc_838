@@ -9,10 +9,18 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile>{
 	private SoftwareDefinitionSectionsBuilder sections;
 
 	public SoftwareDefinitionFileBuilder(SdfFile swDefFile) {
+		this.initialize(swDefFile);
+	}
+
+	public SoftwareDefinitionFileBuilder() {
+		;
+	}
+
+	public void initialize (SdfFile swDefFile) {
 		fileFormatVersion = swDefFile.getFileFormatVersion();
 		sections = new SoftwareDefinitionSectionsBuilder(swDefFile.getSdfSections());
 	}
-
+	
 	public String getFileFormatVersion() {
 		return fileFormatVersion;
 	}
