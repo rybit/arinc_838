@@ -239,7 +239,7 @@ public class DataValidatorTest {
 
 		try {
 			DataValidator.validateSoftwarePartNumber("ACM47-123q-5678");
-			fail("Did not fail on illegal character q");
+			fail("Did not fail on illegal character Q");
 		} catch (IllegalArgumentException e) {
 		}
 
