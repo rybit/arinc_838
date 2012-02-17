@@ -19,6 +19,8 @@ import com.arinc.arinc838.SdfFile;
 import com.arinc.arinc838.SdfSections;
 
 import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder.IntegrityType;
+import edu.cmu.sv.arinc838.validation.DataValidator;
+import edu.cmu.sv.arinc838.validation.ReferenceData;
 
 
 public class SoftwareDefinitionFileBuilderTest {
@@ -31,13 +33,15 @@ public class SoftwareDefinitionFileBuilderTest {
 		swDefFile = new SdfFile();
 		swDefSects = mock(SdfSections.class);
 		com.arinc.arinc838.SoftwareDescription desc = mock(com.arinc.arinc838.SoftwareDescription.class);
-		when(desc.getSoftwarePartnumber()).thenReturn("desc");
+		when(desc.getSoftwarePartnumber()).thenReturn(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
+		when(desc.getSoftwareTypeDescription()).thenReturn("desc");
 		when(swDefSects.getSoftwareDescription()).thenReturn(desc);
 		IntegrityDefinition integDef = new IntegrityDefinition();
 		integDef.setIntegrityType(IntegrityType.CRC16.getType());
 		integDef.setIntegrityValue("0xABCD");
 		when(swDefSects.getLspIntegrityDefinition()).thenReturn(integDef);
 		when(swDefSects.getSdfIntegrityDefinition()).thenReturn(integDef);
+		
 
 		swDefFile.setFileFormatVersion(SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION);
 		swDefFile.setSdfSections(swDefSects);
@@ -91,10 +95,7 @@ public class SoftwareDefinitionFileBuilderTest {
 
 		SoftwareDefinitionSectionsBuilder tmp = new SoftwareDefinitionSectionsBuilder();
 		SoftwareDescriptionBuilder swDestmp = new SoftwareDescriptionBuilder();
-		swDestmp.setSoftwarePartNumber(swDefFileBuilder
-				.getSoftwareDefinitionSections().getSoftwareDescription()
-				.getSoftwarePartNumber()
-				+ "_some_new_string");
+		swDestmp.setSoftwarePartNumber(DataValidator.generateSoftwarePartNumber("YZT??-ABCD-EFGH"));
 		tmp.setSoftwareDescription(swDestmp);
 
 		swDefFileBuilder.setSoftwareDefinitionSections(tmp);

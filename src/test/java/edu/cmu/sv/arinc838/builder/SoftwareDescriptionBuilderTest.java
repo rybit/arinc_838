@@ -6,6 +6,8 @@ import org.testng.annotations.Test;
 import com.arinc.arinc838.SoftwareDescription;
 
 import edu.cmu.sv.arinc838.builder.SoftwareDescriptionBuilder;
+import edu.cmu.sv.arinc838.validation.DataValidator;
+import edu.cmu.sv.arinc838.validation.ReferenceData;
 import static org.testng.Assert.*;
 
 public class SoftwareDescriptionBuilderTest {
@@ -16,12 +18,12 @@ public class SoftwareDescriptionBuilderTest {
 	@BeforeMethod
 	public void setup() {
 		first = new SoftwareDescriptionBuilder();
-		first.setSoftwarePartNumber("part");
+		first.setSoftwarePartNumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
 		first.setSoftwareTypeDescription("description");
 		first.setSoftwareTypeId(10l);
 
 		second = new SoftwareDescriptionBuilder();
-		second.setSoftwarePartNumber("part");
+		second.setSoftwarePartNumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
 		second.setSoftwareTypeDescription("description");
 		second.setSoftwareTypeId(10l);
 	}
@@ -29,7 +31,8 @@ public class SoftwareDescriptionBuilderTest {
 	@Test
 	public void getSoftwarePartnumber() {
 		SoftwareDescription jaxbDesc = new SoftwareDescription();
-		jaxbDesc.setSoftwarePartnumber("test");
+		jaxbDesc.setSoftwarePartnumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
+		jaxbDesc.setSoftwareTypeDescription("test");
 		SoftwareDescriptionBuilder xmlDesc = new SoftwareDescriptionBuilder(
 				jaxbDesc);
 
@@ -40,6 +43,7 @@ public class SoftwareDescriptionBuilderTest {
 	@Test
 	public void getSoftwareTypeDescription() {
 		SoftwareDescription jaxbDesc = new SoftwareDescription();
+		jaxbDesc.setSoftwarePartnumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
 		jaxbDesc.setSoftwareTypeDescription("test");
 		SoftwareDescriptionBuilder xmlDesc = new SoftwareDescriptionBuilder(
 				jaxbDesc);
@@ -52,6 +56,8 @@ public class SoftwareDescriptionBuilderTest {
 	public void getSoftwareTypeId() {
 		SoftwareDescription jaxbDesc = new SoftwareDescription();
 		jaxbDesc.setSoftwareTypeId(7);
+		jaxbDesc.setSoftwarePartnumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
+		jaxbDesc.setSoftwareTypeDescription("test");
 		SoftwareDescriptionBuilder xmlDesc = new SoftwareDescriptionBuilder(
 				jaxbDesc);
 
@@ -61,12 +67,13 @@ public class SoftwareDescriptionBuilderTest {
 	@Test
 	public void setSoftwarePartNumberTest() {
 		SoftwareDescription jaxbDesc = new SoftwareDescription();
-		jaxbDesc.setSoftwarePartnumber("test");
+		jaxbDesc.setSoftwarePartnumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
+		jaxbDesc.setSoftwareTypeDescription("test");
 		SoftwareDescriptionBuilder xmlDesc = new SoftwareDescriptionBuilder(
 				jaxbDesc);
 
-		String value = "set test";
-
+		String value = DataValidator.generateSoftwarePartNumber("8GC??-0987-PLMT");
+		
 		xmlDesc.setSoftwarePartNumber(value);
 
 		assertEquals(value, xmlDesc.getSoftwarePartNumber());
@@ -75,6 +82,7 @@ public class SoftwareDescriptionBuilderTest {
 	@Test
 	public void setSoftwareTypeDescription() {
 		SoftwareDescription jaxbDesc = new SoftwareDescription();
+		jaxbDesc.setSoftwarePartnumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
 		jaxbDesc.setSoftwareTypeDescription("test");
 		SoftwareDescriptionBuilder xmlDesc = new SoftwareDescriptionBuilder(
 				jaxbDesc);
@@ -89,6 +97,8 @@ public class SoftwareDescriptionBuilderTest {
 	@Test
 	public void setSoftwareTypeId() {
 		SoftwareDescription jaxbDesc = new SoftwareDescription();
+		jaxbDesc.setSoftwarePartnumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
+		jaxbDesc.setSoftwareTypeDescription("test");
 		jaxbDesc.setSoftwareTypeId(7);
 		SoftwareDescriptionBuilder xmlDesc = new SoftwareDescriptionBuilder(
 				jaxbDesc);
@@ -99,7 +109,6 @@ public class SoftwareDescriptionBuilderTest {
 
 		assertEquals(value, xmlDesc.getSoftwareTypeId());
 	}
-
 
 	@Test
 	public void testBuildCreatesProperJaxbObject() {

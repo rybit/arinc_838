@@ -131,25 +131,28 @@ public class DataValidatorTest {
 	public void testValidateIntegrityTypeInvalid() {
 		DataValidator.validateIntegrityType(-1);
 	}
-	
+
 	@Test
 	public void testValidateIntegrityValue() {
 		assertEquals("0xABCD", DataValidator.validateIntegrityValue("0xABCD"));
-		assertEquals("0xABCDEF", DataValidator.validateIntegrityValue("0xABCDEF"));
-		assertEquals("0xABCDEF0123", DataValidator.validateIntegrityValue("0xABCDEF0123"));
-		assertEquals("0x456789fFBC", DataValidator.validateIntegrityValue("0x456789fFBC"));
+		assertEquals("0xABCDEF",
+				DataValidator.validateIntegrityValue("0xABCDEF"));
+		assertEquals("0xABCDEF0123",
+				DataValidator.validateIntegrityValue("0xABCDEF0123"));
+		assertEquals("0x456789fFBC",
+				DataValidator.validateIntegrityValue("0x456789fFBC"));
 	}
 
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void testValidateIntegrityValueNull() {
 		DataValidator.validateIntegrityValue(null);
 	}
-	
+
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void testValidateIntegrityValueWrongSize() {
 		DataValidator.validateIntegrityValue("0xAB");
 	}
-	
+
 	@Test
 	public void testValidateIntegrityValueInvalidCharacters() {
 		try {
@@ -157,7 +160,7 @@ public class DataValidatorTest {
 			fail("Did not throw IllegalArguementExcetion for invalid characters");
 		} catch (IllegalArgumentException e) {
 		}
-		
+
 		try {
 			DataValidator.validateIntegrityValue("%57X");
 			fail("Did not throw IllegalArguementExcetion for invalid characters");
@@ -179,32 +182,94 @@ public class DataValidatorTest {
 		} catch (IllegalArgumentException e) {
 		}
 	}
-	
+
 	@Test
-	public void testValidateList1()
-	{
+	public void testValidateList1() {
 		List<String> list1 = new ArrayList<String>();
 		list1.add("hello");
 		assertEquals(list1, DataValidator.validateList1(list1));
-		
+
 		list1.add("world");
 		list1.add("!");
-		
+
 		assertEquals(list1, DataValidator.validateList1(list1));
 	}
-	
+
 	@Test(expectedExceptions = IllegalArgumentException.class)
-	public void testValidateList1Null()
-	{
+	public void testValidateList1Null() {
 		DataValidator.validateList1(null);
 	}
-	
+
 	@Test(expectedExceptions = IllegalArgumentException.class)
-	public void testValidateList1EmptyList()
-	{
+	public void testValidateList1EmptyList() {
 		DataValidator.validateList1(new ArrayList<String>());
 	}
 
+
+	@Test
+	public void testValidateSoftwarePartNumber() {
+		assertEquals("ACM47-1234-5678",
+				DataValidator.validateSoftwarePartNumber("ACM47-1234-5678"));
+	}
+
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testValidateSoftwarePartNumberNull() {
+		DataValidator.validateSoftwarePartNumber(null);
+	}
+
+	@Test
+	public void testValidateSoftwarePartNumberInvalidFormat() {
+		try {
+			DataValidator.validateSoftwarePartNumber("ACM4-7-1234-5678");
+			fail("Did not fail on invalid format");
+		} catch (IllegalArgumentException e) {
+		}
+
+		try {
+			DataValidator.validateSoftwarePartNumber("ACM47-12 34-5678");
+			fail("Did not fail on embedded spaces");
+		} catch (IllegalArgumentException e) {
+		}
+
+		try {
+			DataValidator.validateSoftwarePartNumber("ACM47-123I-5678");
+			fail("Did not fail on illegal character I");
+		} catch (IllegalArgumentException e) {
+		}
+
+		try {
+			DataValidator.validateSoftwarePartNumber("ACM47-123q-5678");
+			fail("Did not fail on illegal character q");
+		} catch (IllegalArgumentException e) {
+		}
+
+		try {
+			DataValidator.validateSoftwarePartNumber("ACM47-O234-5678");
+			fail("Did not fail on illegal character O");
+		} catch (IllegalArgumentException e) {
+		}
+
+		try {
+			DataValidator.validateSoftwarePartNumber("ACM47-1234-5Z78");
+			fail("Did not fail on illegal character Z");
+		} catch (IllegalArgumentException e) {
+		}
+	}
+
+	@Test
+	public void generateSoftwarePartNumber() {
+		assertEquals("ACM47-1234-5678",
+				DataValidator.generateSoftwarePartNumber("ACM??-1234-5678"));
+	}
+
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void generateSoftwarePartNumberNull() {
+		DataValidator.generateSoftwarePartNumber(null);
+	}
 	
-	
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void generateSoftwarePartNumberInvalid() {
+		DataValidator.generateSoftwarePartNumber("ACM47-O234-5678");
+	}
+
 }

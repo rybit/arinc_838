@@ -21,6 +21,8 @@ import com.arinc.arinc838.SoftwareDescription;
 import com.arinc.arinc838.ThwDefinition;
 
 import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder.IntegrityType;
+import edu.cmu.sv.arinc838.validation.DataValidator;
+import edu.cmu.sv.arinc838.validation.ReferenceData;
 
 public class SoftwareDefinitionSectionsTest {
 
@@ -32,13 +34,13 @@ public class SoftwareDefinitionSectionsTest {
 	private SoftwareDefinitionSectionsBuilder xmlSoftwareDefinitionSections;
 
 	@BeforeMethod
-	private void setup() {
+	public void setup() {
 		integrity = new com.arinc.arinc838.IntegrityDefinition();
 		integrity.setIntegrityType(IntegrityType.CRC16.getType());
 		integrity.setIntegrityValue("0xABCD");
 
 		description = new SoftwareDescription();
-		description.setSoftwarePartnumber("part");
+		description.setSoftwarePartnumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
 		description.setSoftwareTypeDescription("desc");
 		description.setSoftwareTypeId(10l);
 
@@ -147,7 +149,7 @@ public class SoftwareDefinitionSectionsTest {
 	@Test
 	public void setSoftwareDescription() {
 		SoftwareDescriptionBuilder newDesc = new SoftwareDescriptionBuilder();
-		newDesc.setSoftwarePartNumber("new part");
+		newDesc.setSoftwarePartNumber(DataValidator.generateSoftwarePartNumber("YZT??-ABCD-EFGH"));
 
 		newDesc.setSoftwareTypeDescription("new desc");
 		newDesc.setSoftwareTypeId(10l);
