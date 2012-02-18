@@ -10,7 +10,6 @@
 package edu.cmu.sv.arinc838.builder;
 
 import com.arinc.arinc838.FileDefinition;
-import com.arinc.arinc838.IntegrityDefinition;
 
 import edu.cmu.sv.arinc838.validation.DataValidator;
 

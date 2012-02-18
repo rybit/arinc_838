@@ -12,7 +12,6 @@ package edu.cmu.sv.arinc838.xml;
 import static org.testng.Assert.*;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;

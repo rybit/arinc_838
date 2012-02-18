@@ -16,7 +16,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.arinc.arinc838.FileDefinition;
-import com.arinc.arinc838.IntegrityDefinition;
 
 import edu.cmu.sv.arinc838.builder.FileDefinitionBuilder;
 import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder.IntegrityType;

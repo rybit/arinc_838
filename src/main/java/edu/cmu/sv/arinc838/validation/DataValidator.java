@@ -9,7 +9,6 @@
  */
 package edu.cmu.sv.arinc838.validation;
 
-import java.util.Arrays;
 import java.util.List;
 
 import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder.IntegrityType;
@@ -176,10 +175,9 @@ public class DataValidator {
 					"Software part number cannot be null");
 		}
 		
-		String valueUpper = value.toUpperCase();
 
 		// Just check the basic format first: MMMCC-SSSS-SSSS
-		if (!valueUpper.matches("\\w{5}-\\w{4}-\\w{4}")) {
+		if (!value.matches("\\w{5}-\\w{4}-\\w{4}")) {
 			throw new IllegalArgumentException(
 					"Software part number format was invalid. Got "
 							+ value
@@ -187,11 +185,11 @@ public class DataValidator {
 							+ SoftwareDescriptionBuilder.SOFTWARE_PART_NUMBER_FORMAT);
 		}
 
-		checkForIllegalCharsInPartNumber(valueUpper);
+		checkForIllegalCharsInPartNumber(value);
 
-		valdateCheckCharacters(valueUpper);
+		valdateCheckCharacters(value);
 
-		return valueUpper;
+		return value;
 	}
 
 	/**
@@ -204,12 +202,11 @@ public class DataValidator {
 					"Software part number cannot be null");
 		}
 		
-		String valueUpper = value.toUpperCase();
 		
-		checkForIllegalCharsInPartNumber(valueUpper);
+		checkForIllegalCharsInPartNumber(value);
 
-		String check = generateCheckCharacters(valueUpper);
-		String fullPart = valueUpper.substring(0, 3) + check + valueUpper.substring(5);
+		String check = generateCheckCharacters(value);
+		String fullPart = value.substring(0, 3) + check + value.substring(5);
 
 		return validateSoftwarePartNumber(fullPart);
 	}
@@ -245,7 +242,6 @@ public class DataValidator {
 	 * Step 2: Exclude delimiters and the unresolved CC values, resulting in: ACM12345678
 	 * Step 3: Convert the ASCII characters to binary
 	 * Step 4: XOR all the binary characters
-	 * sum = 0100 0111
 	 * Step 5: Express the resulting value in upper case hexadecimal characters:
 	 * 0x47 => “47”
 	 * Step 6: Construct the final PN, including delimiters:
