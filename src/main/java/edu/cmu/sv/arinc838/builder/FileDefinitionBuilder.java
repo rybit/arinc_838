@@ -46,7 +46,7 @@ import edu.cmu.sv.arinc838.validation.DataValidator;
  * 
  */
 public class FileDefinitionBuilder implements Builder<FileDefinition>{
-	private IntegrityDefinitionBuilder integDef;
+	private IntegrityDefinitionBuilder integDefBuilder;
 	private boolean loadable;
 	private String fileName;
 	private long fileSize;
@@ -56,18 +56,20 @@ public class FileDefinitionBuilder implements Builder<FileDefinition>{
 	}
 
 	public FileDefinitionBuilder(FileDefinition fileDef) {
-		integDef = new IntegrityDefinitionBuilder(fileDef.getFileIntegrityDefinition());
+		integDefBuilder = new IntegrityDefinitionBuilder(fileDef.getFileIntegrityDefinition());
 		loadable = fileDef.isFileLoadable();
-		setFileName(fileDef.getFileName());
-		setFileSize(fileDef.getFileSize());
+		fileName = fileDef.getFileName();
+		fileSize = fileDef.getFileSize();
+		
+		integDefBuilder = new IntegrityDefinitionBuilder(fileDef.getFileIntegrityDefinition());
 	}
 
 	public IntegrityDefinitionBuilder getFileIntegrityDefinition() {
-		return integDef;
+		return integDefBuilder;
 	}
 
 	public void setFileIntegrityDefinition(IntegrityDefinitionBuilder value) {
-		this.integDef = value;
+		this.integDefBuilder = value;
 	}
 
 	public boolean isFileLoadable() {
@@ -102,7 +104,7 @@ public class FileDefinitionBuilder implements Builder<FileDefinition>{
 		retDef.setFileName(fileName);
 		retDef.setFileSize(fileSize);
 
-		retDef.setFileIntegrityDefinition(integDef.build());
+		retDef.setFileIntegrityDefinition(integDefBuilder.build ());
 
 		return retDef;
 	}

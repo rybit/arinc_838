@@ -41,7 +41,7 @@ public class FileDefinitionBuilderTest {
 		fileBuilder = new FileDefinitionBuilder();
 		fileBuilder.setFileLoadable(xmlFileDef.isFileLoadable());
 		fileBuilder.setFileName(xmlFileDef.getFileName());
-		fileBuilder.setFileSize(xmlFileDef.getFileSize());
+		fileBuilder.setFileSize(xmlFileDef.getFileSize());		
 		fileBuilder.setFileIntegrityDefinition(integBuilder);
 	}
 
@@ -53,6 +53,7 @@ public class FileDefinitionBuilderTest {
 	public void testXmlConstructor() {
 		FileDefinitionBuilder tmpBuilder = new FileDefinitionBuilder(xmlFileDef);
 		// check that the fields stuck
+		
 		assertEquals(xmlFileDef.getFileName(), tmpBuilder.getFileName());
 		assertEquals(xmlFileDef.getFileSize(), tmpBuilder.getFileSize());
 		assertEquals(xmlFileDef.isFileLoadable(), tmpBuilder.isFileLoadable());

@@ -13,11 +13,10 @@ import com.arinc.arinc838.SdfFile;
 
 import edu.cmu.sv.arinc838.validation.DataValidator;
 
-public class SoftwareDefinitionFileBuilder implements Builder<SdfFile>{
+public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 
 	/**
-	 * The default file format version as defined in the spec.
-	 * Value is {@value}
+	 * The default file format version as defined in the spec. Value is {@value}
 	 */
 	public static final long DEFAULT_FILE_FORMAT_VERSION = 528384;
 
@@ -25,7 +24,15 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile>{
 	private SoftwareDefinitionSectionsBuilder sections;
 
 	public SoftwareDefinitionFileBuilder(SdfFile swDefFile) {
-		setFileFormatVersion(swDefFile.getFileFormatVersion());
+		this.initialize(swDefFile);
+	}
+
+	public SoftwareDefinitionFileBuilder() {
+		;
+	}
+
+	public void initialize(SdfFile swDefFile) {
+		fileFormatVersion = swDefFile.getFileFormatVersion();
 		sections = new SoftwareDefinitionSectionsBuilder(swDefFile.getSdfSections());
 	}
 
@@ -41,7 +48,8 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile>{
 		return sections;
 	}
 
-	public void setSoftwareDefinitionSections(SoftwareDefinitionSectionsBuilder value) {
+	public void setSoftwareDefinitionSections(
+			SoftwareDefinitionSectionsBuilder value) {
 		this.sections = value;
 	}
 
@@ -50,7 +58,7 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile>{
 		SdfFile file = new SdfFile();
 		file.setFileFormatVersion(this.getFileFormatVersion());
 		file.setSdfSections(sections.build());
-		
+
 		return file;
 	}
 }
