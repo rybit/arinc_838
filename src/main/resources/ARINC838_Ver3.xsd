@@ -101,7 +101,7 @@
 	<xsd:element name="sdf-file">
 		<xsd:complexType>
 			<xsd:sequence>
-				<xsd:element name="file-format-version" type="sdf:STR64K"></xsd:element>
+				<xsd:element name="file-format-version" type="sdf:UINT32"></xsd:element>
 				<xsd:element name="sdf-sections" type="sdf:sdf-sections">
 				</xsd:element>
 			</xsd:sequence>

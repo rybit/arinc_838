@@ -49,10 +49,18 @@ public class TargetHardwareDefinitionBuilderTest {
 
 		assertEquals(xmlDef.getId(), value);
 	}
+	
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testSetIdInvalid()
+	{
+		// invalid str64k
+		first.setId("1 > 2");
+	}
 
 	@Test
 	public void getPositions() {
 		com.arinc.arinc838.ThwDefinition jaxbDef = new ThwDefinition();
+		jaxbDef.setThwId("id");
 		jaxbDef.getThwPosition().add("one");
 		jaxbDef.getThwPosition().add("two");
 		TargetHardwareDefinitionBuilder xmlDef = new TargetHardwareDefinitionBuilder(
@@ -66,6 +74,7 @@ public class TargetHardwareDefinitionBuilderTest {
 	@Test
 	public void getPositionsWithNoPositions() {
 		com.arinc.arinc838.ThwDefinition jaxbDef = new ThwDefinition();
+		jaxbDef.setThwId("id");
 		TargetHardwareDefinitionBuilder xmlDef = new TargetHardwareDefinitionBuilder(
 				jaxbDef);
 

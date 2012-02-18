@@ -11,21 +11,24 @@ package edu.cmu.sv.arinc838.builder;
 
 import com.arinc.arinc838.SoftwareDescription;
 
+import edu.cmu.sv.arinc838.validation.DataValidator;
+
 public class SoftwareDescriptionBuilder implements Builder<SoftwareDescription> {
+
+	public static final String SOFTWARE_PART_NUMBER_FORMAT = "MMMCC-SSSS-SSSS";
 
 	private String softwarePartNumber;
 	private String softwareTypeDescription;
 	private long softwareTypeId;
 
 	public SoftwareDescriptionBuilder(SoftwareDescription softwareDescription) {
-		this.softwarePartNumber = softwareDescription.getSoftwarePartnumber();
-		this.softwareTypeDescription = softwareDescription
-				.getSoftwareTypeDescription();
-		this.softwareTypeId = softwareDescription.getSoftwareTypeId();
+		setSoftwarePartNumber(softwareDescription.getSoftwarePartnumber());
+		setSoftwareTypeDescription(softwareDescription
+				.getSoftwareTypeDescription());
+		setSoftwareTypeId(softwareDescription.getSoftwareTypeId());
 	}
 
 	public SoftwareDescriptionBuilder() {
-
 	}
 
 	public String getSoftwarePartNumber() {
@@ -33,7 +36,7 @@ public class SoftwareDescriptionBuilder implements Builder<SoftwareDescription> 
 	}
 
 	public void setSoftwarePartNumber(String value) {
-		this.softwarePartNumber = value;
+		this.softwarePartNumber = DataValidator.validateSoftwarePartNumber(value);
 	}
 
 	public String getSoftwareTypeDescription() {
@@ -41,7 +44,7 @@ public class SoftwareDescriptionBuilder implements Builder<SoftwareDescription> 
 	}
 
 	public void setSoftwareTypeDescription(String value) {
-		this.softwareTypeDescription = value;
+		this.softwareTypeDescription = DataValidator.validateStr64k(value);
 	}
 
 	public long getSoftwareTypeId() {
@@ -49,7 +52,7 @@ public class SoftwareDescriptionBuilder implements Builder<SoftwareDescription> 
 	}
 
 	public void setSoftwareTypeId(long value) {
-		this.softwareTypeId = value;
+		this.softwareTypeId = DataValidator.validateUint32(value);
 	}
 
 	@Override

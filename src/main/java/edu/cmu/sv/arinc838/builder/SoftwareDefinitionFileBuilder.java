@@ -1,24 +1,40 @@
+/*
+ * Copyright (c) 2012 Chris Ellison, Mike Deats, Liron Yahdav, Ryan Neal,
+ * Brandon Sutherlin, Scott Griffin
+ * 
+ * This software is released under the MIT license
+ * (http://www.opensource.org/licenses/mit-license.php)
+ * 
+ * Created on Feb 12, 2012
+ */
 package edu.cmu.sv.arinc838.builder;
 
 import com.arinc.arinc838.SdfFile;
-import com.arinc.arinc838.SdfSections;
+
+import edu.cmu.sv.arinc838.validation.DataValidator;
 
 public class SoftwareDefinitionFileBuilder implements Builder<SdfFile>{
 
-	private String fileFormatVersion;
+	/**
+	 * The default file format version as defined in the spec.
+	 * Value is {@value}
+	 */
+	public static final long DEFAULT_FILE_FORMAT_VERSION = 528384;
+
+	private long fileFormatVersion;
 	private SoftwareDefinitionSectionsBuilder sections;
 
 	public SoftwareDefinitionFileBuilder(SdfFile swDefFile) {
-		fileFormatVersion = swDefFile.getFileFormatVersion();
+		setFileFormatVersion(swDefFile.getFileFormatVersion());
 		sections = new SoftwareDefinitionSectionsBuilder(swDefFile.getSdfSections());
 	}
 
-	public String getFileFormatVersion() {
+	public long getFileFormatVersion() {
 		return fileFormatVersion;
 	}
 
-	public void setFileFormatVersion(String value) {
-		this.fileFormatVersion = value;
+	public void setFileFormatVersion(long value) {
+		fileFormatVersion = DataValidator.validateFileFormatVersion(value);
 	}
 
 	public SoftwareDefinitionSectionsBuilder getSoftwareDefinitionSections() {
