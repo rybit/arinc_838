@@ -34,6 +34,6 @@ public class XmlReadItem  extends AbstractMenuItem {
 				
 		builder.initialize(jaxbFile);
 		
-		return new XmlFileMenu(builder.getFileFormatVersion());
+		return new XmlFileMenu(builder.getFileFormatVersion()+"");
 	}
 }
