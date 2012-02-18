@@ -9,11 +9,18 @@
  */
 package edu.cmu.sv.arinc838.builder;
 
-import static org.testng.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotEquals;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import com.arinc.arinc838.FileDefinition;
 import com.arinc.arinc838.IntegrityDefinition;
 import com.arinc.arinc838.SdfFile;
 import com.arinc.arinc838.SdfSections;
@@ -41,6 +48,13 @@ public class SoftwareDefinitionFileBuilderTest {
 		integDef.setIntegrityValue("0xABCD");
 		when(swDefSects.getLspIntegrityDefinition()).thenReturn(integDef);
 		when(swDefSects.getSdfIntegrityDefinition()).thenReturn(integDef);
+		List<FileDefinition> fileDefs = new ArrayList<FileDefinition>();
+		FileDefinition fileDef = new FileDefinition();
+		fileDef.setFileIntegrityDefinition(integDef);
+		fileDef.setFileName("a name");
+		fileDef.setFileSize(1234);
+		fileDefs.add(fileDef);
+		when(swDefSects.getFileDefinitions()).thenReturn(fileDefs);
 		
 
 		swDefFile.setFileFormatVersion(SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION);

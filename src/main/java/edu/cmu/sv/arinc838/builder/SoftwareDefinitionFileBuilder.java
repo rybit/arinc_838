@@ -25,7 +25,7 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile>{
 	private SoftwareDefinitionSectionsBuilder sections;
 
 	public SoftwareDefinitionFileBuilder(SdfFile swDefFile) {
-		fileFormatVersion = swDefFile.getFileFormatVersion();
+		setFileFormatVersion(swDefFile.getFileFormatVersion());
 		sections = new SoftwareDefinitionSectionsBuilder(swDefFile.getSdfSections());
 	}
 

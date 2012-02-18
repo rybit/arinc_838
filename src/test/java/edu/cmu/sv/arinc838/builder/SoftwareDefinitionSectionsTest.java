@@ -65,7 +65,24 @@ public class SoftwareDefinitionSectionsTest {
 		xmlSoftwareDefinitionSections = new SoftwareDefinitionSectionsBuilder(
 				jaxbSections);
 	}
-
+	
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testFileDefinitionsEmpty()
+	{
+		SdfSections newSect = xmlSoftwareDefinitionSections.build();
+		newSect.getFileDefinitions().clear();
+		
+		new SoftwareDefinitionSectionsBuilder(newSect);
+	}
+	
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testFileDefinitionsEmptyAtBuild()
+	{
+		xmlSoftwareDefinitionSections.getFileDefinitions().clear();
+		
+		xmlSoftwareDefinitionSections.build();
+	}
+	
 	@Test
 	public void getFileDefinitions() {
 		assertEquals(xmlSoftwareDefinitionSections.getFileDefinitions().size(),

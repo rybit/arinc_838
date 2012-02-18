@@ -16,6 +16,8 @@ import com.arinc.arinc838.FileDefinition;
 import com.arinc.arinc838.SdfSections;
 import com.arinc.arinc838.ThwDefinition;
 
+import edu.cmu.sv.arinc838.validation.DataValidator;
+
 public class SoftwareDefinitionSectionsBuilder implements Builder<SdfSections> {
 
 	private List<FileDefinitionBuilder> fileDefinitions = new ArrayList<FileDefinitionBuilder>();
@@ -27,12 +29,16 @@ public class SoftwareDefinitionSectionsBuilder implements Builder<SdfSections> {
 	public SoftwareDefinitionSectionsBuilder() {
 	}
 
+	@SuppressWarnings("unchecked")
 	public SoftwareDefinitionSectionsBuilder(SdfSections sdfSections) {
-		
-		for (FileDefinition fileDef : sdfSections.getFileDefinitions()) {
+
+		List<FileDefinition> fileDefs = (List<FileDefinition>) DataValidator
+				.validateList1(sdfSections.getFileDefinitions());
+
+		for (FileDefinition fileDef : fileDefs) {
 			fileDefinitions.add(new FileDefinitionBuilder(fileDef));
 		}
-		
+
 		for (ThwDefinition thwDef : sdfSections.getThwDefinitions()) {
 			thwDefinitions.add(new TargetHardwareDefinitionBuilder(thwDef));
 		}
@@ -44,7 +50,7 @@ public class SoftwareDefinitionSectionsBuilder implements Builder<SdfSections> {
 		sdfIntegrityDefinition = new IntegrityDefinitionBuilder(
 				sdfSections.getSdfIntegrityDefinition());
 	}
-	
+
 	public SoftwareDescriptionBuilder getSoftwareDescription() {
 		return softwareDescription;
 	}
@@ -77,19 +83,24 @@ public class SoftwareDefinitionSectionsBuilder implements Builder<SdfSections> {
 		this.lspIntegrityDefinition = value;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public SdfSections build() {
 		SdfSections sdfSections = new SdfSections();
-		
-		for (FileDefinitionBuilder fileDef : 			fileDefinitions) {
+
+		// we have to re-validate this as a LIST1 since it can be modified
+		// without a set method to verify its validity prior to building
+		List<FileDefinitionBuilder> fileDefsValidated = (List<FileDefinitionBuilder>) DataValidator
+				.validateList1(fileDefinitions);
+		for (FileDefinitionBuilder fileDef : fileDefsValidated) {
 			sdfSections.getFileDefinitions().add(fileDef.build());
 		}
-		
+
 		for (TargetHardwareDefinitionBuilder thwDef : thwDefinitions) {
 			sdfSections.getThwDefinitions().add(thwDef.build());
 		}
-		
-		sdfSections.setLspIntegrityDefinition(				lspIntegrityDefinition.build());
+
+		sdfSections.setLspIntegrityDefinition(lspIntegrityDefinition.build());
 		sdfSections.setSdfIntegrityDefinition(sdfIntegrityDefinition.build());
 		sdfSections.setSoftwareDescription(softwareDescription.build());
 

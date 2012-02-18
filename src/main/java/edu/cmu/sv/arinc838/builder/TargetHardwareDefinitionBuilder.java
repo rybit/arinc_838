@@ -6,13 +6,15 @@ import java.util.List;
 
 import com.arinc.arinc838.ThwDefinition;
 
+import edu.cmu.sv.arinc838.validation.DataValidator;
+
 public class TargetHardwareDefinitionBuilder implements Builder<ThwDefinition> {
 
 	private String id;
 	private List<String> positions = new ArrayList<String>();
 
 	public TargetHardwareDefinitionBuilder(ThwDefinition jaxbDef) {
-		this.id = jaxbDef.getThwId();
+		setId(jaxbDef.getThwId());
 		
 		for(String position : jaxbDef.getThwPosition()){
 			positions.add(position);
@@ -28,7 +30,7 @@ public class TargetHardwareDefinitionBuilder implements Builder<ThwDefinition> {
 	}
 
 	public void setId(String value) {
-		this.id = value;
+		this.id = DataValidator.validateStr64k(value);
 	}
 
 	public List<String> getPositions() {
