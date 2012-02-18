@@ -1,9 +1,15 @@
 package edu.cmu.sv.arinc838.builder;
 
-import com.arinc.arinc838.SdfFile;
-import com.arinc.arinc838.SdfSections;
+import java.io.File;
 
-public class SoftwareDefinitionFileBuilder implements Builder<SdfFile>{
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+
+import com.arinc.arinc838.SdfFile;
+
+public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 
 	private String fileFormatVersion;
 	private SoftwareDefinitionSectionsBuilder sections;
@@ -16,11 +22,12 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile>{
 		;
 	}
 
-	public void initialize (SdfFile swDefFile) {
+	public void initialize(SdfFile swDefFile) {
 		fileFormatVersion = swDefFile.getFileFormatVersion();
-		sections = new SoftwareDefinitionSectionsBuilder(swDefFile.getSdfSections());
+		sections = new SoftwareDefinitionSectionsBuilder(
+				swDefFile.getSdfSections());
 	}
-	
+
 	public String getFileFormatVersion() {
 		return fileFormatVersion;
 	}
@@ -33,7 +40,8 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile>{
 		return sections;
 	}
 
-	public void setSoftwareDefinitionSections(SoftwareDefinitionSectionsBuilder value) {
+	public void setSoftwareDefinitionSections(
+			SoftwareDefinitionSectionsBuilder value) {
 		this.sections = value;
 	}
 
@@ -42,7 +50,7 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile>{
 		SdfFile file = new SdfFile();
 		file.setFileFormatVersion(this.getFileFormatVersion());
 		file.setSdfSections(sections.build());
-		
+
 		return file;
 	}
 }

@@ -2,6 +2,10 @@ package edu.cmu.sv.arinc838.builder;
 
 import static org.testng.Assert.*;
 import static org.mockito.Mockito.*;
+
+import java.io.File;
+import java.io.IOException;
+
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -9,6 +13,8 @@ import com.arinc.arinc838.IntegrityDefinition;
 import com.arinc.arinc838.SdfFile;
 import com.arinc.arinc838.SdfSections;
 import com.arinc.arinc838.SoftwareDescription;
+
+import edu.cmu.sv.arinc838.xml.XdfWriter;
 
 public class SoftwareDefinitionFileBuilderTest {
 	private SdfFile swDefFile;
