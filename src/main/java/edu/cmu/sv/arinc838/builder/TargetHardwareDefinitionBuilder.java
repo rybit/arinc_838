@@ -30,8 +30,7 @@ public class TargetHardwareDefinitionBuilder implements Builder<ThwDefinition> {
 		}
 	}
 
-	public TargetHardwareDefinitionBuilder() {
-		
+	public TargetHardwareDefinitionBuilder() {	
 	}
 
 	public String getId() {
