@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- update carsten schweigert, 2011-02-13 -->
 <!-- Update Timo Nußbaumer, Vector Informatik GmbH (www.vector.com), 2011-10-27 -->
-<!--<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.arinc.com/arinc838" 
-	targetNamespace="http://www.arinc.com/arinc838"> -->
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	targetNamespace="http://www.arinc.com/arinc838" xmlns:sdf="http://www.arinc.com/arinc838">
+<xsd:schema xmlns:sdf="http://www.arinc.com/arinc838" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.arinc.com/arinc838">
 	<!--SIMPLE TYPE DEFINITIONS -->
 	<xsd:annotation>
 		<xsd:documentation>a</xsd:documentation>

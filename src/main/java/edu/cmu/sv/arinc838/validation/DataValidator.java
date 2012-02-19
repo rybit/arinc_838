@@ -144,16 +144,16 @@ public class DataValidator {
 
 		int size = value.length();
 
-		if (size != 6 && size != 8 && size != 12) {
-			throw new IllegalArgumentException(
-					"Incorrect number of characters for integrity value. Got "
-							+ size + ", expcted 4, 6, or 10");
-
-		}
-
 		if (!value.matches("0x.*")) {
 			throw new IllegalArgumentException(
 					"Integrity value not prefixed with 0x");
+		}
+		
+		if (size != 4 && size != 6 && size != 10) {
+			throw new IllegalArgumentException(
+					"Incorrect number of characters for integrity value. Got "
+							+ size + ", expected 4, 6, or 10");
+
 		}
 
 		if (value.substring(2).matches(".*[\\D&&[^a-fA-F]].*")) {

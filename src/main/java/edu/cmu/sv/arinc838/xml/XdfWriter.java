@@ -15,6 +15,8 @@ import java.io.FileNotFoundException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.validation.Validator;
+import javax.xml.validation.ValidatorHandler;
 
 import com.arinc.arinc838.SdfFile;
 

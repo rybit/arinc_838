@@ -60,6 +60,6 @@ public class MenuRunner {
 	public static void main(String[] args) {
 		MenuRunner mr = new MenuRunner();
 
-		mr.runMenu(new InitalMenu());
+		mr.runMenu(new InitialMenu());
 	}
 }

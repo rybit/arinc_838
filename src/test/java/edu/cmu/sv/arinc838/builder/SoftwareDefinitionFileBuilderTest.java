@@ -29,9 +29,6 @@ import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder.IntegrityType;
 import edu.cmu.sv.arinc838.validation.DataValidator;
 import edu.cmu.sv.arinc838.validation.ReferenceData;
 
-
-import edu.cmu.sv.arinc838.xml.XdfWriter;
-
 public class SoftwareDefinitionFileBuilderTest {
 	private SdfFile swDefFile;
 	private SdfSections swDefSects;

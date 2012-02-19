@@ -26,7 +26,7 @@ public class IntegrityDefinitionBuilderTest {
 	public void setup() {
 		integDef = new IntegrityDefinition();
 		integDef.setIntegrityType(IntegrityType.CRC16.getType());
-		integDef.setIntegrityValue("0xDEADBEEF01");
+		integDef.setIntegrityValue("0xDEADBEEF");
 
 		builder = new IntegrityDefinitionBuilder(integDef);
 	}

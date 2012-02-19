@@ -134,13 +134,13 @@ public class DataValidatorTest {
 
 	@Test
 	public void testValidateIntegrityValue() {
-		assertEquals("0xABCD", DataValidator.validateIntegrityValue("0xABCD"));
-		assertEquals("0xABCDEF",
-				DataValidator.validateIntegrityValue("0xABCDEF"));
-		assertEquals("0xABCDEF0123",
-				DataValidator.validateIntegrityValue("0xABCDEF0123"));
-		assertEquals("0x456789fFBC",
-				DataValidator.validateIntegrityValue("0x456789fFBC"));
+		assertEquals("0xAB", DataValidator.validateIntegrityValue("0xAB"));
+		assertEquals("0xABCD",
+				DataValidator.validateIntegrityValue("0xABCD"));
+		assertEquals("0xABCDEF01",
+				DataValidator.validateIntegrityValue("0xABCDEF01"));
+		assertEquals("0x456789fF",
+				DataValidator.validateIntegrityValue("0x456789fF"));
 	}
 
 	@Test(expectedExceptions = IllegalArgumentException.class)
@@ -150,7 +150,7 @@ public class DataValidatorTest {
 
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void testValidateIntegrityValueWrongSize() {
-		DataValidator.validateIntegrityValue("0xAB");
+		DataValidator.validateIntegrityValue("0xABC");
 	}
 
 	@Test
