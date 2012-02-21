@@ -73,19 +73,19 @@ public class DataValidatorTest {
 
 		try {
 			DataValidator.validateStr64k("1 > 2");
-			fail("Did not throw IllegalArguementExcetion for non-escaped >");
+			fail("Did not throw IllegalArgumentException for non-escaped >");
 		} catch (IllegalArgumentException e) {
 		}
 
 		try {
 			DataValidator.validateStr64k("1 < 2");
-			fail("Did not throw IllegalArguementExcetion for non-escaped <");
+			fail("Did not throw IllegalArgumentException for non-escaped <");
 		} catch (IllegalArgumentException e) {
 		}
 
 		try {
 			DataValidator.validateStr64k("Mumford & Sons");
-			fail("Did not throw IllegalArguementExcetion for non-escaped &");
+			fail("Did not throw IllegalArgumentException for non-escaped &");
 		} catch (IllegalArgumentException e) {
 		}
 	}
@@ -157,28 +157,28 @@ public class DataValidatorTest {
 	public void testValidateIntegrityValueInvalidCharacters() {
 		try {
 			DataValidator.validateIntegrityValue("0xabCDEG");
-			fail("Did not throw IllegalArguementExcetion for invalid characters");
+			fail("Did not throw IllegalArgumentException for invalid characters");
 		} catch (IllegalArgumentException e) {
 		}
 
 		try {
 			DataValidator.validateIntegrityValue("%57X");
-			fail("Did not throw IllegalArguementExcetion for invalid characters");
+			fail("Did not throw IllegalArgumentException for invalid characters");
 		} catch (IllegalArgumentException e) {
 		}
 		try {
 			DataValidator.validateIntegrityValue("0x12ZZZ678af");
-			fail("Did not throw IllegalArguementExcetion for invalid characters");
+			fail("Did not throw IllegalArgumentException for invalid characters");
 		} catch (IllegalArgumentException e) {
 		}
 		try {
 			DataValidator.validateIntegrityValue("0 x2ZZZ678af");
-			fail("Did not throw IllegalArguementExcetion for invalid characters");
+			fail("Did not throw IllegalArgumentException for invalid characters");
 		} catch (IllegalArgumentException e) {
 		}
 		try {
 			DataValidator.validateIntegrityValue("0x4567 89fFBC");
-			fail("Did not throw IllegalArguementExcetion for invalid characters");
+			fail("Did not throw IllegalArgumentException for invalid characters");
 		} catch (IllegalArgumentException e) {
 		}
 	}
@@ -222,6 +222,12 @@ public class DataValidatorTest {
 		try {
 			DataValidator.validateSoftwarePartNumber("ACM4-7-1234-5678");
 			fail("Did not fail on invalid format");
+		} catch (IllegalArgumentException e) {
+		}
+		
+		try {
+			DataValidator.validateSoftwarePartNumber("ACM23-1234-5678");
+			fail("Did not fail on invalid check characters");
 		} catch (IllegalArgumentException e) {
 		}
 

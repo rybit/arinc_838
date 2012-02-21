@@ -187,7 +187,7 @@ public class DataValidator {
 
 		checkForIllegalCharsInPartNumber(value);
 
-		valdateCheckCharacters(value);
+		validateCheckCharacters(value);
 
 		return value;
 	}
@@ -222,7 +222,7 @@ public class DataValidator {
 		return value;
 	}
 
-	private static String valdateCheckCharacters(String partNumber) {
+	private static String validateCheckCharacters(String partNumber) {
 		String check = partNumber.substring(3, 5);
 
 		String checked = generateCheckCharacters(partNumber);
