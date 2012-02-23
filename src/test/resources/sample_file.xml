@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- update carsten schweigert 2010-11-08-16 -->
-<sdf:sdf-file xmlns:ldf="http://www.arinc.com/arinc838" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.arinc.com ">
+<sdf:sdf-file xmlns:sdf="http://www.arinc.com/arinc838" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.arinc.com ">
 
     <sdf:file-format-version>528384</sdf:file-format-version>
     <sdf:sdf-sections>
@@ -35,8 +35,8 @@
                 <sdf:file-name> CRC_T05A.rom</sdf:file-name>
                 <sdf:file-size>3976</sdf:file-size>
                 <sdf:file-integrity-definition>
-                    <sdf:file-integrity-type>3</sdf:integrity-type>
-                    <sdf:file-integrity-value>0x96142DCA</sdf:integrity-value>
+                    <sdf:file-integrity-type>3</sdf:file-integrity-type>
+                    <sdf:file-integrity-value>0x96142DCA</sdf:file-integrity-value>
                 </sdf:file-integrity-definition>
             </sdf:file-definition>
             <sdf:file-definition>
@@ -44,18 +44,18 @@
                 <sdf:file-name>CRC_T06A.rom</sdf:file-name>
                 <sdf:file-size>18152</sdf:file-size>
                 <sdf:file-integrity-definition>
-                    <sdf:file-integrity-type>3</sdf:integrity-type>
-                    <sdf:file-integrity-value>0xAE34897C</sdf:integrity-value>
+                    <sdf:file-integrity-type>3</sdf:file-integrity-type>
+                    <sdf:file-integrity-value>0xAE34897C</sdf:file-integrity-value>
                 </sdf:file-integrity-definition>
             </sdf:file-definition>
         </sdf:file-definitions>
         <sdf:sdf-integrity-definition>
             <sdf:sdf-integrity-type>3</sdf:sdf-integrity-type>
-            <sdf:sdf-integrity-value>0x00000000</sdf:integrity-value>
+            <sdf:sdf-integrity-value>0x00000000</sdf:sdf-integrity-value>
         </sdf:sdf-integrity-definition>
         <sdf:lsp-integrity-definition>
             <sdf:lsp-integrity-type>3</sdf:lsp-integrity-type>
-            <sdf:lsp-integrity-value>0x00000000</sdf:integrity-value>
+            <sdf:lsp-integrity-value>0x00000000</sdf:lsp-integrity-value>
         </sdf:lsp-integrity-definition>
     </sdf:sdf-sections>
 </sdf:sdf-file>
