@@ -52,52 +52,79 @@ public class DataValidatorTest {
 	}
 
 	@Test
-	public void testValidateStr64k() {
+	public void testValidateStr64kBinary() {
 		String inputStr = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789 -_=+`~'\"[]{}\\|;:,./?!@#$%^*()";
-		assertEquals(inputStr, DataValidator.validateStr64k(inputStr));
-		assertEquals(str64kMax, DataValidator.validateStr64k(str64kMax));
-		assertEquals("", DataValidator.validateStr64k(""));
+		assertEquals(inputStr, DataValidator.validateStr64kBinary(inputStr));
+		assertEquals(str64kMax, DataValidator.validateStr64kBinary(str64kMax));
+		assertEquals("", DataValidator.validateStr64kBinary(""));
 
-		assertEquals("&lt", DataValidator.validateStr64k("&lt"));
-		assertEquals("hello&lt", DataValidator.validateStr64k("hello&lt"));
-		assertEquals("&gt", DataValidator.validateStr64k("&gt"));
-		assertEquals("&gtthere", DataValidator.validateStr64k("&gtthere"));
-		assertEquals("&amp", DataValidator.validateStr64k("&amp"));
+		assertEquals("&lt", DataValidator.validateStr64kBinary("&lt"));
+		assertEquals("hello&lt", DataValidator.validateStr64kBinary("hello&lt"));
+		assertEquals("&gt", DataValidator.validateStr64kBinary("&gt"));
+		assertEquals("&gtthere", DataValidator.validateStr64kBinary("&gtthere"));
+		assertEquals("&amp", DataValidator.validateStr64kBinary("&amp"));
 		assertEquals("hello&amp&ampthere",
-				DataValidator.validateStr64k("hello&amp&ampthere"));
+				DataValidator.validateStr64kBinary("hello&amp&ampthere"));
+
+	}
+	
+	@Test
+	public void testValidateStr64kXml() {
+		String inputStr = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789 -_=+`~'\"[]{}\\|;:,./?!@#$%^*()";
+		assertEquals(inputStr, DataValidator.validateStr64kXml(inputStr));
+		assertEquals(str64kMax, DataValidator.validateStr64kXml(str64kMax));
+		assertEquals("", DataValidator.validateStr64kXml(""));
+
+		assertEquals("&lt", DataValidator.validateStr64kXml("&lt"));
+		assertEquals("hello&lt", DataValidator.validateStr64kXml("hello&lt"));
+		assertEquals("&gt", DataValidator.validateStr64kXml("&gt"));
+		assertEquals("&gtthere", DataValidator.validateStr64kXml("&gtthere"));
+		assertEquals("&amp", DataValidator.validateStr64kXml("&amp"));
+		assertEquals("hello&amp&ampthere",
+				DataValidator.validateStr64kXml("hello&amp&ampthere"));
 
 	}
 
 	@Test
-	public void testValidateStr64kWithNonEscapedChars() {
+	public void testValidateStr64kXmlWithNonEscapedChars() {
 
 		try {
-			DataValidator.validateStr64k("1 > 2");
+			DataValidator.validateStr64kXml("1 > 2");
 			fail("Did not throw IllegalArgumentException for non-escaped >");
 		} catch (IllegalArgumentException e) {
 		}
 
 		try {
-			DataValidator.validateStr64k("1 < 2");
+			DataValidator.validateStr64kXml("1 < 2");
 			fail("Did not throw IllegalArgumentException for non-escaped <");
 		} catch (IllegalArgumentException e) {
 		}
 
 		try {
-			DataValidator.validateStr64k("Mumford & Sons");
+			DataValidator.validateStr64kXml("Mumford & Sons");
 			fail("Did not throw IllegalArgumentException for non-escaped &");
 		} catch (IllegalArgumentException e) {
 		}
 	}
 
 	@Test(expectedExceptions = IllegalArgumentException.class)
-	public void testValidateStr64kTooLarge() {
-		DataValidator.validateStr64k(str64kMax + "Y");
+	public void testValidateStr64kXmlTooLarge() {
+		DataValidator.validateStr64kXml(str64kMax + "Y");
 	}
 
 	@Test(expectedExceptions = IllegalArgumentException.class)
-	public void testValidateStr64kNull() {
-		DataValidator.validateStr64k(null);
+	public void testValidateStr64kBinaryTooLarge() {
+		DataValidator.validateStr64kBinary(str64kMax + "Y");
+	}
+
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testValidateStr64kXmlNull() {
+		DataValidator.validateStr64kXml(null);
+	}
+
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testValidateStr64kBinaryNull() {
+		DataValidator.validateStr64kBinary(null);
 	}
 
 	@Test

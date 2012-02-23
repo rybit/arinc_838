@@ -12,16 +12,20 @@ public class BdfFile extends RandomAccessFile {
 	public static final int UINT32_LENGTH = 4;
 	public static final int BOOLEAN_LENGTH = 1;
 
-	public BdfFile(File raFile) throws FileNotFoundException {
-		super(raFile, "rw");
+	public BdfFile(File file) throws FileNotFoundException {
+		super(file, "rw");
 		
 	}
 
-	public void writeUint32(long uInt32) throws IOException {				
-		super.writeInt((int) DataValidator.validateUint32(uInt32));
+	public void writeUint32(long value) throws IOException {				
+		super.writeInt((int) DataValidator.validateUint32(value));
 	}	
 	
 	public static long asUint32(int value){
 		return value & 0xffffffffL;		
+	}
+
+	public void writeStr64k(String value) throws IOException {
+		super.writeUTF(DataValidator.validateStr64kBinary(value));
 	}
 }

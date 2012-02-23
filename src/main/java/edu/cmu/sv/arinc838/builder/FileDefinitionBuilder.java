@@ -85,7 +85,7 @@ public class FileDefinitionBuilder implements Builder<FileDefinition>{
 	}
 
 	public void setFileName(String fileName) {
-		this.fileName = DataValidator.validateStr64k(fileName);
+		this.fileName = DataValidator.validateStr64kXml(fileName);
 	}
 
 	public long getFileSize() {

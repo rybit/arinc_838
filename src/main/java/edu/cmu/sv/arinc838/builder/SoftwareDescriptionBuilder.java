@@ -44,7 +44,7 @@ public class SoftwareDescriptionBuilder implements Builder<SoftwareDescription> 
 	}
 
 	public void setSoftwareTypeDescription(String value) {
-		this.softwareTypeDescription = DataValidator.validateStr64k(value);
+		this.softwareTypeDescription = DataValidator.validateStr64kXml(value);
 	}
 
 	public long getSoftwareTypeId() {

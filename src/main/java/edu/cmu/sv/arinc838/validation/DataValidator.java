@@ -17,6 +17,8 @@ import edu.cmu.sv.arinc838.builder.SoftwareDescriptionBuilder;
 
 public class DataValidator {
 
+	public static final long STR64K_MAX_LENGTH = 65535;
+
 	/**
 	 * Validates that the given value is an unsigned 32-bit integer. If the
 	 * input is valid, the same value is returned. If the input is invalid, an
@@ -44,16 +46,27 @@ public class DataValidator {
 	 * @throws IllegalArgumentException
 	 *             if the input value does not validate.
 	 */
-	public static String validateStr64k(String value) {
+	public static String validateStr64kBinary(String value) {
 		if (value == null) {
 			throw new IllegalArgumentException("The input value cannot be null");
-		} else if (value.length() > 65535) {
+		} else if (value.length() > STR64K_MAX_LENGTH) {
 			throw new IllegalArgumentException("The input value length of "
 					+ value.length()
 					+ " exceeds the maximum allowed characters of 65535");
-		} else {
-			return checkForEscapedXMLChars(value);
 		}
+
+		return value;
+	}
+
+	/**
+	 * @param value
+	 *            The input value
+	 * @return The validated input value
+	 * @throws IllegalArgumentException
+	 *             if the input value does not validate.
+	 */
+	public static String validateStr64kXml(String value) {
+		return checkForEscapedXMLChars(validateStr64kBinary(value));
 	}
 
 	/**
@@ -148,7 +161,7 @@ public class DataValidator {
 			throw new IllegalArgumentException(
 					"Integrity value not prefixed with 0x");
 		}
-		
+
 		if (size != 4 && size != 6 && size != 10) {
 			throw new IllegalArgumentException(
 					"Incorrect number of characters for integrity value. Got "
@@ -174,7 +187,6 @@ public class DataValidator {
 			throw new IllegalArgumentException(
 					"Software part number cannot be null");
 		}
-		
 
 		// Just check the basic format first: MMMCC-SSSS-SSSS
 		if (!value.matches("\\w{5}-\\w{4}-\\w{4}")) {
@@ -201,8 +213,7 @@ public class DataValidator {
 			throw new IllegalArgumentException(
 					"Software part number cannot be null");
 		}
-		
-		
+
 		checkForIllegalCharsInPartNumber(value);
 
 		String check = generateCheckCharacters(value);

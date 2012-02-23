@@ -9,6 +9,8 @@ import java.io.IOException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import edu.cmu.sv.arinc838.validation.DataValidator;
+
 public class BdfWriterTest {
 
 	private BdfFile f;
@@ -31,8 +33,7 @@ public class BdfWriterTest {
 
 		long actualUint32 = BdfFile.asUint32(f.readInt());
 
-		assertEquals(actualUint32, uInt32, "Expected  uInt32 = " + uInt32
-				+ " received --> " + actualUint32);
+		assertEquals(actualUint32, uInt32);
 	}
 
 	@Test(expectedExceptions = IllegalArgumentException.class)
@@ -62,7 +63,32 @@ public class BdfWriterTest {
 
 		boolean actual = f.readBoolean();
 
-		assertEquals(actual, expected, "Expected  uInt32 = " + actual
-				+ " received --> " + expected);
+		assertEquals(actual, expected);
+	}
+
+	@Test
+	public void writeStr64k() throws Exception {
+		String ipsum = "lorum ipsum";
+
+		f.writeStr64k(ipsum);
+		assertEquals(f.length(), ipsum.toCharArray().length + 2);
+		f.seek(0);
+
+		String actual = f.readUTF();
+
+		assertEquals(actual, ipsum);
+	}
+
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void writeStr64kUsesValidation() throws Exception {
+
+		StringBuilder value = new StringBuilder();
+
+		//build a string that is too big
+		for (int i = 0; i < DataValidator.STR64K_MAX_LENGTH + 1; i++) {
+			value.append('c');
+		}
+
+		f.writeStr64k(value.toString());
 	}
 }

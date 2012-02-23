@@ -38,7 +38,7 @@ public class TargetHardwareDefinitionBuilder implements Builder<ThwDefinition> {
 	}
 
 	public void setId(String value) {
-		this.id = DataValidator.validateStr64k(value);
+		this.id = DataValidator.validateStr64kXml(value);
 	}
 
 	public List<String> getPositions() {
