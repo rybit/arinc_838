@@ -6,10 +6,6 @@ import java.io.File;
 
 import org.testng.annotations.Test;
 
-import com.arinc.arinc838.SdfFile;
-
-import edu.cmu.sv.arinc838.xml.XdfWriter;
-
 
 public class BdfWriterTest {
 	
@@ -26,12 +22,8 @@ public class BdfWriterTest {
 		f.seek(0);
 		
 		long actualUint32 = BdfFile.asUint32(f.readInt());
-		
-		
+				
 		assertEquals(actualUint32, uInt32, "Expected  uInt32 = " + uInt32 + " received --> " + actualUint32);
-		
-		
-		
 	}
 	
 }

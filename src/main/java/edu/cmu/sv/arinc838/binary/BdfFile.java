@@ -15,13 +15,9 @@ public class BdfFile extends RandomAccessFile {
 
 	public void writeUint32(long uInt32) {
 		
-		
-	}
-	
+	}	
 	
 	public static long asUint32(int value){
-		return value & 0xffffffffL;
-		
+		return value & 0xffffffffL;		
 	}
-
 }
