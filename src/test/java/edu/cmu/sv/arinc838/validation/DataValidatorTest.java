@@ -67,7 +67,16 @@ public class DataValidatorTest {
 				DataValidator.validateStr64k("hello&amp&ampthere"));
 
 	}
-
+	@Test
+	public void testValidateStr64kXmlMaxSizeWithEscapedChars()
+	{
+		// this creates a max-sized string, with an escaped '&' as the last character. 
+		// This will make the absolute length > than the max string length, but the 
+		// true length will be = the max length, and should still be valid
+		String str64kMaxWithEscaped = str64kMax.substring(0, str64kMax.length() - 1) + "&amp";
+		assertEquals(str64kMaxWithEscaped, DataValidator.validateStr64k(str64kMaxWithEscaped));
+	}
+	
 	@Test
 	public void testValidateStr64kWithNonEscapedChars() {
 
@@ -99,6 +108,8 @@ public class DataValidatorTest {
 	public void testValidateStr64kNull() {
 		DataValidator.validateStr64k(null);
 	}
+	
+
 
 	@Test
 	public void testValidateFileFormatVersion() {

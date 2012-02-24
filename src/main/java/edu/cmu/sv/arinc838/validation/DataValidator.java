@@ -47,12 +47,17 @@ public class DataValidator {
 	public static String validateStr64k(String value) {
 		if (value == null) {
 			throw new IllegalArgumentException("The input value cannot be null");
-		} else if (value.length() > 65535) {
+		}
+
+		String checked = XmlFormatter
+				.unescapeXmlSpecialChars(checkForEscapedXMLChars(value));
+
+		if (checked.length() > 65535) {
 			throw new IllegalArgumentException("The input value length of "
-					+ value.length()
+					+ checked.length()
 					+ " exceeds the maximum allowed characters of 65535");
 		} else {
-			return checkForEscapedXMLChars(value);
+			return value;
 		}
 	}
 
@@ -148,7 +153,7 @@ public class DataValidator {
 			throw new IllegalArgumentException(
 					"Integrity value not prefixed with 0x");
 		}
-		
+
 		if (size != 4 && size != 6 && size != 10) {
 			throw new IllegalArgumentException(
 					"Incorrect number of characters for integrity value. Got "
@@ -174,7 +179,6 @@ public class DataValidator {
 			throw new IllegalArgumentException(
 					"Software part number cannot be null");
 		}
-		
 
 		// Just check the basic format first: MMMCC-SSSS-SSSS
 		if (!value.matches("\\w{5}-\\w{4}-\\w{4}")) {
@@ -201,8 +205,7 @@ public class DataValidator {
 			throw new IllegalArgumentException(
 					"Software part number cannot be null");
 		}
-		
-		
+
 		checkForIllegalCharsInPartNumber(value);
 
 		String check = generateCheckCharacters(value);
