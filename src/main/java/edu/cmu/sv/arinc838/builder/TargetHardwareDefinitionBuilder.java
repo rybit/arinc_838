@@ -15,6 +15,7 @@ import java.util.List;
 
 import com.arinc.arinc838.ThwDefinition;
 
+import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.validation.DataValidator;
 
 public class TargetHardwareDefinitionBuilder implements Builder<ThwDefinition> {
@@ -46,7 +47,7 @@ public class TargetHardwareDefinitionBuilder implements Builder<ThwDefinition> {
 	}
 
 	@Override
-	public ThwDefinition build() {
+	public ThwDefinition buildXml() {
 		ThwDefinition def = new ThwDefinition();
 		
 		def.setThwId(this.getId());
@@ -55,5 +56,11 @@ public class TargetHardwareDefinitionBuilder implements Builder<ThwDefinition> {
 		}
 		
 		return def;
+	}
+	
+	@Override
+	public void buildBinary(BdfFile file) {
+		// TODO Auto-generated method stub
+		
 	}
 }

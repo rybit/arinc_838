@@ -40,7 +40,7 @@ public class IntegrityDefinitionBuilderTest {
 
 	@Test
 	public void testSetIntegrityType() {
-		IntegrityDefinition def = builder.build();
+		IntegrityDefinition def = builder.buildXml();
 
 		assertEquals(def.getIntegrityType(), builder.getIntegrityType());
 		
@@ -49,7 +49,7 @@ public class IntegrityDefinitionBuilderTest {
 		
 		assertNotEquals(def.getIntegrityType(), builder.getIntegrityType());
 		
-		def = builder.build();
+		def = builder.buildXml();
 		
 		assertEquals(def.getIntegrityType(), builder.getIntegrityType());
 	}
@@ -62,12 +62,12 @@ public class IntegrityDefinitionBuilderTest {
 	
 	@Test
 	public void testSetIntegrityValue() {
-		IntegrityDefinition def = builder.build();
+		IntegrityDefinition def = builder.buildXml();
 
 		assertEquals(def.getIntegrityValue(), builder.getIntegrityValue());
 		
 		builder.setIntegrityValue("0xFEED");
-		def = builder.build();
+		def = builder.buildXml();
 		
 		assertEquals(def.getIntegrityValue(), builder.getIntegrityValue());
 	}

@@ -28,7 +28,7 @@ public class XmlSaveItem extends AbstractMenuItem {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		String ret = br.readLine();
 		
-		XdfWriter writer = new XdfWriter(builder.build());
+		XdfWriter writer = new XdfWriter(builder.buildXml());
 		
 		writer.write(ret);
 		

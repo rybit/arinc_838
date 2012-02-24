@@ -11,6 +11,7 @@ package edu.cmu.sv.arinc838.builder;
 
 import com.arinc.arinc838.FileDefinition;
 
+import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.validation.DataValidator;
 
 /**
@@ -97,15 +98,21 @@ public class FileDefinitionBuilder implements Builder<FileDefinition>{
 	}
 
 	@Override
-	public FileDefinition build() {
+	public FileDefinition buildXml() {
 		FileDefinition retDef = new FileDefinition();
 
 		retDef.setFileLoadable(loadable);
 		retDef.setFileName(fileName);
 		retDef.setFileSize(fileSize);
 
-		retDef.setFileIntegrityDefinition(integDefBuilder.build ());
+		retDef.setFileIntegrityDefinition(integDefBuilder.buildXml());
 
 		return retDef;
+	}
+	
+	@Override
+	public void buildBinary(BdfFile file) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -9,12 +9,13 @@
  */
 package edu.cmu.sv.arinc838.builder;
 
+import java.io.IOException;
+
 import edu.cmu.sv.arinc838.binary.BdfFile;
 
 public interface Builder<T>{
 	
 	public T buildXml();
 	
-	public void buildBinary(BdfFile file);
-
+	public void buildBinary(BdfFile file) throws IOException;
 }

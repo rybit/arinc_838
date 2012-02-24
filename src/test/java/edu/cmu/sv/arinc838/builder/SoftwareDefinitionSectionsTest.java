@@ -69,7 +69,7 @@ public class SoftwareDefinitionSectionsTest {
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void testFileDefinitionsEmpty()
 	{
-		SdfSections newSect = xmlSoftwareDefinitionSections.build();
+		SdfSections newSect = xmlSoftwareDefinitionSections.buildXml();
 		newSect.getFileDefinitions().clear();
 		
 		new SoftwareDefinitionSectionsBuilder(newSect);
@@ -80,7 +80,7 @@ public class SoftwareDefinitionSectionsTest {
 	{
 		xmlSoftwareDefinitionSections.getFileDefinitions().clear();
 		
-		xmlSoftwareDefinitionSections.build();
+		xmlSoftwareDefinitionSections.buildXml();
 	}
 	
 	@Test

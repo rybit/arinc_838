@@ -11,6 +11,7 @@ package edu.cmu.sv.arinc838.builder;
 
 import com.arinc.arinc838.IntegrityDefinition;
 
+import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.validation.DataValidator;
 
 public class IntegrityDefinitionBuilder implements Builder<IntegrityDefinition> {
@@ -78,12 +79,18 @@ public class IntegrityDefinitionBuilder implements Builder<IntegrityDefinition> 
 	}
 
 	@Override
-	public IntegrityDefinition build() {
+	public IntegrityDefinition buildXml() {
 		IntegrityDefinition retDef = new IntegrityDefinition();
 
 		retDef.setIntegrityType(integType);
 		retDef.setIntegrityValue(integValue);
 
 		return retDef;
+	}
+	
+	@Override
+	public void buildBinary(BdfFile file) {
+		// TODO Auto-generated method stub
+		
 	}
 }

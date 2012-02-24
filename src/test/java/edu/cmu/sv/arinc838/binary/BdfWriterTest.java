@@ -91,4 +91,16 @@ public class BdfWriterTest {
 
 		f.writeStr64k(value.toString());
 	}
+	
+	@Test
+	public void readUint32() throws Exception{
+		long uInt32 = (long) Integer.MAX_VALUE;
+		uInt32++;
+		
+		f.writeUint32(uInt32);
+		
+		f.seek(0);
+		
+		assertEquals(f.readUint32(), uInt32);		
+	}
 }

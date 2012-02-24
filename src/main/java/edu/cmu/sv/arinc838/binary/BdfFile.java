@@ -28,4 +28,8 @@ public class BdfFile extends RandomAccessFile {
 	public void writeStr64k(String value) throws IOException {
 		super.writeUTF(DataValidator.validateStr64kBinary(value));
 	}
+
+	public long readUint32() throws IOException {
+		return asUint32(super.readInt());
+	}
 }

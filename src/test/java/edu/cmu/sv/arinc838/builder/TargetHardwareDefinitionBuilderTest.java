@@ -103,7 +103,7 @@ public class TargetHardwareDefinitionBuilderTest {
 
 	@Test
 	public void testBuildReturnsProperJaxbObject() {
-		ThwDefinition def = first.build();
+		ThwDefinition def = first.buildXml();
 		
 		assertEquals(def.getThwId(), first.getId());
 		

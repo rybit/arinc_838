@@ -9,10 +9,12 @@
  */
 package edu.cmu.sv.arinc838.builder;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,7 @@ import com.arinc.arinc838.IntegrityDefinition;
 import com.arinc.arinc838.SdfFile;
 import com.arinc.arinc838.SdfSections;
 
+import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder.IntegrityType;
 import edu.cmu.sv.arinc838.validation.DataValidator;
 import edu.cmu.sv.arinc838.validation.ReferenceData;
@@ -38,7 +41,8 @@ public class SoftwareDefinitionFileBuilderTest {
 		swDefFile = new SdfFile();
 		swDefSects = mock(SdfSections.class);
 		com.arinc.arinc838.SoftwareDescription desc = mock(com.arinc.arinc838.SoftwareDescription.class);
-		when(desc.getSoftwarePartnumber()).thenReturn(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
+		when(desc.getSoftwarePartnumber()).thenReturn(
+				ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
 		when(desc.getSoftwareTypeDescription()).thenReturn("desc");
 		when(swDefSects.getSoftwareDescription()).thenReturn(desc);
 		IntegrityDefinition integDef = new IntegrityDefinition();
@@ -53,9 +57,9 @@ public class SoftwareDefinitionFileBuilderTest {
 		fileDef.setFileSize(1234);
 		fileDefs.add(fileDef);
 		when(swDefSects.getFileDefinitions()).thenReturn(fileDefs);
-		
 
-		swDefFile.setFileFormatVersion(SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION);
+		swDefFile
+				.setFileFormatVersion(SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION);
 		swDefFile.setSdfSections(swDefSects);
 		swDefFileBuilder = new SoftwareDefinitionFileBuilder(swDefFile);
 	}
@@ -107,7 +111,8 @@ public class SoftwareDefinitionFileBuilderTest {
 
 		SoftwareDefinitionSectionsBuilder tmp = new SoftwareDefinitionSectionsBuilder();
 		SoftwareDescriptionBuilder swDestmp = new SoftwareDescriptionBuilder();
-		swDestmp.setSoftwarePartNumber(DataValidator.generateSoftwarePartNumber("YZT??-ABCD-EFGH"));
+		swDestmp.setSoftwarePartNumber(DataValidator
+				.generateSoftwarePartNumber("YZT??-ABCD-EFGH"));
 		tmp.setSoftwareDescription(swDestmp);
 
 		swDefFileBuilder.setSoftwareDefinitionSections(tmp);
@@ -124,7 +129,7 @@ public class SoftwareDefinitionFileBuilderTest {
 
 	@Test
 	public void testBuildAddsFileFormatVersion() {
-		SdfFile file = swDefFileBuilder.build();
+		SdfFile file = swDefFileBuilder.buildXml();
 
 		assertEquals(swDefFile.getFileFormatVersion(),
 				file.getFileFormatVersion());
@@ -132,18 +137,61 @@ public class SoftwareDefinitionFileBuilderTest {
 
 	@Test
 	public void testBuildAddsSection() {
-		SdfFile file = swDefFileBuilder.build();
+		SdfFile file = swDefFileBuilder.buildXml();
 
 		assertEquals(file.getSdfSections().getSoftwareDescription()
 				.getSoftwarePartnumber(), swDefSects.getSoftwareDescription()
 				.getSoftwarePartnumber());
 	}
-	
+
 	@Test
-	public void testDefaultConstructor(){
+	public void testDefaultConstructor() {
 		SoftwareDefinitionFileBuilder builder = new SoftwareDefinitionFileBuilder();
-		
-		assertEquals(builder.getFileFormatVersion(), 0);	
+
+		assertEquals(builder.getFileFormatVersion(), 0);
 		assertNull(builder.getSoftwareDefinitionSections());
 	}
+
+	@Test
+	public void testBuildBinaryCallsSections() throws IOException {
+		SoftwareDefinitionSectionsBuilder sections = mock(SoftwareDefinitionSectionsBuilder.class);
+
+		SoftwareDefinitionFileBuilder fileBuilder = new SoftwareDefinitionFileBuilder();
+		fileBuilder.setSoftwareDefinitionSections(sections);
+
+		edu.cmu.sv.arinc838.binary.BdfFile file = mock(BdfFile.class);
+
+		fileBuilder.buildBinary(file);
+
+		verify(sections).buildBinary(file);
+	}
+
+	@Test
+	public void testBuildBinaryAddsFileFormatVersion() throws Exception {
+		long expectedFileFormatVersion = SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION;
+
+		SoftwareDefinitionSectionsBuilder sections = mock(SoftwareDefinitionSectionsBuilder.class);
+
+		SoftwareDefinitionFileBuilder fileBuilder = new SoftwareDefinitionFileBuilder();
+		fileBuilder.setSoftwareDefinitionSections(sections);
+		fileBuilder.setFileFormatVersion(expectedFileFormatVersion);
+
+		edu.cmu.sv.arinc838.binary.BdfFile file = new BdfFile(
+				File.createTempFile("tmp", ".tmp"));
+
+		fileBuilder.buildBinary(file);
+
+		file.seek(SoftwareDefinitionFileBuilder.BINARY_FILE_FORMAT_VERSION_LOCATION);
+		assertEquals(file.readUint32(), expectedFileFormatVersion);
+	}
+	
+	
+	
+//	@Test
+//	public void testFileLengthIsSet() throws Exception{
+//		SoftwareDefinitionSectionsBuilder sections = mock(SoftwareDefinitionSectionsBuilder.class);
+//		
+//		SoftwareDefinitionFileBuilder fileBuilder = new SoftwareDefinitionFileBuilder();
+//		fileBuilder.setSoftwareDefinitionSections(sections);
+//	}
 }

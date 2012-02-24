@@ -120,7 +120,7 @@ public class SoftwareDescriptionBuilderTest {
 
 	@Test
 	public void testBuildCreatesProperJaxbObject() {
-		SoftwareDescription desc = first.build();
+		SoftwareDescription desc = first.buildXml();
 
 		assertEquals(desc.getSoftwareTypeId(), first.getSoftwareTypeId());
 		assertEquals(desc.getSoftwareTypeDescription(),

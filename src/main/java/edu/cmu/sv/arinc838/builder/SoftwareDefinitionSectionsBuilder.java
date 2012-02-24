@@ -16,6 +16,7 @@ import com.arinc.arinc838.FileDefinition;
 import com.arinc.arinc838.SdfSections;
 import com.arinc.arinc838.ThwDefinition;
 
+import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.validation.DataValidator;
 
 public class SoftwareDefinitionSectionsBuilder implements Builder<SdfSections> {
@@ -85,7 +86,7 @@ public class SoftwareDefinitionSectionsBuilder implements Builder<SdfSections> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public SdfSections build() {
+	public SdfSections buildXml() {
 		SdfSections sdfSections = new SdfSections();
 
 		// we have to re-validate this as a LIST1 since it can be modified
@@ -93,17 +94,23 @@ public class SoftwareDefinitionSectionsBuilder implements Builder<SdfSections> {
 		List<FileDefinitionBuilder> fileDefsValidated = (List<FileDefinitionBuilder>) DataValidator
 				.validateList1(fileDefinitions);
 		for (FileDefinitionBuilder fileDef : fileDefsValidated) {
-			sdfSections.getFileDefinitions().add(fileDef.build());
+			sdfSections.getFileDefinitions().add(fileDef.buildXml());
 		}
 
 		for (TargetHardwareDefinitionBuilder thwDef : thwDefinitions) {
-			sdfSections.getThwDefinitions().add(thwDef.build());
+			sdfSections.getThwDefinitions().add(thwDef.buildXml());
 		}
 
-		sdfSections.setLspIntegrityDefinition(lspIntegrityDefinition.build());
-		sdfSections.setSdfIntegrityDefinition(sdfIntegrityDefinition.build());
-		sdfSections.setSoftwareDescription(softwareDescription.build());
+		sdfSections.setLspIntegrityDefinition(lspIntegrityDefinition.buildXml());
+		sdfSections.setSdfIntegrityDefinition(sdfIntegrityDefinition.buildXml());
+		sdfSections.setSoftwareDescription(softwareDescription.buildXml());
 
 		return sdfSections;
+	}
+	
+	@Override
+	public void buildBinary(BdfFile file) {
+		// TODO Auto-generated method stub
+		
 	}
 }

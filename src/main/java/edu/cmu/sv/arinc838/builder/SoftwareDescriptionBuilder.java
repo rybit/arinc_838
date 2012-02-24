@@ -11,6 +11,7 @@ package edu.cmu.sv.arinc838.builder;
 
 import com.arinc.arinc838.SoftwareDescription;
 
+import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.validation.DataValidator;
 
 public class SoftwareDescriptionBuilder implements Builder<SoftwareDescription> {
@@ -56,7 +57,7 @@ public class SoftwareDescriptionBuilder implements Builder<SoftwareDescription> 
 	}
 
 	@Override
-	public SoftwareDescription build() {
+	public SoftwareDescription buildXml() {
 		SoftwareDescription desc = new SoftwareDescription();
 
 		desc.setSoftwarePartnumber(this.getSoftwarePartNumber());
@@ -64,5 +65,11 @@ public class SoftwareDescriptionBuilder implements Builder<SoftwareDescription> 
 		desc.setSoftwareTypeId(this.getSoftwareTypeId());
 
 		return desc;
+	}
+	
+	@Override
+	public void buildBinary(BdfFile file) {
+		// TODO Auto-generated method stub
+		
 	}
 }
