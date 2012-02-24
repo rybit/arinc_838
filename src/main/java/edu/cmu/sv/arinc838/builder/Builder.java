@@ -9,8 +9,12 @@
  */
 package edu.cmu.sv.arinc838.builder;
 
+import edu.cmu.sv.arinc838.binary.BdfFile;
+
 public interface Builder<T>{
 	
-	public T build();
+	public T buildXml();
+	
+	public void buildBinary(BdfFile file);
 
 }
