@@ -108,15 +108,79 @@ public class BdfFileTest {
 	}
 
 	@Test
-	public void testwriteFileFormatVersion() throws Exception {
+	public void testWriteFileFormatVersion() throws Exception {
 		long expectedFileFormatVersion = SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION;
 
-		edu.cmu.sv.arinc838.binary.BdfFile file = new BdfFile(
-				File.createTempFile("tmp", ".tmp"));
+		
+		f.writeFileFormatVersion(expectedFileFormatVersion);
 
-		file.writeFileFormatVersion(expectedFileFormatVersion);
-
-		file.seek(BdfFile.BINARY_FILE_FORMAT_VERSION_LOCATION);
-		assertEquals(file.readUint32(), expectedFileFormatVersion);
+		f.seek(BdfFile.BINARY_FILE_FORMAT_VERSION_LOCATION);
+		assertEquals(f.readUint32(), expectedFileFormatVersion);
 	}
+	
+	@Test
+	public void testWriteSoftwareDescriptionPointer() throws Exception {
+		long expected = 42;
+
+
+		f.writeSoftwareDescriptionPointer(expected);
+
+		f.seek(BdfFile.SOFTWARE_DESCRIPTION_POINTER_LOCATION);
+		assertEquals(f.readUint32(), expected);
+	}
+	
+	@Test
+	public void testWriteTargetDefinitionsPointer() throws Exception {
+		long expected = 42;
+
+
+		f.writeTargetDefinitionsPointer(expected);
+
+		f.seek(BdfFile.TARGET_DEFINITIONS_POINTER_LOCATION);
+		assertEquals(f.readUint32(), expected);
+	}
+	
+	@Test
+	public void testWriteFileDefinitionsPointer() throws Exception {
+		long expected = 42;
+
+
+		f.writeFileDefinitionsPointer(expected);
+
+		f.seek(BdfFile.FILE_DEFINITIONS_POINTER_LOCATION);
+		assertEquals(f.readUint32(), expected);
+	}
+	
+	@Test
+	public void testWriteSdfIntegrityDefinitionPointer() throws Exception {
+		long expected = 42;
+
+		f.writeSdfIntegrityDefinitionPointer(expected);
+
+		f.seek(BdfFile.SDF_INTEGRITY_POINTER_LOCATION);
+		assertEquals(f.readUint32(), expected);
+	}
+	
+	@Test
+	public void testSeekAndRestoreFilePointer() throws Exception {
+		
+		long expected = 42;
+
+		f.seek(expected);
+		f.writeSdfIntegrityDefinitionPointer(expected);
+		assertEquals(f.getFilePointer(),expected);
+		
+	}
+	
+	
+	@Test
+	public void testWriteLspIntegrityDefinitionPointer() throws Exception {
+		long expected = 42;
+
+		f.writeLspIntegrityDefinitionPointer(expected);
+
+		f.seek(BdfFile.LSP_INTEGRITY_POINTER_LOCATION);
+		assertEquals(f.readUint32(), expected);
+	}
+	
 }
