@@ -66,10 +66,10 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 	}
 	
 	@Override
-	public void buildBinary(BdfFile file) throws IOException {
+	public int buildBinary(BdfFile file) throws IOException {
 		
 	//	writeFileFormatVersion(file);
 		
-		sections.buildBinary(file);		
+		return sections.buildBinary(file);		
 	}
 }

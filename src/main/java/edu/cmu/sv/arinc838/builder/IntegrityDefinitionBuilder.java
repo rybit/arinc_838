@@ -89,8 +89,8 @@ public class IntegrityDefinitionBuilder implements Builder<IntegrityDefinition> 
 	}
 	
 	@Override
-	public void buildBinary(BdfFile file) {
+	public int buildBinary(BdfFile file) {
 		// TODO Auto-generated method stub
-		
+		return 0;
 	}
 }

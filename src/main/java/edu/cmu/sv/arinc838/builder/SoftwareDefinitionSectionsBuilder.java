@@ -109,8 +109,8 @@ public class SoftwareDefinitionSectionsBuilder implements Builder<SdfSections> {
 	}
 	
 	@Override
-	public void buildBinary(BdfFile file) {
+	public int buildBinary(BdfFile file) {
 		// TODO Auto-generated method stub
-		
+		return 0;
 	}
 }
