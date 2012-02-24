@@ -1,5 +1,6 @@
 package edu.cmu.sv.arinc838.binary;
 
+import static org.mockito.Mockito.mock;
 import static org.testng.Assert.*;
 
 import java.io.File;
@@ -9,9 +10,11 @@ import java.io.IOException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
+import edu.cmu.sv.arinc838.builder.SoftwareDefinitionSectionsBuilder;
 import edu.cmu.sv.arinc838.validation.DataValidator;
 
-public class BdfWriterTest {
+public class BdfFileTest {
 
 	private BdfFile f;
 
@@ -102,5 +105,18 @@ public class BdfWriterTest {
 		f.seek(0);
 		
 		assertEquals(f.readUint32(), uInt32);		
+	}
+
+	@Test
+	public void testwriteFileFormatVersion() throws Exception {
+		long expectedFileFormatVersion = SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION;
+
+		edu.cmu.sv.arinc838.binary.BdfFile file = new BdfFile(
+				File.createTempFile("tmp", ".tmp"));
+
+		file.writeFileFormatVersion(expectedFileFormatVersion);
+
+		file.seek(BdfFile.BINARY_FILE_FORMAT_VERSION_LOCATION);
+		assertEquals(file.readUint32(), expectedFileFormatVersion);
 	}
 }

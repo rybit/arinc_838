@@ -22,12 +22,6 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 	 * The default file format version as defined in the spec. Value is {@value}
 	 */
 	public static final long DEFAULT_FILE_FORMAT_VERSION = 528384;	
-	public static final int BINARY_FILE_FORMAT_VERSION_LOCATION = 4;
-	public static final int SOFTWARE_DESCRIPTION_POINTER_LOCATION = 8;
-	public static final int TARGET_DEFINITIONS_POINTER_LOCATION = 12;
-	public static final int FILE_DEFINITIONS_POINTER_LOCATION = 16;
-	public static final int SDF_INTEGRITY_POINTER_LOCATION = 20;
-	public static final int LSP_INTEGRITY_POINTER_LOCATION = 24;
 
 	private long fileFormatVersion;
 	private SoftwareDefinitionSectionsBuilder sections;
@@ -74,13 +68,8 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 	@Override
 	public void buildBinary(BdfFile file) throws IOException {
 		
-		writeFileFormatVersion(file);
+	//	writeFileFormatVersion(file);
 		
 		sections.buildBinary(file);		
-	}
-
-	private void writeFileFormatVersion(BdfFile file) throws IOException {
-		file.seek(BINARY_FILE_FORMAT_VERSION_LOCATION);
-		file.writeUint32(this.fileFormatVersion);
 	}
 }

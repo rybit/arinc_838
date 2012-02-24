@@ -164,28 +164,7 @@ public class SoftwareDefinitionFileBuilderTest {
 		fileBuilder.buildBinary(file);
 
 		verify(sections).buildBinary(file);
-	}
-
-	@Test
-	public void testBuildBinaryAddsFileFormatVersion() throws Exception {
-		long expectedFileFormatVersion = SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION;
-
-		SoftwareDefinitionSectionsBuilder sections = mock(SoftwareDefinitionSectionsBuilder.class);
-
-		SoftwareDefinitionFileBuilder fileBuilder = new SoftwareDefinitionFileBuilder();
-		fileBuilder.setSoftwareDefinitionSections(sections);
-		fileBuilder.setFileFormatVersion(expectedFileFormatVersion);
-
-		edu.cmu.sv.arinc838.binary.BdfFile file = new BdfFile(
-				File.createTempFile("tmp", ".tmp"));
-
-		fileBuilder.buildBinary(file);
-
-		file.seek(SoftwareDefinitionFileBuilder.BINARY_FILE_FORMAT_VERSION_LOCATION);
-		assertEquals(file.readUint32(), expectedFileFormatVersion);
-	}
-	
-	
+	}	
 	
 //	@Test
 //	public void testFileLengthIsSet() throws Exception{
