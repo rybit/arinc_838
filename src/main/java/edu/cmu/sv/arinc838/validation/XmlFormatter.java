@@ -9,7 +9,6 @@
  */
 package edu.cmu.sv.arinc838.validation;
 
-
 public class XmlFormatter {
 
 /**
@@ -35,10 +34,6 @@ public class XmlFormatter {
 		
 		return unescaped.replaceAll("&", "&amp").replaceAll(">", "&gt")
 				.replaceAll("<", "&lt");
-	}
-
-	public static void main(String[] args) {
-		System.out.println(escapeXmlSpecialChars("A > B &amp B &lt C"));
 	}
 
 /**
