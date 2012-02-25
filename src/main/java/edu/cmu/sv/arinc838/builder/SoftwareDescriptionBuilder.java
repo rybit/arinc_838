@@ -9,6 +9,8 @@
  */
 package edu.cmu.sv.arinc838.builder;
 
+import java.io.IOException;
+
 import com.arinc.arinc838.SoftwareDescription;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
@@ -68,8 +70,12 @@ public class SoftwareDescriptionBuilder implements Builder<SoftwareDescription> 
 	}
 	
 	@Override
-	public int buildBinary(BdfFile file) {
-		// TODO Auto-generated method stub
+	public int buildBinary(BdfFile file) throws IOException {
+		file.writeSoftwareDescriptionPointer();
+		file.writeStr64k(this.getSoftwarePartNumber());		
+		file.writeStr64k(this.getSoftwareTypeDescription());
+		file.writeUint32(this.getSoftwareTypeId());
+		
 		return 0;
 	}
 }

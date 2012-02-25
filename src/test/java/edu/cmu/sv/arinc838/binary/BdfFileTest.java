@@ -121,9 +121,9 @@ public class BdfFileTest {
 	@Test
 	public void testWriteSoftwareDescriptionPointer() throws Exception {
 		long expected = 42;
+		f.seek(expected);
 
-
-		f.writeSoftwareDescriptionPointer(expected);
+		f.writeSoftwareDescriptionPointer();
 
 		f.seek(BdfFile.SOFTWARE_DESCRIPTION_POINTER_LOCATION);
 		assertEquals(f.readUint32(), expected);
@@ -132,9 +132,9 @@ public class BdfFileTest {
 	@Test
 	public void testWriteTargetDefinitionsPointer() throws Exception {
 		long expected = 42;
+		f.seek(expected);
 
-
-		f.writeTargetDefinitionsPointer(expected);
+		f.writeTargetDefinitionsPointer();
 
 		f.seek(BdfFile.TARGET_DEFINITIONS_POINTER_LOCATION);
 		assertEquals(f.readUint32(), expected);
@@ -143,9 +143,9 @@ public class BdfFileTest {
 	@Test
 	public void testWriteFileDefinitionsPointer() throws Exception {
 		long expected = 42;
+		f.seek(expected);
 
-
-		f.writeFileDefinitionsPointer(expected);
+		f.writeFileDefinitionsPointer();
 
 		f.seek(BdfFile.FILE_DEFINITIONS_POINTER_LOCATION);
 		assertEquals(f.readUint32(), expected);
@@ -154,33 +154,31 @@ public class BdfFileTest {
 	@Test
 	public void testWriteSdfIntegrityDefinitionPointer() throws Exception {
 		long expected = 42;
+		f.seek(expected);
 
-		f.writeSdfIntegrityDefinitionPointer(expected);
+		f.writeSdfIntegrityDefinitionPointer();
 
 		f.seek(BdfFile.SDF_INTEGRITY_POINTER_LOCATION);
 		assertEquals(f.readUint32(), expected);
 	}
 	
 	@Test
-	public void testSeekAndRestoreFilePointer() throws Exception {
-		
+	public void testSeekAndRestoreFilePointer() throws Exception {		
 		long expected = 42;
-
 		f.seek(expected);
-		f.writeSdfIntegrityDefinitionPointer(expected);
-		assertEquals(f.getFilePointer(),expected);
 		
-	}
-	
+		f.writeSdfIntegrityDefinitionPointer();
+		assertEquals(f.getFilePointer(),expected);
+	}	
 	
 	@Test
 	public void testWriteLspIntegrityDefinitionPointer() throws Exception {
 		long expected = 42;
+		f.seek(expected);
 
-		f.writeLspIntegrityDefinitionPointer(expected);
+		f.writeLspIntegrityDefinitionPointer();
 
 		f.seek(BdfFile.LSP_INTEGRITY_POINTER_LOCATION);
 		assertEquals(f.readUint32(), expected);
-	}
-	
+	}	
 }

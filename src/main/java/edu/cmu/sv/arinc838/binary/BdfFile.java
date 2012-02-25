@@ -40,34 +40,37 @@ public class BdfFile extends RandomAccessFile {
 	}
 
 	public void writeFileFormatVersion(long version) throws IOException {
-		writeUint32(version, BINARY_FILE_FORMAT_VERSION_LOCATION);
+		long currentLocation = super.getFilePointer();
+		super.seek(BINARY_FILE_FORMAT_VERSION_LOCATION);
+		writeUint32(version);
+		super.seek(currentLocation);
 	}
 
-	public void writeSoftwareDescriptionPointer(long expected) throws IOException {
-		writeUint32(expected,SOFTWARE_DESCRIPTION_POINTER_LOCATION);
+	public void writeSoftwareDescriptionPointer() throws IOException {
+		writePointer(SOFTWARE_DESCRIPTION_POINTER_LOCATION);
 	}
 
-	public void writeTargetDefinitionsPointer(long expected) throws IOException {
-		writeUint32(expected, TARGET_DEFINITIONS_POINTER_LOCATION);
+	public void writeTargetDefinitionsPointer() throws IOException {
+		writePointer(TARGET_DEFINITIONS_POINTER_LOCATION);
 	}
 
-	public void writeFileDefinitionsPointer(long expected) throws IOException {
-		writeUint32(expected, FILE_DEFINITIONS_POINTER_LOCATION);
+	public void writeFileDefinitionsPointer() throws IOException {
+		writePointer(FILE_DEFINITIONS_POINTER_LOCATION);
 	}
 
-	public void writeSdfIntegrityDefinitionPointer(long expected) throws IOException {
-		writeUint32(expected, SDF_INTEGRITY_POINTER_LOCATION);
+	public void writeSdfIntegrityDefinitionPointer() throws IOException {
+		writePointer(SDF_INTEGRITY_POINTER_LOCATION);
 	}
 
-	public void writeLspIntegrityDefinitionPointer(long expected) throws IOException {
-		writeUint32(expected, LSP_INTEGRITY_POINTER_LOCATION);
+	public void writeLspIntegrityDefinitionPointer() throws IOException {
+		writePointer(LSP_INTEGRITY_POINTER_LOCATION);
 		
 	}
 
-	private void writeUint32(long value, int location) throws IOException {
-		long tmp = super.getFilePointer();
-		super.seek(location);
-		writeUint32(value);
-		super.seek(tmp);
+	private void writePointer(int pointerLocation) throws IOException {
+		long currentLocation = super.getFilePointer();
+		super.seek(pointerLocation);
+		writeUint32(currentLocation);
+		super.seek(currentLocation);
 	}
 }

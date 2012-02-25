@@ -9,10 +9,16 @@
  */
 package edu.cmu.sv.arinc838.builder;
 
+import static org.mockito.Mockito.*;
+
+import java.io.IOException;
+
+import org.mockito.InOrder;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import com.arinc.arinc838.SoftwareDescription;
 
+import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.builder.SoftwareDescriptionBuilder;
 import edu.cmu.sv.arinc838.validation.DataValidator;
 import edu.cmu.sv.arinc838.validation.ReferenceData;
@@ -127,5 +133,20 @@ public class SoftwareDescriptionBuilderTest {
 				first.getSoftwareTypeDescription());
 		assertEquals(desc.getSoftwarePartnumber(),
 				first.getSoftwarePartNumber());
+	}
+	
+	@Test
+	public void testBuildBinaryWritesSoftwareTypeDescription() throws IOException{
+		BdfFile file = mock(BdfFile.class);
+		
+		InOrder order = inOrder(file);
+		
+		first.buildBinary(file);
+							
+		order.verify(file).writeSoftwareDescriptionPointer();
+		order.verify(file).writeStr64k(first.getSoftwarePartNumber());
+		order.verify(file).writeStr64k(first.getSoftwareTypeDescription());
+		order.verify(file).writeUint32(first.getSoftwareTypeId());		
+		order.verifyNoMoreInteractions();
 	}
 }
