@@ -10,8 +10,12 @@
 package edu.cmu.sv.arinc838.builder;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.arinc.arinc838.FileDefinition;
 import com.arinc.arinc838.SdfFile;
+import com.arinc.arinc838.ThwDefinition;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.validation.DataValidator;
@@ -24,8 +28,11 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 	public static final long DEFAULT_FILE_FORMAT_VERSION = 528384;
 
 	private long fileFormatVersion;
-	private SoftwareDefinitionSectionsBuilder sections;
-
+	private List<FileDefinitionBuilder> fileDefinitions = new ArrayList<FileDefinitionBuilder>();
+	private List<TargetHardwareDefinitionBuilder> thwDefinitions = new ArrayList<TargetHardwareDefinitionBuilder>();
+	private SoftwareDescriptionBuilder softwareDescription;
+	private IntegrityDefinitionBuilder lspIntegrityDefinition;
+	private IntegrityDefinitionBuilder sdfIntegrityDefinition;
 	public SoftwareDefinitionFileBuilder(SdfFile swDefFile) {
 		this.initialize(swDefFile);
 	}
@@ -34,10 +41,26 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 		;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void initialize(SdfFile swDefFile) {
 		fileFormatVersion = swDefFile.getFileFormatVersion();
-		sections = new SoftwareDefinitionSectionsBuilder(
-				swDefFile.getSdfSections());
+		List<FileDefinition> fileDefs = (List<FileDefinition>) DataValidator
+				.validateList1(swDefFile.getFileDefinitions());
+
+		for (FileDefinition fileDef : fileDefs) {
+			fileDefinitions.add(new FileDefinitionBuilder(fileDef));
+		}
+
+		for (ThwDefinition thwDef : swDefFile.getThwDefinitions()) {
+			thwDefinitions.add(new TargetHardwareDefinitionBuilder(thwDef));
+		}
+
+		softwareDescription = new SoftwareDescriptionBuilder(
+				swDefFile.getSoftwareDescription());
+		lspIntegrityDefinition = new IntegrityDefinitionBuilder(
+				swDefFile.getLspIntegrityDefinition());
+		sdfIntegrityDefinition = new IntegrityDefinitionBuilder(
+				swDefFile.getSdfIntegrityDefinition());
 	}
 
 	public long getFileFormatVersion() {
@@ -48,21 +71,63 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 		fileFormatVersion = DataValidator.validateFileFormatVersion(value);
 	}
 
-	public SoftwareDefinitionSectionsBuilder getSoftwareDefinitionSections() {
-		return sections;
+	
+
+
+	public SoftwareDescriptionBuilder getSoftwareDescription() {
+		return softwareDescription;
 	}
 
-	public void setSoftwareDefinitionSections(
-			SoftwareDefinitionSectionsBuilder value) {
-		this.sections = value;
+	public void setSoftwareDescription(SoftwareDescriptionBuilder sd) {
+		softwareDescription = sd;
 	}
 
+	public List<TargetHardwareDefinitionBuilder> getTargetHardwareDefinitions() {
+		return thwDefinitions;
+	}
+
+	public List<FileDefinitionBuilder> getFileDefinitions() {
+		return fileDefinitions;
+	}
+
+	public IntegrityDefinitionBuilder getSdfIntegrityDefinition() {
+		return this.sdfIntegrityDefinition;
+	}
+
+	public void setSdfIntegrityDefinition(IntegrityDefinitionBuilder value) {
+		this.sdfIntegrityDefinition = value;
+	}
+
+	public IntegrityDefinitionBuilder getLspIntegrityDefinition() {
+		return this.lspIntegrityDefinition;
+	}
+
+	public void setLspIntegrityDefinition(IntegrityDefinitionBuilder value) {
+		this.lspIntegrityDefinition = value;
+	}
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public SdfFile buildXml() {
 		SdfFile file = new SdfFile();
 		file.setFileFormatVersion(this.getFileFormatVersion());
-		file.setSdfSections(sections.buildXml());
 
+		// we have to re-validate this as a LIST1 since it can be modified
+		// without a set method to verify its validity prior to building
+		List<FileDefinitionBuilder> fileDefsValidated = (List<FileDefinitionBuilder>) DataValidator
+				.validateList1(fileDefinitions);
+		for (FileDefinitionBuilder fileDef : fileDefsValidated) {
+			file.getFileDefinitions().add(fileDef.buildXml());
+		}
+
+		for (TargetHardwareDefinitionBuilder thwDef : thwDefinitions) {
+			file.getThwDefinitions().add(thwDef.buildXml());
+		}
+
+		file.setLspIntegrityDefinition(lspIntegrityDefinition.buildXml());
+		file.setSdfIntegrityDefinition(sdfIntegrityDefinition.buildXml());
+		file.setSoftwareDescription(softwareDescription.buildXml());
+		
 		return file;
 	}
 
@@ -70,6 +135,6 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 	public int buildBinary(BdfFile file) throws IOException {
 		file.writeFileFormatVersion(fileFormatVersion);
 
-		return sections.buildBinary(file);
+		return 0;
 	}
 }

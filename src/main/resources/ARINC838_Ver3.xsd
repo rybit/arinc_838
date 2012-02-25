@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- update carsten schweigert, 2011-02-13 -->
 <!-- Update Timo Nußbaumer, Vector Informatik GmbH (www.vector.com), 2011-10-27 -->
-<xsd:schema xmlns:sdf="http://www.arinc.com/arinc838" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	targetNamespace="http://www.arinc.com/arinc838">
+<xsd:schema xmlns:sdf="http://www.arinc.com/arinc838"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.arinc.com/arinc838">
 	<!--SIMPLE TYPE DEFINITIONS -->
 	<xsd:annotation>
 		<xsd:documentation>a</xsd:documentation>
@@ -68,24 +68,6 @@
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:complexType name="sdf-sections">
-		<xsd:sequence>
-			<xsd:element name="software-description" type="sdf:software-description">
-			</xsd:element>
-			<xsd:element minOccurs="0" maxOccurs="unbounded" name="thw-definitions"
-				type="sdf:thw-definition">
-			</xsd:element>
-			<xsd:element minOccurs="1" maxOccurs="unbounded" name="file-definitions"
-				type="sdf:file-definition">
-			</xsd:element>
-			<xsd:element name="sdf-integrity-definition" type="sdf:integrity-definition">
-			</xsd:element>
-			<xsd:element name="lsp-integrity-definition" type="sdf:integrity-definition">
-			</xsd:element>
-		</xsd:sequence>
-	</xsd:complexType>
-
-
 	<xsd:complexType name="software-description">
 		<xsd:sequence>
 			<xsd:element name="software-partnumber" type="sdf:SOFTWARE-PARTNUMBER">
@@ -100,7 +82,17 @@
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element name="file-format-version" type="sdf:UINT32"></xsd:element>
-				<xsd:element name="sdf-sections" type="sdf:sdf-sections">
+				<xsd:element name="software-description" type="sdf:software-description">
+				</xsd:element>
+				<xsd:element minOccurs="0" maxOccurs="unbounded" name="thw-definitions"
+					type="sdf:thw-definition">
+				</xsd:element>
+				<xsd:element minOccurs="1" maxOccurs="unbounded" name="file-definitions"
+					type="sdf:file-definition">
+				</xsd:element>
+				<xsd:element name="sdf-integrity-definition" type="sdf:integrity-definition">
+				</xsd:element>
+				<xsd:element name="lsp-integrity-definition" type="sdf:integrity-definition">
 				</xsd:element>
 			</xsd:sequence>
 		</xsd:complexType>

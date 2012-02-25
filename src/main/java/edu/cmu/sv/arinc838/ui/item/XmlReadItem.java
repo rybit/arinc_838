@@ -43,6 +43,6 @@ public class XmlReadItem  extends AbstractMenuItem {
 				
 		builder.initialize(jaxbFile);
 		
-		return new XmlFileMenu(builder.getSoftwareDefinitionSections().getSoftwareDescription().getSoftwarePartNumber());
+		return new XmlFileMenu(builder.getSoftwareDescription().getSoftwarePartNumber());
 	}
 }
