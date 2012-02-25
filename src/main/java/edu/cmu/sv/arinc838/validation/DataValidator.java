@@ -15,6 +15,43 @@ import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder.IntegrityType;
 import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
 import edu.cmu.sv.arinc838.builder.SoftwareDescriptionBuilder;
 
+/**
+ * <p>
+ * This class encapsulates the low-level validation of the different types
+ * required to build the XDF and BDF files. The methods use the paradigm of
+ * taking in value to validate, and then returning the value unchanged if the
+ * validation passes or throwing an {@link IllegalArgumentException} if the
+ * validation fails.
+ * </p>
+ * <p>
+ * The reason for this design as opposed to returning a true/false is to allow
+ * using this method in-line to validate the values without the need for an
+ * "if/else" check. For example:
+ * </p>
+ * 
+ * <pre>
+ * public void setFileSize(long fileSize) {
+ *   this.fileSize = DataValidator.validateUint32(fileSize);
+ * }
+ * </pre>
+ * 
+ * vs.
+ * 
+ * <pre>
+ * public void setFileSize(long fileSize) {
+ *   if(DataValidator.validateUint32(fileSize)) {
+ *     this.fileSize = fileSize
+ *   } 
+ *   else {
+ *     throw new IllegalArgumentException("Some error message");
+ *   }
+ * }
+ * </pre>
+ * 
+ * @author Mike Deats
+ * 
+ * 
+ */
 public class DataValidator {
 
 	public static final long STR64K_MAX_LENGTH = 65535;
