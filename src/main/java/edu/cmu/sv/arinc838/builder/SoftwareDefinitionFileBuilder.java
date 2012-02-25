@@ -21,7 +21,7 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 	/**
 	 * The default file format version as defined in the spec. Value is {@value}
 	 */
-	public static final long DEFAULT_FILE_FORMAT_VERSION = 528384;	
+	public static final long DEFAULT_FILE_FORMAT_VERSION = 528384;
 
 	private long fileFormatVersion;
 	private SoftwareDefinitionSectionsBuilder sections;
@@ -36,7 +36,8 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 
 	public void initialize(SdfFile swDefFile) {
 		fileFormatVersion = swDefFile.getFileFormatVersion();
-		sections = new SoftwareDefinitionSectionsBuilder(swDefFile.getSdfSections());
+		sections = new SoftwareDefinitionSectionsBuilder(
+				swDefFile.getSdfSections());
 	}
 
 	public long getFileFormatVersion() {
@@ -64,12 +65,11 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 
 		return file;
 	}
-	
+
 	@Override
 	public int buildBinary(BdfFile file) throws IOException {
-		
-	//	writeFileFormatVersion(file);
-		
-		return sections.buildBinary(file);		
+		file.writeFileFormatVersion(fileFormatVersion);
+
+		return sections.buildBinary(file);
 	}
 }

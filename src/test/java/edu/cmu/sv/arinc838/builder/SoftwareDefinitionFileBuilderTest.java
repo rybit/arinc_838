@@ -166,13 +166,23 @@ public class SoftwareDefinitionFileBuilderTest {
 		fileBuilder.buildBinary(file);
 
 		verify(sections).buildBinary(file);
-	}	
-	
-//	@Test
-//	public void testFileLengthIsSet() throws Exception{
-//		SoftwareDefinitionSectionsBuilder sections = mock(SoftwareDefinitionSectionsBuilder.class);
-//		
-//		SoftwareDefinitionFileBuilder fileBuilder = new SoftwareDefinitionFileBuilder();
-//		fileBuilder.setSoftwareDefinitionSections(sections);
-//	}
+	}
+
+	@Test
+	public void testFileLengthIsSet() throws Exception {
+		SoftwareDefinitionSectionsBuilder sections = mock(SoftwareDefinitionSectionsBuilder.class);
+
+		SoftwareDefinitionFileBuilder fileBuilder = new SoftwareDefinitionFileBuilder();
+		fileBuilder.setSoftwareDefinitionSections(sections);
+		fileBuilder
+				.setFileFormatVersion(SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION);
+
+		BdfFile file = mock(BdfFile.class);
+
+		fileBuilder.buildBinary(file);
+
+		verify(file).writeFileFormatVersion(
+				SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION);
+
+	}
 }
