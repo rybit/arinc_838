@@ -83,16 +83,6 @@ public class DataValidatorTest {
 		assertEquals("hello&amp&ampthere",
 				DataValidator.validateStr64kXml("hello&amp&ampthere"));
 	}
-	
-	@Test
-	public void testValidateStr64kXmlMaxSizeWithEscapedChars()
-	{
-		// this creates a max-sized string, with an escaped '&' as the last character. 
-		// This will make the absolute length > than the max string length, but the 
-		// true length will be = the max length, and should still be valid
-		String str64kMaxWithEscaped = str64kMax.substring(0, str64kMax.length() - 2) + "&amp";
-		assertEquals(str64kMaxWithEscaped, DataValidator.validateStr64kXml(str64kMaxWithEscaped));
-	}
 
 	@Test
 	public void testValidateStr64kXmlWithNonEscapedChars() {
@@ -170,13 +160,12 @@ public class DataValidatorTest {
 
 	@Test
 	public void testValidateIntegrityValue() {
-		assertEquals("0xAB", DataValidator.validateIntegrityValue("0xAB"));
 		assertEquals("0xABCD",
 				DataValidator.validateIntegrityValue("0xABCD"));
 		assertEquals("0xABCDEF01",
 				DataValidator.validateIntegrityValue("0xABCDEF01"));
-		assertEquals("0x456789fF",
-				DataValidator.validateIntegrityValue("0x456789fF"));
+		assertEquals("0xDEADBEEFDEADBEEF",
+				DataValidator.validateIntegrityValue("0xDEADBEEFDEADBEEF"));
 	}
 
 	@Test(expectedExceptions = IllegalArgumentException.class)

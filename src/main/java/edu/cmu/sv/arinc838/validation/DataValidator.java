@@ -162,10 +162,10 @@ public class DataValidator {
 					"Integrity value not prefixed with 0x");
 		}
 
-		if (size != 4 && size != 6 && size != 10) {
+		if (size != 6 && size != 10 && size != 18) {
 			throw new IllegalArgumentException(
 					"Incorrect number of characters for integrity value. Got "
-							+ size + ", expected 4, 6, or 10");
+							+ size + ", expected 6, 10, or 18");
 
 		}
 

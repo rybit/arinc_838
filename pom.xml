@@ -23,7 +23,7 @@ Spec developed by ARINC (http://www.arinc.com)</description>
 	</issueManagement>
 	<ciManagement>
 		<system>TeamCity</system>
-		<url>http://teamcity.codebetter.com/project.html?projectId=project179</url>
+		<url>http://teamcity.codebetter.com/project.html?projectId=project179&amp;&amp;guest=1</url>
 	</ciManagement>
 
 	<repositories>
