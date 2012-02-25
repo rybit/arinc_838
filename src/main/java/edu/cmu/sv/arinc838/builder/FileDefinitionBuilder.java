@@ -111,8 +111,8 @@ public class FileDefinitionBuilder implements Builder<FileDefinition>{
 	}
 	
 	@Override
-	public void buildBinary(BdfFile file) {
+	public int buildBinary(BdfFile file) {
 		// TODO Auto-generated method stub
-		
+		return 0;
 	}
 }

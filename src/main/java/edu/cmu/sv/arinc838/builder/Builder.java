@@ -17,5 +17,6 @@ public interface Builder<T>{
 	
 	public T buildXml();
 	
-	public void buildBinary(BdfFile file) throws IOException;
+	public int buildBinary(BdfFile file) throws IOException;
+
 }

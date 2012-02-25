@@ -9,9 +9,9 @@
  */
 package edu.cmu.sv.arinc838.builder;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 
 import com.arinc.arinc838.ThwDefinition;
 
@@ -22,16 +22,17 @@ public class TargetHardwareDefinitionBuilder implements Builder<ThwDefinition> {
 
 	private String id;
 	private List<String> positions = new ArrayList<String>();
+	private boolean isLast;
 
 	public TargetHardwareDefinitionBuilder(ThwDefinition jaxbDef) {
 		setId(jaxbDef.getThwId());
-		
-		for(String position : jaxbDef.getThwPosition()){
+
+		for (String position : jaxbDef.getThwPosition()) {
 			positions.add(position);
 		}
 	}
 
-	public TargetHardwareDefinitionBuilder() {	
+	public TargetHardwareDefinitionBuilder() {
 	}
 
 	public String getId() {
@@ -49,18 +50,53 @@ public class TargetHardwareDefinitionBuilder implements Builder<ThwDefinition> {
 	@Override
 	public ThwDefinition buildXml() {
 		ThwDefinition def = new ThwDefinition();
-		
+
 		def.setThwId(this.getId());
-		for(String position : this.getPositions()){
+		for (String position : this.getPositions()) {
 			def.getThwPosition().add(position);
 		}
-		
+
 		return def;
 	}
-	
+
 	@Override
-	public void buildBinary(BdfFile file) {
-		// TODO Auto-generated method stub
-		
+	public int buildBinary(BdfFile bdfFile) throws IOException {
+		int initialPosition = (int) bdfFile.getFilePointer();
+
+		bdfFile.writeUint32(0);
+		bdfFile.writeStr64k(getId());
+		bdfFile.writeUint32(getPositions().size());
+		for (int i = 0; i < getPositions().size(); i++) {
+			String position = getPositions().get(i);
+			// next pointer is current position + 4 pointer to next thw-position
+			// + 2 position string length + position length
+			long nextThwPositionPointer = bdfFile.getFilePointer() + 4 + 2
+					+ position.length();
+
+			if (i == getPositions().size() - 1) {
+				bdfFile.writeUint32(0);
+			} else {
+				bdfFile.writeUint32(nextThwPositionPointer);
+			}
+
+			bdfFile.writeStr64k(position);
+		}
+
+		int finalPosition = (int) bdfFile.getFilePointer();
+		if (!isLast()) {
+			bdfFile.seek(initialPosition);
+			bdfFile.writeUint32(finalPosition);
+			bdfFile.seek(finalPosition);
+		}
+
+		return (int) (finalPosition - initialPosition);
+	}
+
+	public boolean isLast() {
+		return isLast;
+	}
+
+	public void setIsLast(boolean value) {
+		isLast = value;
 	}
 }
