@@ -80,7 +80,7 @@ public class DataValidator {
 		return value;
 	}
 
-	private static String checkForEscapedXMLChars(String value) {
+	public static String checkForEscapedXMLChars(String value) {
 		int idx = value.indexOf('<');
 		if (idx != -1) {
 			throw new IllegalArgumentException(

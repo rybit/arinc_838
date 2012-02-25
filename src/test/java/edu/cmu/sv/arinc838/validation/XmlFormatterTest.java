@@ -20,5 +20,13 @@ public class XmlFormatterTest {
 		assertEquals("PB&ampJ", XmlFormatter.escapeXmlSpecialChars("PB&J"));
 		assertEquals("A &gt B", XmlFormatter.escapeXmlSpecialChars("A > B"));
 		assertEquals("A &lt B", XmlFormatter.escapeXmlSpecialChars("A < B"));
-		assertEquals("A &lt B &amp&amp B &gt C", XmlFormatter.escapeXmlSpecialChars("A < B && B > C"));	}
+		assertEquals("A &lt B &amp&amp B &gt C", XmlFormatter.escapeXmlSpecialChars("A < B && B > C"));	
+    }
+	
+	@Test
+	public void testEscapePartiallyEscapedChars() {
+		assertEquals("A &gt B &amp B &lt C", XmlFormatter.escapeXmlSpecialChars("A > B &amp B &lt C"));
+		assertEquals("A &gt B &amp B &lt C", XmlFormatter.escapeXmlSpecialChars("A &gt B &amp B < C"));
+		assertEquals("A &gt B &amp B &lt C", XmlFormatter.escapeXmlSpecialChars("A > B & B &lt C"));
+	}
 }

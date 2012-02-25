@@ -9,6 +9,7 @@
  */
 package edu.cmu.sv.arinc838.validation;
 
+
 public class XmlFormatter {
 
 /**
@@ -22,9 +23,22 @@ public class XmlFormatter {
 	 * @return
 	 */
 	public static String escapeXmlSpecialChars(String value) {
-		String escaped = value.replaceAll("&", "&amp").replaceAll("&ampamp",
-				"&amp");
-		return escaped.replaceAll(">", "&gt").replaceAll("<", "&lt");
+
+		String unescaped = value;
+		// if any chars are are already escaped, unescape them first
+		// this will handle strings that are partially escaped
+		try {
+			DataValidator.checkForEscapedXMLChars(value);
+		} catch (IllegalArgumentException e) {
+			unescaped = unescapeXmlSpecialChars(value);
+		}
+		
+		return unescaped.replaceAll("&", "&amp").replaceAll(">", "&gt")
+				.replaceAll("<", "&lt");
+	}
+
+	public static void main(String[] args) {
+		System.out.println(escapeXmlSpecialChars("A > B &amp B &lt C"));
 	}
 
 /**
