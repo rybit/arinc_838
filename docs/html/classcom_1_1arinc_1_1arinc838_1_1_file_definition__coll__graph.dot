@@ -1,0 +1,9 @@
+digraph G
+{
+ // INTERACTIVE_SVG=YES
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node1 [label="com.arinc.arinc838.FileDefinition",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled" fontcolor="black"];
+  Node2 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" fileIntegrityDefinition" ,fontname="Helvetica"];
+  Node2 [label="com.arinc.arinc838.IntegrityDefinition",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classcom_1_1arinc_1_1arinc838_1_1_integrity_definition.html"];
+}

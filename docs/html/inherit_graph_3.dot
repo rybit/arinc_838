@@ -1,0 +1,8 @@
+digraph G
+{
+ // INTERACTIVE_SVG=YES
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="com.arinc.arinc838.SdfFile",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classcom_1_1arinc_1_1arinc838_1_1_sdf_file.html"];
+}
