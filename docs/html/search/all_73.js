@@ -20,5 +20,6 @@ var searchData=
   ['softwaredefinitionfilebuilder',['SoftwareDefinitionFileBuilder',['../classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html',1,'edu::cmu::sv::arinc838::builder']]],
   ['softwaredefinitionsectionsbuilder',['SoftwareDefinitionSectionsBuilder',['../classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_sections_builder.html',1,'edu::cmu::sv::arinc838::builder']]],
   ['softwaredescription',['SoftwareDescription',['../classcom_1_1arinc_1_1arinc838_1_1_software_description.html',1,'com::arinc::arinc838']]],
-  ['softwaredescriptionbuilder',['SoftwareDescriptionBuilder',['../classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_description_builder.html',1,'edu::cmu::sv::arinc838::builder']]]
+  ['softwaredescriptionbuilder',['SoftwareDescriptionBuilder',['../classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_description_builder.html',1,'edu::cmu::sv::arinc838::builder']]],
+  ['str64k_5fmax_5flength',['STR64K_MAX_LENGTH',['../classedu_1_1cmu_1_1sv_1_1arinc838_1_1validation_1_1_data_validator.html#a31f9484836680f37de9f89754ad65dc7',1,'edu::cmu::sv::arinc838::validation::DataValidator']]]
 ];

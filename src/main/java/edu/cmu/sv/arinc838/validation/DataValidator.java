@@ -31,7 +31,7 @@ import edu.cmu.sv.arinc838.builder.SoftwareDescriptionBuilder;
  * 
  * <pre>
  * public void setFileSize(long fileSize) {
- *   this.fileSize = DataValidator.validateUint32(fileSize);
+ * 	this.fileSize = DataValidator.validateUint32(fileSize);
  * }
  * </pre>
  * 
@@ -54,12 +54,13 @@ import edu.cmu.sv.arinc838.builder.SoftwareDescriptionBuilder;
  */
 public class DataValidator {
 
+	/**
+	 * The maximum length of a STR64k. Value is {@value}
+	 */
 	public static final long STR64K_MAX_LENGTH = 65535;
 
 	/**
-	 * Validates that the given value is an unsigned 32-bit integer. If the
-	 * input is valid, the same value is returned. If the input is invalid, an
-	 * IllegalArgumentException is thrown.
+	 * Validates that the given value is an unsigned 32-bit integer.
 	 * 
 	 * @param value
 	 *            The input value
@@ -77,6 +78,11 @@ public class DataValidator {
 	}
 
 	/**
+	 * Validates that the input is a STR64k for use in the binary. This is
+	 * defined as a string that is a maximum of {@link STR64K_MAX_LENGTH}
+	 * characters.
+	 * 
+	 * 
 	 * @param value
 	 *            The input value
 	 * @return The validated input value
@@ -96,11 +102,20 @@ public class DataValidator {
 	}
 
 	/**
+	 * Validates that the input is a STR64k for use in the XML. This is defined
+	 * as a string that
+	 * <ul>
+	 * <li>Has all <, >, and & characters escaped as &lt, &gt, and &amp</li>
+	 * <li>Is a maximum of {@link STR64K_MAX_LENGTH} characters (not including
+	 * escape characters)</li>
+	 * </ul>
+	 * 
 	 * @param value
 	 *            The input value
 	 * @return The validated input value
 	 * @throws IllegalArgumentException
 	 *             if the input value does not validate.
+	 * 
 	 */
 	public static String validateStr64kXml(String value) {
 		return checkForEscapedXMLChars(validateStr64kBinary(value));
@@ -110,7 +125,10 @@ public class DataValidator {
 	 * Validates that the list has a least 1 element
 	 * 
 	 * @param value
-	 * @return
+	 *            The input value
+	 * @return The validated input value
+	 * @throws IllegalArgumentException
+	 *             if the input value does not validate.
 	 */
 	public static List<?> validateList1(List<?> value) {
 
@@ -148,10 +166,15 @@ public class DataValidator {
 	}
 
 	/**
-	 * Validates the file format version value
+	 * Validates the file format version value. Must be a UINT32, and have the
+	 * value of
+	 * {@link SoftwareDefinitionFileBuilder#DEFAULT_FILE_FORMAT_VERSION}
 	 * 
-	 * @param version
-	 * @return
+	 * @param value
+	 *            The input value
+	 * @return The validated input value
+	 * @throws IllegalArgumentException
+	 *             if the input value does not validate.
 	 */
 	public static long validateFileFormatVersion(long version) {
 
@@ -168,8 +191,11 @@ public class DataValidator {
 	/**
 	 * Validates the integrity type represents the CRC16, 32, or 64.
 	 * 
-	 * @param type
-	 * @return
+	 * @param value
+	 *            The input value
+	 * @return The validated input value
+	 * @throws IllegalArgumentException
+	 *             if the input value does not validate.
 	 */
 	public static long validateIntegrityType(long type) {
 		if (IntegrityType.fromLong(type) == null) {
@@ -182,10 +208,13 @@ public class DataValidator {
 
 	/**
 	 * Validates that the integrity value is a valid hexadecimal number that is
-	 * either 4, 6, or 10 digits long (not including the '0x' prefix)
+	 * either 4, 8, or 16 digits long (not including the '0x' prefix)
 	 * 
 	 * @param value
-	 * @return
+	 *            The input value
+	 * @return The validated input value
+	 * @throws IllegalArgumentException
+	 *             if the input value does not validate.
 	 */
 	public static String validateIntegrityValue(String value) {
 		if (value == null) {
@@ -216,8 +245,21 @@ public class DataValidator {
 	}
 
 	/**
+	 * Validates that the input is a valid software part number. The format is
+	 * MMMCC-SSSS-SSSS where
+	 * <ul>
+	 * <li>MMM = The manufacturer code</li>
+	 * <li>CC = The check characters, calculated by XORing the binary
+	 * representation of the other characters, not including the - delimiters</li>
+	 * <li>SSSS-SSSS = The part number. Valid characters are any alphanumeric
+	 * character except I, O, Q, and Z.</li>
+	 * </ul>
+	 * 
 	 * @param value
-	 * @return
+	 *            The input value
+	 * @return The validated input value
+	 * @throws IllegalArgumentException
+	 *             if the input value does not validate.
 	 */
 	public static String validateSoftwarePartNumber(String value) {
 		if (value == null) {
@@ -242,8 +284,22 @@ public class DataValidator {
 	}
 
 	/**
+	 * <p>
+	 * Takes a syntactically valid (put partial) software part number string and
+	 * returns a fully valid software part number including the calculated check
+	 * characters. The check characters must replaced with place holder
+	 * characters, otherwise an IllegalArgumentException will be thrown. For
+	 * example, the string ABC??-1234-5678 is a valid input but the string
+	 * ABC-1234-5678 is not.
+	 * </p>
+	 * See {@link #validateSoftwarePartNumber(String)} for more information on a
+	 * valid software part number string.
+	 * 
 	 * @param value
-	 * @return
+	 *            The input value
+	 * @return The validated input value
+	 * @throws IllegalArgumentException
+	 *             if the input value does not validate.
 	 */
 	public static String generateSoftwarePartNumber(String value) {
 		if (value == null) {
