@@ -85,37 +85,38 @@ public class BdfFileTest {
 
 		StringBuilder value = new StringBuilder();
 
-		//build a string that is too big
+		// build a string that is too big
 		for (int i = 0; i < DataValidator.STR64K_MAX_LENGTH + 1; i++) {
 			value.append('c');
 		}
 
 		f.writeStr64k(value.toString());
 	}
-	
+
 	@Test
-	public void readUint32() throws Exception{
+	public void readUint32() throws Exception {
 		long uInt32 = (long) Integer.MAX_VALUE;
 		uInt32++;
-		
+
 		f.writeUint32(uInt32);
-		
+
 		f.seek(0);
-		
-		assertEquals(f.readUint32(), uInt32);		
+
+		assertEquals(f.readUint32(), uInt32);
 	}
 
 	@Test
 	public void testWriteFileFormatVersion() throws Exception {
-		long expectedFileFormatVersion = SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION;
+		byte[] expectedFileFormatVersion = SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION;
 
-		
 		f.writeFileFormatVersion(expectedFileFormatVersion);
 
 		f.seek(BdfFile.BINARY_FILE_FORMAT_VERSION_LOCATION);
-		assertEquals(f.readUint32(), expectedFileFormatVersion);
+		byte[] actualFileFormatVerion = new byte[4];
+		f.read(actualFileFormatVerion);
+		assertEquals(actualFileFormatVerion, expectedFileFormatVersion);
 	}
-	
+
 	@Test
 	public void testWriteSoftwareDescriptionPointer() throws Exception {
 		long expected = 42;
@@ -126,7 +127,7 @@ public class BdfFileTest {
 		f.seek(BdfFile.SOFTWARE_DESCRIPTION_POINTER_LOCATION);
 		assertEquals(f.readUint32(), expected);
 	}
-	
+
 	@Test
 	public void testWriteTargetDefinitionsPointer() throws Exception {
 		long expected = 42;
@@ -137,7 +138,7 @@ public class BdfFileTest {
 		f.seek(BdfFile.TARGET_DEFINITIONS_POINTER_LOCATION);
 		assertEquals(f.readUint32(), expected);
 	}
-	
+
 	@Test
 	public void testWriteFileDefinitionsPointer() throws Exception {
 		long expected = 42;
@@ -148,7 +149,7 @@ public class BdfFileTest {
 		f.seek(BdfFile.FILE_DEFINITIONS_POINTER_LOCATION);
 		assertEquals(f.readUint32(), expected);
 	}
-	
+
 	@Test
 	public void testWriteSdfIntegrityDefinitionPointer() throws Exception {
 		long expected = 42;
@@ -159,16 +160,16 @@ public class BdfFileTest {
 		f.seek(BdfFile.SDF_INTEGRITY_POINTER_LOCATION);
 		assertEquals(f.readUint32(), expected);
 	}
-	
+
 	@Test
-	public void testSeekAndRestoreFilePointer() throws Exception {		
+	public void testSeekAndRestoreFilePointer() throws Exception {
 		long expected = 42;
 		f.seek(expected);
-		
+
 		f.writeSdfIntegrityDefinitionPointer();
-		assertEquals(f.getFilePointer(),expected);
-	}	
-	
+		assertEquals(f.getFilePointer(), expected);
+	}
+
 	@Test
 	public void testWriteLspIntegrityDefinitionPointer() throws Exception {
 		long expected = 42;
@@ -178,6 +179,6 @@ public class BdfFileTest {
 
 		f.seek(BdfFile.LSP_INTEGRITY_POINTER_LOCATION);
 		assertEquals(f.readUint32(), expected);
-	}	
+	}
 
 }

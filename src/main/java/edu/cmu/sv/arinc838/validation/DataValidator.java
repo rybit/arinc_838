@@ -166,7 +166,7 @@ public class DataValidator {
 	}
 
 	/**
-	 * Validates the file format version value. Must be a UINT32, and have the
+	 * Validates the file format version value. Must be a byte[4], and have the
 	 * value of
 	 * {@link SoftwareDefinitionFileBuilder#DEFAULT_FILE_FORMAT_VERSION}
 	 * 
@@ -176,9 +176,9 @@ public class DataValidator {
 	 * @throws IllegalArgumentException
 	 *             if the input value does not validate.
 	 */
-	public static long validateFileFormatVersion(long version) {
+	public static byte[] validateFileFormatVersion(byte[] version) {
 
-		if (version != SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION) {
+		if (!version.equals(SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION)) {
 			throw new IllegalArgumentException(
 					"File format version was set to "
 							+ version
@@ -207,8 +207,8 @@ public class DataValidator {
 	}
 
 	/**
-	 * Validates that the integrity value is a valid hexadecimal number that is
-	 * either 4, 8, or 16 digits long (not including the '0x' prefix)
+	 * Validates that the integrity value is a valid byte array that is
+	 * either 2, 4, or 8 bytes long
 	 * 
 	 * @param value
 	 *            The input value
@@ -216,29 +216,18 @@ public class DataValidator {
 	 * @throws IllegalArgumentException
 	 *             if the input value does not validate.
 	 */
-	public static String validateIntegrityValue(String value) {
+	public static byte[] validateIntegrityValue(byte[] value) {
 		if (value == null) {
 			throw new IllegalArgumentException("Integrity value cannot be null");
 		}
 
-		int size = value.length();
+		int size = value.length;
 
-		if (!value.matches("0x.*")) {
+		if (size != 2 && size != 4 && size != 8) {
 			throw new IllegalArgumentException(
-					"Integrity value not prefixed with 0x");
-		}
+					"Incorrect number of bytes for integrity value. Got "
+							+ size + ", expected 2, 4, or 8");
 
-		if (size != 6 && size != 10 && size != 18) {
-			throw new IllegalArgumentException(
-					"Incorrect number of characters for integrity value. Got "
-							+ size + ", expected 6, 10, or 18");
-
-		}
-
-		if (value.substring(2).matches(".*[\\D&&[^a-fA-F]].*")) {
-			throw new IllegalArgumentException(
-					"Invalid characters found in integrity value! Got " + value
-							+ ", expected 0-9, or A-F");
 		}
 
 		return value;
@@ -363,5 +352,14 @@ public class DataValidator {
 		}
 
 		return Integer.toHexString(result).toUpperCase();
+	}
+
+	public static byte[] validateHexbin32(byte[] value) {
+		if(value == null) {
+			throw new IllegalArgumentException("Hexbin 32 type cannot be null");
+		} else if(value.length != 4) {
+			throw new IllegalArgumentException("Hexbin 32 type must be 4 bytes");			
+		}
+		return value;
 	}
 }

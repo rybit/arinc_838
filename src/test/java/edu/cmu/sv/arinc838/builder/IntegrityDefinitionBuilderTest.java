@@ -16,6 +16,7 @@ import com.arinc.arinc838.IntegrityDefinition;
 
 import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder;
 import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder.IntegrityType;
+import edu.cmu.sv.arinc838.util.Converter;
 
 public class IntegrityDefinitionBuilderTest {
 
@@ -26,7 +27,7 @@ public class IntegrityDefinitionBuilderTest {
 	public void setup() {
 		integDef = new IntegrityDefinition();
 		integDef.setIntegrityType(IntegrityType.CRC16.getType());
-		integDef.setIntegrityValue("0xDEADBEEF");
+		integDef.setIntegrityValue(Converter.hexToBytes("DEADBEEF"));
 
 		builder = new IntegrityDefinitionBuilder(integDef);
 	}
@@ -66,7 +67,7 @@ public class IntegrityDefinitionBuilderTest {
 
 		assertEquals(def.getIntegrityValue(), builder.getIntegrityValue());
 		
-		builder.setIntegrityValue("0xFEED");
+		builder.setIntegrityValue(Converter.hexToBytes("FEED"));
 		def = builder.buildXml();
 		
 		assertEquals(def.getIntegrityValue(), builder.getIntegrityValue());
@@ -76,12 +77,6 @@ public class IntegrityDefinitionBuilderTest {
 	public void testSetIntegrityValueNull()
 	{
 		builder.setIntegrityValue(null);
-	}
-	
-	@Test(expectedExceptions = IllegalArgumentException.class)
-	public void testSetIntegrityValueInvalid()
-	{
-		builder.setIntegrityValue("0xA<CDZZ&4");
 	}
 	
 	@Test

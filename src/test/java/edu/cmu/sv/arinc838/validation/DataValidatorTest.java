@@ -20,6 +20,7 @@ import org.testng.annotations.Test;
 
 import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder.IntegrityType;
 import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
+import edu.cmu.sv.arinc838.util.Converter;
 
 public class DataValidatorTest {
 
@@ -67,7 +68,7 @@ public class DataValidatorTest {
 				DataValidator.validateStr64kBinary("hello&amp&ampthere"));
 
 	}
-	
+
 	@Test
 	public void testValidateStr64kXml() {
 		String inputStr = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789 -_=+`~'\"[]{}\\|;:,./?!@#$%^*()";
@@ -136,8 +137,7 @@ public class DataValidatorTest {
 
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void testValidateFileFormatVersionInvalid() {
-		DataValidator
-				.validateFileFormatVersion(SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION + 1);
+		DataValidator.validateFileFormatVersion(new byte[] { 1, 2, 3, 4 });
 	}
 
 	@Test
@@ -160,12 +160,11 @@ public class DataValidatorTest {
 
 	@Test
 	public void testValidateIntegrityValue() {
-		assertEquals("0xABCD",
-				DataValidator.validateIntegrityValue("0xABCD"));
-		assertEquals("0xABCDEF01",
-				DataValidator.validateIntegrityValue("0xABCDEF01"));
-		assertEquals("0xDEADBEEFDEADBEEF",
-				DataValidator.validateIntegrityValue("0xDEADBEEFDEADBEEF"));
+		assertEquals(Converter.hexToBytes("ABCD"), DataValidator.validateIntegrityValue(Converter.hexToBytes("ABCD")));
+		assertEquals(Converter.hexToBytes("ABCDEF01"),
+				DataValidator.validateIntegrityValue(Converter.hexToBytes("ABCDEF01")));
+		assertEquals(Converter.hexToBytes("DEADBEEFDEADBEEF"),
+				DataValidator.validateIntegrityValue(Converter.hexToBytes("DEADBEEFDEADBEEF")));
 	}
 
 	@Test(expectedExceptions = IllegalArgumentException.class)
@@ -175,37 +174,7 @@ public class DataValidatorTest {
 
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void testValidateIntegrityValueWrongSize() {
-		DataValidator.validateIntegrityValue("0xABC");
-	}
-
-	@Test
-	public void testValidateIntegrityValueInvalidCharacters() {
-		try {
-			DataValidator.validateIntegrityValue("0xabCDEG");
-			fail("Did not throw IllegalArgumentException for invalid characters");
-		} catch (IllegalArgumentException e) {
-		}
-
-		try {
-			DataValidator.validateIntegrityValue("%57X");
-			fail("Did not throw IllegalArgumentException for invalid characters");
-		} catch (IllegalArgumentException e) {
-		}
-		try {
-			DataValidator.validateIntegrityValue("0x12ZZZ678af");
-			fail("Did not throw IllegalArgumentException for invalid characters");
-		} catch (IllegalArgumentException e) {
-		}
-		try {
-			DataValidator.validateIntegrityValue("0 x2ZZZ678af");
-			fail("Did not throw IllegalArgumentException for invalid characters");
-		} catch (IllegalArgumentException e) {
-		}
-		try {
-			DataValidator.validateIntegrityValue("0x4567 89fFBC");
-			fail("Did not throw IllegalArgumentException for invalid characters");
-		} catch (IllegalArgumentException e) {
-		}
+		DataValidator.validateIntegrityValue(Converter.hexToBytes("ABC"));
 	}
 
 	@Test
@@ -230,7 +199,6 @@ public class DataValidatorTest {
 		DataValidator.validateList1(new ArrayList<String>());
 	}
 
-
 	@Test
 	public void testValidateSoftwarePartNumber() {
 		assertEquals("ACM47-1234-5678",
@@ -249,7 +217,7 @@ public class DataValidatorTest {
 			fail("Did not fail on invalid format");
 		} catch (IllegalArgumentException e) {
 		}
-		
+
 		try {
 			DataValidator.validateSoftwarePartNumber("ACM23-1234-5678");
 			fail("Did not fail on invalid check characters");
@@ -297,10 +265,26 @@ public class DataValidatorTest {
 	public void generateSoftwarePartNumberNull() {
 		DataValidator.generateSoftwarePartNumber(null);
 	}
-	
+
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void generateSoftwarePartNumberInvalid() {
 		DataValidator.generateSoftwarePartNumber("ACM47-O234-5678");
+	}
+
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testValidateHexbin32Null() {
+		DataValidator.validateHexbin32((byte[]) null);
+	}
+
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testValidateHexbin32Not4Bytes() {
+		DataValidator.validateHexbin32(new byte[] { 1, 2, 3 });
+	}
+
+	@Test
+	public void testValidateHexbin32() {
+		byte[] hexBin32 = new byte[] { 1, 2, 3, 4 };
+		assertEquals(hexBin32, DataValidator.validateHexbin32(hexBin32));
 	}
 
 }

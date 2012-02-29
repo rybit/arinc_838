@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
+import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
+
 import edu.cmu.sv.arinc838.validation.DataValidator;
 
 public class BdfFile extends RandomAccessFile {
@@ -39,10 +41,10 @@ public class BdfFile extends RandomAccessFile {
 		return asUint32(super.readInt());
 	}
 
-	public void writeFileFormatVersion(long version) throws IOException {
+	public void writeFileFormatVersion(byte[] version) throws IOException {
 		long currentLocation = super.getFilePointer();
 		super.seek(BINARY_FILE_FORMAT_VERSION_LOCATION);
-		writeUint32(version);
+		write(version);
 		super.seek(currentLocation);
 	}
 

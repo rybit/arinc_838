@@ -19,6 +19,7 @@ import com.arinc.arinc838.FileDefinition;
 
 import edu.cmu.sv.arinc838.builder.FileDefinitionBuilder;
 import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder.IntegrityType;
+import edu.cmu.sv.arinc838.util.Converter;
 
 public class FileDefinitionBuilderTest {
 	FileDefinition xmlFileDef;
@@ -30,7 +31,7 @@ public class FileDefinitionBuilderTest {
 	public void setUp() {
 		IntegrityDefinitionBuilder integBuilder = new IntegrityDefinitionBuilder();
 		integBuilder.setIntegrityType(IntegrityType.CRC16.getType());
-		integBuilder.setIntegrityValue("0xABCD");
+		integBuilder.setIntegrityValue(Converter.hexToBytes("ABCD"));
 
 		xmlFileDef = new FileDefinition();
 		xmlFileDef.setFileLoadable(false);

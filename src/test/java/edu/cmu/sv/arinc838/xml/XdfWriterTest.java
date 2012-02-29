@@ -27,6 +27,7 @@ import com.arinc.arinc838.SoftwareDescription;
 import com.arinc.arinc838.ThwDefinition;
 
 import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
+import edu.cmu.sv.arinc838.util.Converter;
 import edu.cmu.sv.arinc838.writer.XdfWriter;
 
 public class XdfWriterTest {
@@ -98,10 +99,10 @@ public class XdfWriterTest {
 		SdfFile swDefFile = new SdfFile();
 		IntegrityDefinition lspInteg = new IntegrityDefinition();
 		lspInteg.setIntegrityType(2);
-		lspInteg.setIntegrityValue("DEADBEEF");
+		lspInteg.setIntegrityValue(Converter.hexToBytes("DEADBEEF"));
 		IntegrityDefinition sdfInteg = new IntegrityDefinition();
 		sdfInteg.setIntegrityType(2);
-		sdfInteg.setIntegrityValue("DEADBEEF");
+		sdfInteg.setIntegrityValue(Converter.hexToBytes("DEADBEEF"));
 
 		swDefFile.setLspIntegrityDefinition(lspInteg);
 		swDefFile.setSdfIntegrityDefinition(sdfInteg);
@@ -109,7 +110,7 @@ public class XdfWriterTest {
 		SoftwareDescription swDesc = new SoftwareDescription();
 		swDesc.setSoftwarePartnumber("1234");
 		swDesc.setSoftwareTypeDescription("type");
-		swDesc.setSoftwareTypeId(2);
+		swDesc.setSoftwareTypeId(Converter.hexToBytes("DEADBEEF"));
 
 		swDefFile.setSoftwareDescription(swDesc);
 
