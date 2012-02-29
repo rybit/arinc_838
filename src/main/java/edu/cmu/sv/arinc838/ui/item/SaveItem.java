@@ -10,7 +10,6 @@
 package edu.cmu.sv.arinc838.ui.item;
 
 import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
-import edu.cmu.sv.arinc838.ui.Menu;
 import edu.cmu.sv.arinc838.writer.SdfWriter;
 
 public class SaveItem extends AbstractMenuItem {	
