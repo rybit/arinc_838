@@ -9,14 +9,38 @@
  */
 package edu.cmu.sv.arinc838.ui.item;
 
-public abstract class AbstractMenuItem implements MenuItem{
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public abstract class AbstractMenuItem implements MenuItem {
+	public static final MenuItem[] EMPTY_ITEMS = new MenuItem[0];
+	
 	private String prompt;
-	AbstractMenuItem (String prompt) {
+
+	AbstractMenuItem(String prompt) {
 		this.prompt = prompt;
 	}
-	
+
 	@Override
-	public String getPrompt () {
+	public String getPrompt() {
 		return prompt;
+	}
+
+	public String getHeader() {
+		return null;
+	}
+
+	public static String promptForResponse(String toSay) throws IOException {
+
+		System.out.print(toSay + " ");
+
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		String ret = br.readLine();
+		return ret;
+	}
+
+	public MenuItem[] getEmptyItems() {
+		return AbstractMenuItem.EMPTY_ITEMS;
 	}
 }

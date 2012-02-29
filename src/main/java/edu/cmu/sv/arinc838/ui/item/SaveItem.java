@@ -10,15 +10,23 @@
 package edu.cmu.sv.arinc838.ui.item;
 
 import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
+import edu.cmu.sv.arinc838.writer.SdfWriter;
 
-public class ExitItem extends AbstractMenuItem {
+public class SaveItem extends AbstractMenuItem {	
+	private SdfWriter writer;
 
-	public ExitItem() {
-		super("Exit");
+	public SaveItem(String prompt, SdfWriter writer) {
+		super(prompt);
+		this.writer = writer;
 	}
 
 	@Override
 	public MenuItem[] execute(SoftwareDefinitionFileBuilder builder) throws Exception {
-		return null;
+		String fileName = promptForResponse("Save where?");
+		this.writer.write (fileName, builder);
+		
+		System.out.println("File saved to " + fileName);
+		
+		return super.getEmptyItems ();
 	}
 }

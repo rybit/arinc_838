@@ -11,7 +11,8 @@ package edu.cmu.sv.arinc838.ui;
 
 import edu.cmu.sv.arinc838.ui.item.ExitItem;
 import edu.cmu.sv.arinc838.ui.item.MenuItem;
-import edu.cmu.sv.arinc838.ui.item.XmlSaveItem;
+import edu.cmu.sv.arinc838.ui.item.SaveItem;
+import edu.cmu.sv.arinc838.writer.XdfWriter;
 
 public class XmlFileMenu implements Menu {
 
@@ -23,7 +24,7 @@ public class XmlFileMenu implements Menu {
 
 	@Override
 	public MenuItem[] getItems() {
-		return new MenuItem[] { new XmlSaveItem("Save current file."), new ExitItem() };
+		return new MenuItem[] { new SaveItem("Save current file.", new XdfWriter ()), new ExitItem() };
 	}
 
 	@Override
