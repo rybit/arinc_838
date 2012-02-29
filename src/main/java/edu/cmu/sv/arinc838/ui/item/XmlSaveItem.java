@@ -23,14 +23,8 @@ public class XmlSaveItem extends AbstractMenuItem {
 
 	@Override
 	public Menu execute(SoftwareDefinitionFileBuilder builder) throws Exception {
-		System.out.print ("Save where? ");
-
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		String ret = br.readLine();
-		
-		XdfWriter writer = new XdfWriter(builder.buildXml());
-		
-		writer.write(ret);
+		String fileName = promptForResponse("Save where?");
+		this.writer.write (fileName, builder);
 		
 		System.out.println("File saved to "+ret);
 		
