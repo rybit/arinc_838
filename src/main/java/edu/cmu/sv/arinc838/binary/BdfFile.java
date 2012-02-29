@@ -17,6 +17,7 @@ public class BdfFile extends RandomAccessFile {
 	public static final int FILE_DEFINITIONS_POINTER_LOCATION = 16;
 	public static final int SDF_INTEGRITY_POINTER_LOCATION = 20;
 	public static final int LSP_INTEGRITY_POINTER_LOCATION = 24;
+	public static final long PLACEHOLDER = 0;
 
 	public BdfFile(File file) throws FileNotFoundException {
 		super(file, "rw");
@@ -72,5 +73,9 @@ public class BdfFile extends RandomAccessFile {
 		super.seek(pointerLocation);
 		writeUint32(currentLocation);
 		super.seek(currentLocation);
+	}
+
+	public void writePlaceholder() throws IOException {
+		writeUint32(0);
 	}
 }

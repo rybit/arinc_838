@@ -117,13 +117,15 @@ public class FileDefinitionBuilder implements Builder<FileDefinition>{
 	public int buildBinary(BdfFile bdfFile) throws IOException {
 		int initialPosition = (int) bdfFile.getFilePointer();
 		
-		bdfFile.writeUint32(0);
+		bdfFile.writeUint32(0); //Place holder for APTPTR to the next file definition
 		bdfFile.writeBoolean(isFileLoadable());
 		bdfFile.writeStr64k(getFileName());
 		bdfFile.writeUint32(getFileSize());
 		getFileIntegrityDefinition().buildBinary(bdfFile);
 
 		int finalPosition = (int) bdfFile.getFilePointer();
+		
+		//If not last file def then fill in the pointer to the next file def
 		if (!isLast()) {
 			bdfFile.seek(initialPosition);
 			bdfFile.writeUint32(finalPosition);

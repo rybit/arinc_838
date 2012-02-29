@@ -9,14 +9,14 @@
  */
 package edu.cmu.sv.arinc838.builder;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mockito.InOrder;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -91,22 +91,6 @@ public class SoftwareDefinitionFileBuilderTest {
 				swDefFile.getSoftwareDescription().getSoftwarePartnumber());
 	}
 
-	@Test
-	public void setFileFormatVersion() {
-		// This is kind of dumb because the file format version can only have 1
-		// value
-		swDefFileBuilder
-				.setFileFormatVersion(SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION);
-		assertEquals(SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION,
-				swDefFileBuilder.getFileFormatVersion());
-	}
-
-	@Test(expectedExceptions = IllegalArgumentException.class)
-	public void setFileFormatVersionInvalid() {
-		swDefFileBuilder
-				.setFileFormatVersion(SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION + 1);
-
-	}
 
 	@Test
 	public void testBuildAddsFileFormatVersion() {
@@ -121,27 +105,12 @@ public class SoftwareDefinitionFileBuilderTest {
 	public void testDefaultConstructor() {
 		SoftwareDefinitionFileBuilder builder = new SoftwareDefinitionFileBuilder();
 
-		assertEquals(builder.getFileFormatVersion(), 0);
+		assertEquals(builder.getFileFormatVersion(), SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION);
 
 	}
 
 
-	@Test
-	public void testFileLengthIsSet() throws Exception {
-
-		SoftwareDefinitionFileBuilder fileBuilder = new SoftwareDefinitionFileBuilder();
-		fileBuilder
-				.setFileFormatVersion(SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION);
-
-		BdfFile file = mock(BdfFile.class);
-
-		fileBuilder.buildBinary(file);
-
-		verify(file).writeFileFormatVersion(
-				SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION);
-
-	}
-	
+		
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void testFileDefinitionsEmpty()
 	{
@@ -282,4 +251,43 @@ public class SoftwareDefinitionFileBuilderTest {
 				.getTargetHardwareDefinitions().get(0);
 		assertEquals(actualHardwareDefinition, expectedHardwareDefinition);
 	}
+	
+	@Test
+	public void testBuildBinaryWritesSoftwareDefinition() throws IOException{
+		BdfFile file = mock(BdfFile.class);
+		SoftwareDescriptionBuilder swDescription = mock(SoftwareDescriptionBuilder.class);
+		TargetHardwareDefinitionBuilder thdBuilder = mock(TargetHardwareDefinitionBuilder.class);
+		FileDefinitionBuilder fdBuilder = mock(FileDefinitionBuilder.class);
+		IntegrityDefinitionBuilder sdfInteg = mock(IntegrityDefinitionBuilder.class);
+		IntegrityDefinitionBuilder lspInteg = mock(IntegrityDefinitionBuilder.class);
+		
+		
+		swDefFileBuilder.setSoftwareDescription(swDescription);
+		swDefFileBuilder.getTargetHardwareDefinitions().clear();
+		swDefFileBuilder.getTargetHardwareDefinitions().add(thdBuilder);
+		swDefFileBuilder.getTargetHardwareDefinitions().add(thdBuilder);
+		swDefFileBuilder.getFileDefinitions().clear();
+		swDefFileBuilder.getFileDefinitions().add(fdBuilder);
+		swDefFileBuilder.getFileDefinitions().add(fdBuilder);
+		swDefFileBuilder.getFileDefinitions().add(fdBuilder);
+		
+		swDefFileBuilder.setSdfIntegrityDefinition(sdfInteg);
+		swDefFileBuilder.setLspIntegrityDefinition(lspInteg);
+		
+		InOrder order = inOrder(file,swDescription,thdBuilder,fdBuilder,sdfInteg,lspInteg);
+		
+		swDefFileBuilder.buildBinary(file);
+							
+		order.verify(file).writePlaceholder();
+		order.verify(file).writeFileFormatVersion(swDefFileBuilder.getFileFormatVersion());
+		order.verify(file,times(5)).writePlaceholder();
+		order.verify(swDescription).buildBinary(file);
+		order.verify(thdBuilder, times(2)).buildBinary(file);
+		order.verify(fdBuilder, times(3)).buildBinary(file);
+		order.verify(sdfInteg).buildBinary(file);
+		order.verify(lspInteg).buildBinary(file);
+		order.verify(file).seek(0);
+		order.verify(file).writeUint32(file.length());
+	}
+	
 }
