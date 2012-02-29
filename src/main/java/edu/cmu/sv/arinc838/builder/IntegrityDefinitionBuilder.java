@@ -9,6 +9,8 @@
  */
 package edu.cmu.sv.arinc838.builder;
 
+import java.io.IOException;
+
 import com.arinc.arinc838.IntegrityDefinition;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
@@ -89,8 +91,15 @@ public class IntegrityDefinitionBuilder implements Builder<IntegrityDefinition> 
 	}
 	
 	@Override
-	public int buildBinary(BdfFile file) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int buildBinary(BdfFile bdfFile) throws IOException {
+		int initialPosition = (int) bdfFile.getFilePointer();
+		
+		bdfFile.writeUint32(getIntegrityType());
+		// this strips the 0x from the beginning so we don't write this to the file
+		bdfFile.writeStr64k(getIntegrityValue().substring(2));
+	
+		int finalPosition = (int) bdfFile.getFilePointer();
+
+		return (int) (finalPosition - initialPosition);
 	}
 }

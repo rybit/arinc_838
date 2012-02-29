@@ -9,6 +9,8 @@
  */
 package edu.cmu.sv.arinc838.builder;
 
+import java.io.IOException;
+
 import com.arinc.arinc838.FileDefinition;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
@@ -51,6 +53,7 @@ public class FileDefinitionBuilder implements Builder<FileDefinition>{
 	private boolean loadable;
 	private String fileName;
 	private long fileSize;
+	private boolean isLast;
 
 	public FileDefinitionBuilder() {
 		;
@@ -111,8 +114,30 @@ public class FileDefinitionBuilder implements Builder<FileDefinition>{
 	}
 	
 	@Override
-	public int buildBinary(BdfFile file) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int buildBinary(BdfFile bdfFile) throws IOException {
+		int initialPosition = (int) bdfFile.getFilePointer();
+		
+		bdfFile.writeUint32(0);
+		bdfFile.writeBoolean(isFileLoadable());
+		bdfFile.writeStr64k(getFileName());
+		bdfFile.writeUint32(getFileSize());
+		getFileIntegrityDefinition().buildBinary(bdfFile);
+
+		int finalPosition = (int) bdfFile.getFilePointer();
+		if (!isLast()) {
+			bdfFile.seek(initialPosition);
+			bdfFile.writeUint32(finalPosition);
+			bdfFile.seek(finalPosition);
+		}
+
+		return (int) (finalPosition - initialPosition);
+	}
+
+	public boolean isLast() {
+		return isLast;
+	}
+
+	public void setIsLast(boolean value) {
+		isLast = value;	
 	}
 }
