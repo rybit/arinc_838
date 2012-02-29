@@ -9,16 +9,16 @@
  */
 package edu.cmu.sv.arinc838.ui.item;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
 import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
 import edu.cmu.sv.arinc838.ui.Menu;
-import edu.cmu.sv.arinc838.xml.XdfWriter;
+import edu.cmu.sv.arinc838.writer.SdfWriter;
 
-public class XmlSaveItem extends AbstractMenuItem {	
-	public XmlSaveItem(String prompt) {
+public class SaveItem extends AbstractMenuItem {	
+	private SdfWriter writer;
+
+	public SaveItem(String prompt, SdfWriter writer) {
 		super(prompt);
+		this.writer = writer;
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public class XmlSaveItem extends AbstractMenuItem {
 		String fileName = promptForResponse("Save where?");
 		this.writer.write (fileName, builder);
 		
-		System.out.println("File saved to "+ret);
+		System.out.println("File saved to " + fileName);
 		
 		return null;
 	}

@@ -28,6 +28,7 @@ import com.arinc.arinc838.SoftwareDescription;
 import com.arinc.arinc838.ThwDefinition;
 
 import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
+import edu.cmu.sv.arinc838.writer.XdfWriter;
 
 public class XdfWriterTest {
 
@@ -36,15 +37,16 @@ public class XdfWriterTest {
 		SdfFile file = getTestFile();
 		File writtenXmlFile = File.createTempFile("test_xdf_writer", "xml");
 		// write the file based on the input
-		new XdfWriter(file).write(writtenXmlFile.getAbsolutePath());
-
+		XdfWriter writer = new XdfWriter ();
+		writer.write(writtenXmlFile, file);
+		
 		// read the file back in
 		SdfFile jaxbFile = readJaxb(writtenXmlFile);
 
 		// verify the files match
 		vefifyMatch(file, jaxbFile);
 	}
-
+	
 	private void vefifyMatch(SdfFile file1, SdfFile file2) {
 		assertEquals(file1.getFileFormatVersion(), file2.getFileFormatVersion());
 

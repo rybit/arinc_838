@@ -9,6 +9,11 @@
  */
 package edu.cmu.sv.arinc838.ui.item;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 public abstract class AbstractMenuItem implements MenuItem{
 	private String prompt;
 	AbstractMenuItem (String prompt) {
@@ -18,5 +23,14 @@ public abstract class AbstractMenuItem implements MenuItem{
 	@Override
 	public String getPrompt () {
 		return prompt;
+	}
+	
+	public static String promptForResponse (String toSay) throws IOException {
+		
+		System.out.print (toSay + " ");
+
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		String ret = br.readLine();
+		return ret;
 	}
 }
