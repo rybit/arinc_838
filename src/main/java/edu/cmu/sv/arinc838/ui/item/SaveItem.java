@@ -22,12 +22,12 @@ public class SaveItem extends AbstractMenuItem {
 	}
 
 	@Override
-	public Menu execute(SoftwareDefinitionFileBuilder builder) throws Exception {
+	public MenuItem[] execute(SoftwareDefinitionFileBuilder builder) throws Exception {
 		String fileName = promptForResponse("Save where?");
 		this.writer.write (fileName, builder);
 		
 		System.out.println("File saved to " + fileName);
 		
-		return null;
+		return super.getEmptyItems ();
 	}
 }

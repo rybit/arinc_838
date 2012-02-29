@@ -6,7 +6,6 @@ public class BdfWriter implements SdfWriter {
 
 	@Override
 	public void write(String filename, SoftwareDefinitionFileBuilder builder) throws Exception {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException ("This feature is not yet implemented");
 	}
 }

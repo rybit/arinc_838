@@ -25,7 +25,7 @@ public class XmlReadItem  extends AbstractMenuItem {
 	}
 	
 	@Override
-	public Menu execute(SoftwareDefinitionFileBuilder builder) throws Exception {		
+	public MenuItem[] execute(SoftwareDefinitionFileBuilder builder) throws Exception {		
 		String filename = promptForResponse("Which file?");
 				
 		File file = new File(filename);
@@ -37,6 +37,8 @@ public class XmlReadItem  extends AbstractMenuItem {
 				
 		builder.initialize(jaxbFile);
 		
-		return null;
+		System.out.println ("Successfully read in " + file);
+		
+		return super.getEmptyItems();
 	}
 }
