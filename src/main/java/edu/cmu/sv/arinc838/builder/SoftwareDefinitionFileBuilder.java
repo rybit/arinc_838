@@ -142,8 +142,9 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 
 		// Write the target hardware definitions
 		int size = this.getTargetHardwareDefinitions().size();
-		if (size > 0) {
-			file.writeTargetDefinitionsPointer();
+		file.writeUint32(size);
+		file.writeTargetDefinitionsPointer();
+		if (size > 0) {			
 			this.getTargetHardwareDefinitions().get(size - 1).setIsLast(true);
 			for (int i = 0; i < size; i++) {
 				this.getTargetHardwareDefinitions().get(i).buildBinary(file);
@@ -152,18 +153,21 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 
 		// write the file definitions
 		size = this.getFileDefinitions().size();
-		this.getFileDefinitions().get(size - 1).setIsLast(true);
+		file.writeUint32(size);
 		file.writeFileDefinitionsPointer();
+		this.getFileDefinitions().get(size - 1).setIsLast(true);		
 		for (int i = 0; i < size; i++) {
 			this.getFileDefinitions().get(i).buildBinary(file);
 		}
 
 		// write the SDF integrity def
 		file.writeSdfIntegrityDefinitionPointer();
+		this.getSdfIntegrityDefinition().setIntegrityValue(Converter.hexToBytes("0000000A"));
 		this.getSdfIntegrityDefinition().buildBinary(file);
 
 		// write the LSP integrity def
 		file.writeLspIntegrityDefinitionPointer();
+		this.getLspIntegrityDefinition().setIntegrityValue(Converter.hexToBytes("0000000A"));
 		this.getLspIntegrityDefinition().buildBinary(file);
 
 		// write the file size

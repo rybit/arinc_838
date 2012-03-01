@@ -268,7 +268,7 @@ public class SoftwareDefinitionFileBuilderTest {
 		BdfFile file = new BdfFile(File.createTempFile("tmp", "bin"));
 		int bytesWritten = swDefFileBuilder.buildBinary(file);
 		
-		assertEquals(bytesWritten, 153);
+		assertEquals(bytesWritten, 165);
 		
 		file.seek(0);
 		assertEquals(file.readUint32(), file.length());
@@ -277,10 +277,10 @@ public class SoftwareDefinitionFileBuilderTest {
 		assertEquals(fileFormatVersion, SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION);
 		
 		assertEquals(file.readUint32(), 28); // software description pointer
-		assertEquals(file.readUint32(), 28 + 27);  // target hardware definition pointer
-		assertEquals(file.readUint32(), 28 + 27 + 36);// file definition pointer
-		assertEquals(file.readUint32(), 28 + 27 + 36 + 46);// SDF integrity definition pointer
-		assertEquals(file.readUint32(), 28 + 27 + 36 + 46 + 8);// LSP integrity definition pointer
+		assertEquals(file.readUint32(), 28 + 31);  // target hardware definition pointer
+		assertEquals(file.readUint32(), 28 + 31 + 40);// file definition pointer
+		assertEquals(file.readUint32(), 28 + 31 + 40 + 46);// SDF integrity definition pointer
+		assertEquals(file.readUint32(), 28 + 31 + 40 + 46 + 10);// LSP integrity definition pointer
 	}
 	
 	@Test
@@ -317,14 +317,30 @@ public class SoftwareDefinitionFileBuilderTest {
 		order.verify(file).writePlaceholder();
 		order.verify(file).write(swDefFileBuilder.getFileFormatVersion());
 		order.verify(file,times(5)).writePlaceholder();
+		
 		order.verify(swDescription).buildBinary(file);
+		
+		order.verify(file).writeUint32(2);		
+		order.verify(file).writeTargetDefinitionsPointer();
 		order.verify(thdBuilderLast).setIsLast(true);
 		order.verify(thdBuilder).buildBinary(file);
-		order.verify(thdBuilderLast).buildBinary(file);		
-		order.verify(fdBuilderLast).setIsLast(true);		
+		order.verify(thdBuilderLast).buildBinary(file);
+		
+		order.verify(file).writeUint32(3);		
+		order.verify(file).writeFileDefinitionsPointer();
+		order.verify(fdBuilderLast).setIsLast(true);
 		order.verify(fdBuilder, times(2)).buildBinary(file);		
-		order.verify(fdBuilderLast).buildBinary(file);
+		order.verify(fdBuilderLast).buildBinary(file);		
+
+		order.verify(file).writeSdfIntegrityDefinitionPointer();
+		//TODO actually calculate the CRC
+		order.verify(sdfInteg).setIntegrityValue(Converter.hexToBytes("0000000A"));		
 		order.verify(sdfInteg).buildBinary(file);
+		
+		order.verify(file).writeLspIntegrityDefinitionPointer();
+		//TODO actually calculate the CRC
+		order.verify(lspInteg).setIntegrityValue(Converter.hexToBytes("0000000A"));
+		
 		order.verify(lspInteg).buildBinary(file);
 		order.verify(file).seek(0);
 		order.verify(file).writeUint32(file.length());

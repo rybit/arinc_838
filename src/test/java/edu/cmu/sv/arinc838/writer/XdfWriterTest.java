@@ -9,8 +9,6 @@
  */
 package edu.cmu.sv.arinc838.writer;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
 import java.io.File;
