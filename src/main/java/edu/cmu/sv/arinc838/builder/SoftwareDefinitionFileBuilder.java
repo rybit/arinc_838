@@ -44,10 +44,6 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 		;
 	}
 
-	public SoftwareDefinitionFileBuilder(RandomAccessFile file) {
-		// TODO Auto-generated constructor stub
-	}
-
 	@SuppressWarnings("unchecked")
 	public void initialize(SdfFile swDefFile) {
 		DataValidator.validateFileFormatVersion(swDefFile

@@ -365,24 +365,4 @@ public class SoftwareDefinitionFileBuilderTest {
 		assertEquals(swDefFileBuilder.getXmlFileName(), swDefFileBuilder
 				.getSoftwareDescription().getSoftwarePartNumber() + ".XDF");
 	}
-
-	@Test
-	public void testReadBinary() throws Exception {
-		
-		SoftwareDefinitionFileBuilder expected = swDefFileBuilder;
-		
-		BdfWriter writer = new BdfWriter();
-
-		String path = System.getProperty("java.io.tmpdir");
-
-		String fileName = writer.write(path, expected);
-		
-		RandomAccessFile file = new RandomAccessFile(fileName,  "r");
-		
-		SoftwareDefinitionFileBuilder actual = new SoftwareDefinitionFileBuilder(file);
-		
-		assertEquals(actual, expected);
-
-		new File(fileName).delete();
-	}
 }
