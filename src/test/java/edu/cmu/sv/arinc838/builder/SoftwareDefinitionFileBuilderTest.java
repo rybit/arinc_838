@@ -330,4 +330,13 @@ public class SoftwareDefinitionFileBuilderTest {
 		order.verify(file).writeUint32(file.length());
 	}
 	
+	@Test
+	public void testHasBinaryFileName(){
+		assertEquals(swDefFileBuilder.getBinaryFileName(),swDefFileBuilder.getSoftwareDescription().getSoftwarePartNumber()+".BDF");
+	}	
+	
+	@Test
+	public void testHasXmlFileName(){
+		assertEquals(swDefFileBuilder.getXmlFileName(),swDefFileBuilder.getSoftwareDescription().getSoftwarePartNumber()+".XDF");
+	}	
 }

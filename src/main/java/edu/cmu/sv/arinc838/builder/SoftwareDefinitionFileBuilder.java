@@ -173,4 +173,12 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 
 		return (int) file.length();
 	}
+
+	public String getBinaryFileName() {
+		return getSoftwareDescription().getSoftwarePartNumber() + ".BDF";
+	}
+
+	public String getXmlFileName() {
+		return getSoftwareDescription().getSoftwarePartNumber() + ".XDF";
+	}
 }
