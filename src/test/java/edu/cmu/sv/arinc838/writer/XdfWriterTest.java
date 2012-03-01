@@ -9,6 +9,8 @@
  */
 package edu.cmu.sv.arinc838.writer;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
 import java.io.File;
@@ -29,7 +31,6 @@ import com.arinc.arinc838.ThwDefinition;
 import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
 import edu.cmu.sv.arinc838.util.Converter;
 import edu.cmu.sv.arinc838.validation.ReferenceData;
-import edu.cmu.sv.arinc838.writer.XdfWriter;
 
 public class XdfWriterTest {
 
@@ -140,4 +141,14 @@ public class XdfWriterTest {
 				.setFileFormatVersion(SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION);
 		return swDefFile;
 	}
+	
+	@Test
+	public void testBuildsCorrectFileName(){
+		SoftwareDefinitionFileBuilder builder = mock(SoftwareDefinitionFileBuilder.class);
+		when(builder.getXmlFileName()).thenReturn("xml");
+		
+		XdfWriter writer = new XdfWriter();
+		
+		assertEquals(writer.getFileNameAndPath("path", builder), "pathxml");
+	}	
 }

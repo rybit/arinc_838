@@ -28,6 +28,7 @@ public class XdfWriter implements SdfWriter {
 		return write(file, sdfFile);
 	}
 
+
 	public String write(File file, SdfFile sdfFile) throws Exception {
 		JAXBContext jaxbContext = JAXBContext.newInstance(SdfFile.class);
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
@@ -47,7 +48,6 @@ public class XdfWriter implements SdfWriter {
 		// output pretty printed
 		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 		jaxbMarshaller.marshal(sdfFile, file);
-
 		return file.getCanonicalPath();
 	}
 }

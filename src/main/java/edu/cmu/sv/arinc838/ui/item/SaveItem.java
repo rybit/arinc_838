@@ -23,6 +23,7 @@ public class SaveItem extends AbstractMenuItem {
 	@Override
 	public MenuItem[] execute(SoftwareDefinitionFileBuilder builder)
 			throws Exception {
+
 		String path = promptForResponse("Save where? (path only, filename will be appended)");
 		String fileName = this.writer.write(path, builder);
 
