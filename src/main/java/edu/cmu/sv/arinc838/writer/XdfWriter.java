@@ -26,6 +26,11 @@ public class XdfWriter implements SdfWriter {
 		SdfFile sdfFile = builder.buildXml();
 		write (file, sdfFile);
 	}
+
+	@Override
+	public String getFileNameAndPath(String path, SoftwareDefinitionFileBuilder builder) {
+		return path + builder.getXmlFileName();
+	}
 	
 	public void write(File file, SdfFile sdfFile) throws Exception {
 		JAXBContext jaxbContext = JAXBContext.newInstance(SdfFile.class);
@@ -44,5 +49,5 @@ public class XdfWriter implements SdfWriter {
 		// output pretty printed
 		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 		jaxbMarshaller.marshal(sdfFile, file);
-	}
+	}	
 }

@@ -14,7 +14,15 @@ import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
 public class BdfWriter implements SdfWriter {
 
 	@Override
-	public void write(String filename, SoftwareDefinitionFileBuilder builder) throws Exception {
-		throw new UnsupportedOperationException ("This feature is not yet implemented");
+	public void write(String filename, SoftwareDefinitionFileBuilder builder)
+			throws Exception {
+		throw new UnsupportedOperationException(
+				"This feature is not yet implemented");
+	}
+
+	@Override
+	public String getFileNameAndPath(String path,
+			SoftwareDefinitionFileBuilder builder) {
+		return path+builder.getBinaryFileName();
 	}
 }

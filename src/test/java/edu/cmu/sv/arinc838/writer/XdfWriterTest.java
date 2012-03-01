@@ -10,6 +10,7 @@
 package edu.cmu.sv.arinc838.writer;
 
 import static org.testng.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.util.List;
@@ -18,6 +19,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import org.mockito.Mock;
 import org.testng.annotations.Test;
 
 import com.arinc.arinc838.FileDefinition;
@@ -118,4 +120,14 @@ public class XdfWriterTest {
 				.setFileFormatVersion(SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION);
 		return swDefFile;
 	}
+	
+	@Test
+	public void testBuildsCorrectFileName(){
+		SoftwareDefinitionFileBuilder builder = mock(SoftwareDefinitionFileBuilder.class);
+		when(builder.getXmlFileName()).thenReturn("xml");
+		
+		XdfWriter writer = new XdfWriter();
+		
+		assertEquals(writer.getFileNameAndPath("path", builder), "pathxml");
+	}	
 }
