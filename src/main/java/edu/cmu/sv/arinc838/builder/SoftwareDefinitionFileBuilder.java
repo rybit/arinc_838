@@ -10,7 +10,6 @@
 package edu.cmu.sv.arinc838.builder;
 
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,12 +35,16 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 	private IntegrityDefinitionBuilder lspIntegrityDefinition;
 	private IntegrityDefinitionBuilder sdfIntegrityDefinition;
 
+	public SoftwareDefinitionFileBuilder() {
+		;
+	}
+
 	public SoftwareDefinitionFileBuilder(SdfFile swDefFile) {
 		this.initialize(swDefFile);
 	}
 
-	public SoftwareDefinitionFileBuilder() {
-		;
+	public SoftwareDefinitionFileBuilder(BdfFile file) {
+		this.initialize(file);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -65,6 +68,10 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 				swDefFile.getLspIntegrityDefinition());
 		sdfIntegrityDefinition = new IntegrityDefinitionBuilder(
 				swDefFile.getSdfIntegrityDefinition());
+	}
+	
+	public void initialize(BdfFile file){
+		
 	}
 
 	public byte[] getFileFormatVersion() {

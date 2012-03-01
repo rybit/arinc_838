@@ -365,4 +365,37 @@ public class SoftwareDefinitionFileBuilderTest {
 		assertEquals(swDefFileBuilder.getXmlFileName(), swDefFileBuilder
 				.getSoftwareDescription().getSoftwarePartNumber() + ".XDF");
 	}
+
+	@Test
+	public void testReadBinary() throws Exception {
+		SoftwareDefinitionFileBuilder expected = swDefFileBuilder;
+
+		BdfWriter writer = new BdfWriter();
+
+		String path = System.getProperty("java.io.tmpdir");
+
+		String firstFileName = writer.write(path, expected);
+		File firstOnDisk = new File(firstFileName);
+		
+		BdfFile file = new BdfFile(firstOnDisk);
+
+		SoftwareDefinitionFileBuilder actual = new SoftwareDefinitionFileBuilder(
+				file);
+
+		String secondFileName = writer.write(path + "/second/", actual);
+
+		RandomAccessFile first = new RandomAccessFile( firstOnDisk, "r");
+		byte[] firstBytes = new byte[(int)first.length()];
+		first.readFully(firstBytes);
+		
+		File secondOnDisk = new File(secondFileName);
+		RandomAccessFile second = new RandomAccessFile(secondOnDisk, "r");
+		byte[] secondBytes = new byte[(int)second.length()];
+		second.readFully(secondBytes);
+		
+		assertEquals(firstBytes, secondBytes);
+		
+		firstOnDisk.delete();
+		secondOnDisk.delete();
+	}
 }
