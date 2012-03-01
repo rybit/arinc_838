@@ -5,8 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
-
 import edu.cmu.sv.arinc838.validation.DataValidator;
 
 public class BdfFile extends RandomAccessFile {

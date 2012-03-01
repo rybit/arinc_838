@@ -44,9 +44,7 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 
 	@SuppressWarnings("unchecked")
 	public void initialize(SdfFile swDefFile) {
-		
-		//TODO Write a test to verify that the file matches the final
-		//fileFormatVersion = swDefFile.getFileFormatVersion();
+		DataValidator.validateFileFormatVersion(swDefFile.getFileFormatVersion());
 		List<FileDefinition> fileDefs = (List<FileDefinition>) DataValidator
 				.validateList1(swDefFile.getFileDefinitions());
 
@@ -139,11 +137,19 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 		file.writePlaceholder();
 		this.getSoftwareDescription().buildBinary(file);
 	
-		for (int i=0; i<this.getTargetHardwareDefinitions().size(); i++) {
+		int size = this.getTargetHardwareDefinitions().size();
+		
+		this.getTargetHardwareDefinitions().get(size-1).setIsLast(true);
+		
+		
+		for (int i=0; i<size; i++) {
 			this.getTargetHardwareDefinitions().get(i).buildBinary(file);
 		}
+		
+		size = this.getFileDefinitions().size();
+		this.getFileDefinitions().get(size-1).setIsLast(true);
 			
-		for (int i=0; i<this.getFileDefinitions().size(); i++) {
+		for (int i=0; i<size; i++) {
 			this.getFileDefinitions().get(i).buildBinary(file);
 		}
 		
@@ -154,6 +160,6 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 		file.writeUint32(file.length());
 		
 	
-		return 0;
+		return (int)file.length();
 	}
 }

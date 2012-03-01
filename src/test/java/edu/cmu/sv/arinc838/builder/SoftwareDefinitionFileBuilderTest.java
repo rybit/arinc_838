@@ -109,6 +109,14 @@ public class SoftwareDefinitionFileBuilderTest {
 
 	}
 
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testFileFormatVersionIsCorrect() {
+		SdfFile file = swDefFileBuilder.buildXml();
+		file.setFileFormatVersion(Converter.hexToBytes("0000000A"));
+		
+		new SoftwareDefinitionFileBuilder(file);
+
+	}
 
 		
 	@Test(expectedExceptions = IllegalArgumentException.class)
@@ -257,7 +265,9 @@ public class SoftwareDefinitionFileBuilderTest {
 		BdfFile file = mock(BdfFile.class);
 		SoftwareDescriptionBuilder swDescription = mock(SoftwareDescriptionBuilder.class);
 		TargetHardwareDefinitionBuilder thdBuilder = mock(TargetHardwareDefinitionBuilder.class);
+		TargetHardwareDefinitionBuilder thdBuilderLast = mock(TargetHardwareDefinitionBuilder.class);
 		FileDefinitionBuilder fdBuilder = mock(FileDefinitionBuilder.class);
+		FileDefinitionBuilder fdBuilderLast = mock(FileDefinitionBuilder.class);
 		IntegrityDefinitionBuilder sdfInteg = mock(IntegrityDefinitionBuilder.class);
 		IntegrityDefinitionBuilder lspInteg = mock(IntegrityDefinitionBuilder.class);
 		
@@ -265,25 +275,32 @@ public class SoftwareDefinitionFileBuilderTest {
 		swDefFileBuilder.setSoftwareDescription(swDescription);
 		swDefFileBuilder.getTargetHardwareDefinitions().clear();
 		swDefFileBuilder.getTargetHardwareDefinitions().add(thdBuilder);
-		swDefFileBuilder.getTargetHardwareDefinitions().add(thdBuilder);
+		swDefFileBuilder.getTargetHardwareDefinitions().add(thdBuilderLast);
 		swDefFileBuilder.getFileDefinitions().clear();
 		swDefFileBuilder.getFileDefinitions().add(fdBuilder);
 		swDefFileBuilder.getFileDefinitions().add(fdBuilder);
-		swDefFileBuilder.getFileDefinitions().add(fdBuilder);
+		swDefFileBuilder.getFileDefinitions().add(fdBuilderLast);
 		
 		swDefFileBuilder.setSdfIntegrityDefinition(sdfInteg);
 		swDefFileBuilder.setLspIntegrityDefinition(lspInteg);
 		
-		InOrder order = inOrder(file,swDescription,thdBuilder,fdBuilder,sdfInteg,lspInteg);
+		InOrder order = inOrder(file,swDescription,thdBuilder,thdBuilderLast,fdBuilder,fdBuilderLast,sdfInteg,lspInteg);
 		
-		swDefFileBuilder.buildBinary(file);
-							
+		when(file.length()).thenReturn(14L);
+		int bytesWritten = swDefFileBuilder.buildBinary(file);
+		
+		assertEquals(bytesWritten, 14L);
+			
 		order.verify(file).writePlaceholder();
 		order.verify(file).writeFileFormatVersion(swDefFileBuilder.getFileFormatVersion());
 		order.verify(file,times(5)).writePlaceholder();
 		order.verify(swDescription).buildBinary(file);
-		order.verify(thdBuilder, times(2)).buildBinary(file);
-		order.verify(fdBuilder, times(3)).buildBinary(file);
+		order.verify(thdBuilderLast).setIsLast(true);
+		order.verify(thdBuilder).buildBinary(file);
+		order.verify(thdBuilderLast).buildBinary(file);		
+		order.verify(fdBuilderLast).setIsLast(true);		
+		order.verify(fdBuilder, times(2)).buildBinary(file);		
+		order.verify(fdBuilderLast).buildBinary(file);
 		order.verify(sdfInteg).buildBinary(file);
 		order.verify(lspInteg).buildBinary(file);
 		order.verify(file).seek(0);
