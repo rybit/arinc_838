@@ -21,18 +21,20 @@ import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
 
 public class XdfWriter implements SdfWriter {
 	@Override
-	public void write(String filename, SoftwareDefinitionFileBuilder builder) throws Exception {
-		File file = new File(filename);
+	public String write(String path, SoftwareDefinitionFileBuilder builder)
+			throws Exception {
+		File file = new File(path + builder.getXmlFileName());
 		SdfFile sdfFile = builder.buildXml();
-		write (file, sdfFile);
+		return write(file, sdfFile);
 	}
-	
-	public void write(File file, SdfFile sdfFile) throws Exception {
+
+	public String write(File file, SdfFile sdfFile) throws Exception {
 		JAXBContext jaxbContext = JAXBContext.newInstance(SdfFile.class);
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 
 		NamespacePrefixMapper mapper = new NamespacePrefixMapper() {
-			public String getPreferredPrefix(String namespaceUri, String suggestion, boolean requirePrefix) {
+			public String getPreferredPrefix(String namespaceUri,
+					String suggestion, boolean requirePrefix) {
 				if (namespaceUri.contains("arinc.com")) {
 					return "sdf";
 				} else {
@@ -40,9 +42,12 @@ public class XdfWriter implements SdfWriter {
 				}
 			}
 		};
-		jaxbMarshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", mapper);
+		jaxbMarshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",
+				mapper);
 		// output pretty printed
 		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 		jaxbMarshaller.marshal(sdfFile, file);
+
+		return file.getCanonicalPath();
 	}
 }

@@ -28,6 +28,7 @@ import com.arinc.arinc838.ThwDefinition;
 
 import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
 import edu.cmu.sv.arinc838.util.Converter;
+import edu.cmu.sv.arinc838.validation.ReferenceData;
 import edu.cmu.sv.arinc838.writer.XdfWriter;
 
 public class XdfWriterTest {
@@ -46,6 +47,19 @@ public class XdfWriterTest {
 		// verify the files match
 		vefifyMatch(file, jaxbFile);
 	}
+	
+	@Test
+	public void testWriteReturnsFileName() throws Exception{
+		SdfFile file = getTestFile();
+		SoftwareDefinitionFileBuilder builder = new SoftwareDefinitionFileBuilder(file);
+		XdfWriter writer = new XdfWriter ();
+		
+		String path = System.getProperty("java.io.tmpdir");
+		
+		String writtenFile = writer.write(path, builder);
+				
+		assertEquals(writtenFile, path+builder.getXmlFileName());
+	}	
 	
 	private void vefifyMatch(SdfFile file1, SdfFile file2) {
 		assertEquals(file1.getFileFormatVersion(), file2.getFileFormatVersion());
@@ -108,11 +122,19 @@ public class XdfWriterTest {
 		swDefFile.setSdfIntegrityDefinition(sdfInteg);
 
 		SoftwareDescription swDesc = new SoftwareDescription();
-		swDesc.setSoftwarePartnumber("1234");
+		swDesc.setSoftwarePartnumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
 		swDesc.setSoftwareTypeDescription("type");
 		swDesc.setSoftwareTypeId(Converter.hexToBytes("DEADBEEF"));
 
 		swDefFile.setSoftwareDescription(swDesc);
+		
+		FileDefinition file = new FileDefinition();
+		file.setFileIntegrityDefinition(lspInteg);
+		file.setFileName("test");
+		file.setFileSize(42);
+		file.setFileLoadable(true);
+		
+		swDefFile.getFileDefinitions().add(file);
 
 		swDefFile
 				.setFileFormatVersion(SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION);
