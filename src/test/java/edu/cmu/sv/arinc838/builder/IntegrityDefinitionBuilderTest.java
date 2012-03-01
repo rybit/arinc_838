@@ -16,6 +16,7 @@ import com.arinc.arinc838.IntegrityDefinition;
 
 import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder;
 import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder.IntegrityType;
+import edu.cmu.sv.arinc838.util.Converter;
 
 public class IntegrityDefinitionBuilderTest {
 
@@ -26,7 +27,7 @@ public class IntegrityDefinitionBuilderTest {
 	public void setup() {
 		integDef = new IntegrityDefinition();
 		integDef.setIntegrityType(IntegrityType.CRC16.getType());
-		integDef.setIntegrityValue("0xDEADBEEF");
+		integDef.setIntegrityValue(Converter.hexToBytes("DEADBEEF"));
 
 		builder = new IntegrityDefinitionBuilder(integDef);
 	}
@@ -40,7 +41,7 @@ public class IntegrityDefinitionBuilderTest {
 
 	@Test
 	public void testSetIntegrityType() {
-		IntegrityDefinition def = builder.build();
+		IntegrityDefinition def = builder.buildXml();
 
 		assertEquals(def.getIntegrityType(), builder.getIntegrityType());
 		
@@ -49,7 +50,7 @@ public class IntegrityDefinitionBuilderTest {
 		
 		assertNotEquals(def.getIntegrityType(), builder.getIntegrityType());
 		
-		def = builder.build();
+		def = builder.buildXml();
 		
 		assertEquals(def.getIntegrityType(), builder.getIntegrityType());
 	}
@@ -62,12 +63,12 @@ public class IntegrityDefinitionBuilderTest {
 	
 	@Test
 	public void testSetIntegrityValue() {
-		IntegrityDefinition def = builder.build();
+		IntegrityDefinition def = builder.buildXml();
 
 		assertEquals(def.getIntegrityValue(), builder.getIntegrityValue());
 		
-		builder.setIntegrityValue("0xFEED");
-		def = builder.build();
+		builder.setIntegrityValue(Converter.hexToBytes("DEADBEEF"));
+		def = builder.buildXml();
 		
 		assertEquals(def.getIntegrityValue(), builder.getIntegrityValue());
 	}
@@ -76,12 +77,6 @@ public class IntegrityDefinitionBuilderTest {
 	public void testSetIntegrityValueNull()
 	{
 		builder.setIntegrityValue(null);
-	}
-	
-	@Test(expectedExceptions = IllegalArgumentException.class)
-	public void testSetIntegrityValueInvalid()
-	{
-		builder.setIntegrityValue("0xA<CDZZ&4");
 	}
 	
 	@Test

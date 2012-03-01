@@ -9,8 +9,11 @@
  */
 package edu.cmu.sv.arinc838.builder;
 
+import java.io.IOException;
+
 import com.arinc.arinc838.FileDefinition;
 
+import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.validation.DataValidator;
 
 /**
@@ -50,6 +53,7 @@ public class FileDefinitionBuilder implements Builder<FileDefinition>{
 	private boolean loadable;
 	private String fileName;
 	private long fileSize;
+	private boolean isLast;
 
 	public FileDefinitionBuilder() {
 		;
@@ -85,7 +89,7 @@ public class FileDefinitionBuilder implements Builder<FileDefinition>{
 	}
 
 	public void setFileName(String fileName) {
-		this.fileName = DataValidator.validateStr64k(fileName);
+		this.fileName = DataValidator.validateStr64kXml(fileName);
 	}
 
 	public long getFileSize() {
@@ -97,15 +101,45 @@ public class FileDefinitionBuilder implements Builder<FileDefinition>{
 	}
 
 	@Override
-	public FileDefinition build() {
+	public FileDefinition buildXml() {
 		FileDefinition retDef = new FileDefinition();
 
 		retDef.setFileLoadable(loadable);
 		retDef.setFileName(fileName);
 		retDef.setFileSize(fileSize);
 
-		retDef.setFileIntegrityDefinition(integDefBuilder.build ());
+		retDef.setFileIntegrityDefinition(integDefBuilder.buildXml());
 
 		return retDef;
+	}
+	
+	@Override
+	public int buildBinary(BdfFile bdfFile) throws IOException {
+		int initialPosition = (int) bdfFile.getFilePointer();
+		
+		bdfFile.writeUint32(0); //Place holder for APTPTR to the next file definition
+		bdfFile.writeBoolean(isFileLoadable());
+		bdfFile.writeStr64k(getFileName());
+		bdfFile.writeUint32(getFileSize());
+		getFileIntegrityDefinition().buildBinary(bdfFile);
+
+		int finalPosition = (int) bdfFile.getFilePointer();
+		
+		//If not last file def then fill in the pointer to the next file def
+		if (!isLast()) {
+			bdfFile.seek(initialPosition);
+			bdfFile.writeUint32(finalPosition);
+			bdfFile.seek(finalPosition);
+		}
+
+		return (int) (finalPosition - initialPosition);
+	}
+
+	public boolean isLast() {
+		return isLast;
+	}
+
+	public void setIsLast(boolean value) {
+		isLast = value;	
 	}
 }

@@ -9,8 +9,11 @@
  */
 package edu.cmu.sv.arinc838.builder;
 
+import java.io.IOException;
+
 import com.arinc.arinc838.IntegrityDefinition;
 
+import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.validation.DataValidator;
 
 public class IntegrityDefinitionBuilder implements Builder<IntegrityDefinition> {
@@ -51,7 +54,7 @@ public class IntegrityDefinitionBuilder implements Builder<IntegrityDefinition> 
 	}
 
 	private long integType;
-	private String integValue;
+	private byte[] integValue;
 	
 	public IntegrityDefinitionBuilder(){
 	}
@@ -69,21 +72,33 @@ public class IntegrityDefinitionBuilder implements Builder<IntegrityDefinition> 
 		return integType;
 	}
 
-	public void setIntegrityValue(String value) {
+	public void setIntegrityValue(byte[] value) {
 		integValue = DataValidator.validateIntegrityValue(value);
 	}
 
-	public String getIntegrityValue() {
+	public byte[] getIntegrityValue() {
 		return integValue;
 	}
 
 	@Override
-	public IntegrityDefinition build() {
+	public IntegrityDefinition buildXml() {
 		IntegrityDefinition retDef = new IntegrityDefinition();
 
 		retDef.setIntegrityType(integType);
 		retDef.setIntegrityValue(integValue);
 
 		return retDef;
+	}
+	
+	@Override
+	public int buildBinary(BdfFile bdfFile) throws IOException {
+		int initialPosition = (int) bdfFile.getFilePointer();
+		
+		bdfFile.writeUint32(getIntegrityType());
+		bdfFile.writeHexbin64k(getIntegrityValue());
+	
+		int finalPosition = (int) bdfFile.getFilePointer();
+
+		return (int) (finalPosition - initialPosition);
 	}
 }

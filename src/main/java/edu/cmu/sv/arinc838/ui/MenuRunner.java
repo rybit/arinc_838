@@ -16,48 +16,55 @@ import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
 import edu.cmu.sv.arinc838.ui.item.MenuItem;
 
 public class MenuRunner {
-	private SoftwareDefinitionFileBuilder builder;
-	private static final BufferedReader br = new BufferedReader(
-			new InputStreamReader(System.in));
+	private static final String DASHED_LINE = "-------------------";
 
+	private SoftwareDefinitionFileBuilder builder;
+	private final BufferedReader br;
+	
 	private MenuRunner() {
+		br = new BufferedReader(new InputStreamReader(System.in));
 		builder = new SoftwareDefinitionFileBuilder();
 	}
 
-	private void runMenu(Menu menu) {
-		while (menu != null) {
+	private void runMenu(MenuItem[] menuItems, String header) {
+		while (menuItems != null && menuItems.length > 0) {
 			StringBuffer sb = new StringBuffer();
 
-			if (menu.getHeader() != null) {
-				sb.append(menu.getHeader() + "\n");
+			if (header != null) {
+				sb.append(DASHED_LINE);
+				sb.append(header + "\n");
 			}
 
-			MenuItem[] items = menu.getItems();
-			for (int i = 0; i < items.length; ++i) {
-				sb.append(i + ": " + items[i].getPrompt() + "\n");
+			for (int i = 0; i < menuItems.length; ++i) {
+				sb.append(i + ": " + menuItems[i].getPrompt() + "\n");
 			}
 
 			System.out.println("\n\n" + sb);
 			System.out.print("Please make a selection: ");
 
-			Menu subMenu = null;
-
+			MenuItem[] subMenuItems = null;
+			String subHeader = null;
+			
 			try {
 				int convertedValue = inInt(br);
 
-				MenuItem itemToDo = menu.getItems()[convertedValue];
+				MenuItem itemToDo = menuItems[convertedValue];
 
-				subMenu = itemToDo.execute(builder);
+				subMenuItems = itemToDo.execute(builder);
+				subHeader = itemToDo.getHeader ();
 			} catch (Exception e) {
 				// try again?
 				e.printStackTrace();
 			}
 
-			if (subMenu != null) {
-				runMenu(subMenu);
+			if (subMenuItems == null) { // null is used to indicate breakout  
+				break; 
 			} else {
-				break;
+				// empty indicates loop, otherwise exec the menu
+				runMenu(subMenuItems, subHeader);  
 			}
+			
+			System.out.flush();
 		}
 	}
 
@@ -69,6 +76,6 @@ public class MenuRunner {
 	public static void main(String[] args) {
 		MenuRunner mr = new MenuRunner();
 
-		mr.runMenu(new InitialMenu());
+		mr.runMenu(new InitialMenu().getItems(), null);
 	}
 }

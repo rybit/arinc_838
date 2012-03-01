@@ -19,6 +19,7 @@ import com.arinc.arinc838.FileDefinition;
 
 import edu.cmu.sv.arinc838.builder.FileDefinitionBuilder;
 import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder.IntegrityType;
+import edu.cmu.sv.arinc838.util.Converter;
 
 public class FileDefinitionBuilderTest {
 	FileDefinition xmlFileDef;
@@ -30,13 +31,13 @@ public class FileDefinitionBuilderTest {
 	public void setUp() {
 		IntegrityDefinitionBuilder integBuilder = new IntegrityDefinitionBuilder();
 		integBuilder.setIntegrityType(IntegrityType.CRC16.getType());
-		integBuilder.setIntegrityValue("0xABCD");
+		integBuilder.setIntegrityValue(Converter.hexToBytes("0000000A"));
 
 		xmlFileDef = new FileDefinition();
 		xmlFileDef.setFileLoadable(false);
 		xmlFileDef.setFileName("testFile");
 		xmlFileDef.setFileSize(1234);
-		xmlFileDef.setFileIntegrityDefinition(integBuilder.build());
+		xmlFileDef.setFileIntegrityDefinition(integBuilder.buildXml());
 
 		fileBuilder = new FileDefinitionBuilder();
 		fileBuilder.setFileLoadable(xmlFileDef.isFileLoadable());
@@ -119,7 +120,7 @@ public class FileDefinitionBuilderTest {
 	public void testBuilder() {
 		FileDefinitionBuilder newBuilder = new FileDefinitionBuilder(xmlFileDef);
 
-		FileDefinition built = newBuilder.build();
+		FileDefinition built = newBuilder.buildXml();
 		assertNotEquals(null, built);
 		assertNotEquals(built, xmlFileDef,
 				"Should be different, a NEW instance should be built");
