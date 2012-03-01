@@ -93,23 +93,6 @@ public class SoftwareDefinitionFileBuilderTest {
 	}
 
 	@Test
-	public void setFileFormatVersion() {
-		// This is kind of dumb because the file format version can only have 1
-		// value
-		swDefFileBuilder
-				.setFileFormatVersion(SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION);
-		assertEquals(SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION,
-				swDefFileBuilder.getFileFormatVersion());
-	}
-
-	@Test(expectedExceptions = IllegalArgumentException.class)
-	public void setFileFormatVersionInvalid() {
-		swDefFileBuilder
-				.setFileFormatVersion(new byte[] {1,2,3,4});
-
-	}
-
-	@Test
 	public void testBuildAddsFileFormatVersion() {
 		SdfFile file = swDefFileBuilder.buildXml();
 

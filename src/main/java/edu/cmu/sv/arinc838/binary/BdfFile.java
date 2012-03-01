@@ -82,6 +82,7 @@ public class BdfFile extends RandomAccessFile {
 		
 		writeShort(hexBinToWrite.length);
 		write(hexBinToWrite);
+	}
 
 	public void writePlaceholder() throws IOException {
 		writeUint32(0);
