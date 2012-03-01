@@ -9,14 +9,29 @@
  */
 package edu.cmu.sv.arinc838.writer;
 
+import java.io.File;
+import java.io.IOException;
+
+import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
 
 public class BdfWriter implements SdfWriter {
 
 	@Override
-	public String write(String filename, SoftwareDefinitionFileBuilder builder)
-			throws Exception {
-		throw new UnsupportedOperationException(
-				"This feature is not yet implemented");
+	public String write(String path, SoftwareDefinitionFileBuilder builder)
+			throws Exception {		
+		
+		File fileOnDisk =new File(path+builder.getBinaryFileName());
+		
+		BdfFile file = new BdfFile(fileOnDisk);
+		
+		write(file, builder);
+		
+		return fileOnDisk.getCanonicalPath();
+	}
+	
+	public void write(BdfFile file, SoftwareDefinitionFileBuilder builder) throws IOException{
+		builder.buildBinary(file);
+		file.close();
 	}
 }

@@ -10,6 +10,7 @@
 package edu.cmu.sv.arinc838.builder;
 
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +42,10 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 
 	public SoftwareDefinitionFileBuilder() {
 		;
+	}
+
+	public SoftwareDefinitionFileBuilder(RandomAccessFile file) {
+		// TODO Auto-generated constructor stub
 	}
 
 	@SuppressWarnings("unchecked")
