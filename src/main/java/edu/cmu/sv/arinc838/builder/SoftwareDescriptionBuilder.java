@@ -22,7 +22,7 @@ public class SoftwareDescriptionBuilder implements Builder<SoftwareDescription> 
 
 	private String softwarePartNumber;
 	private String softwareTypeDescription;
-	private long softwareTypeId;
+	private byte[] softwareTypeId;
 
 	public SoftwareDescriptionBuilder(SoftwareDescription softwareDescription) {
 		setSoftwarePartNumber(softwareDescription.getSoftwarePartnumber());
@@ -50,12 +50,12 @@ public class SoftwareDescriptionBuilder implements Builder<SoftwareDescription> 
 		this.softwareTypeDescription = DataValidator.validateStr64kXml(value);
 	}
 
-	public long getSoftwareTypeId() {
+	public byte[] getSoftwareTypeId() {
 		return this.softwareTypeId;
 	}
 
-	public void setSoftwareTypeId(long value) {
-		this.softwareTypeId = DataValidator.validateUint32(value);
+	public void setSoftwareTypeId(byte[] value) {
+		this.softwareTypeId = DataValidator.validateHexbin32(value);
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public class SoftwareDescriptionBuilder implements Builder<SoftwareDescription> 
 		file.writeSoftwareDescriptionPointer();
 		file.writeStr64k(this.getSoftwarePartNumber());		
 		file.writeStr64k(this.getSoftwareTypeDescription());
-		file.writeUint32(this.getSoftwareTypeId());
+		file.write(this.getSoftwareTypeId());
 		
 		return 0;
 	}

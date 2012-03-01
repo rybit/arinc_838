@@ -9,6 +9,7 @@ import org.testng.annotations.Test;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder.IntegrityType;
+import edu.cmu.sv.arinc838.util.Converter;
 
 public class IntegrityDefinitionBuilderBinaryTest {
 
@@ -19,7 +20,7 @@ public class IntegrityDefinitionBuilderBinaryTest {
 		
 		IntegrityDefinitionBuilder integ = new IntegrityDefinitionBuilder();
 		integ.setIntegrityType(IntegrityType.CRC16.getType());
-		integ.setIntegrityValue("0xABCD");
+		integ.setIntegrityValue(Converter.hexToBytes("ABCD"));
 
 		int bytesWritten = integ.buildBinary(bdfFile);
 		
@@ -36,7 +37,7 @@ public class IntegrityDefinitionBuilderBinaryTest {
 		
 		IntegrityDefinitionBuilder integ = new IntegrityDefinitionBuilder();
 		integ.setIntegrityType(IntegrityType.CRC32.getType());
-		integ.setIntegrityValue("0xDEADBEEF");
+		integ.setIntegrityValue(Converter.hexToBytes("DEADBEEF"));
 
 		int bytesWritten = integ.buildBinary(bdfFile);
 		
@@ -53,7 +54,7 @@ public class IntegrityDefinitionBuilderBinaryTest {
 		
 		IntegrityDefinitionBuilder integ = new IntegrityDefinitionBuilder();
 		integ.setIntegrityType(IntegrityType.CRC64.getType());
-		integ.setIntegrityValue("0xDEADBEEFDEADBEEF");
+		integ.setIntegrityValue(Converter.hexToBytes("DEADBEEFDEADBEEF"));
 
 		int bytesWritten = integ.buildBinary(bdfFile);
 		

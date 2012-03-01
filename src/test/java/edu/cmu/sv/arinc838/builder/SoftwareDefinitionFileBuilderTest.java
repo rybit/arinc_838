@@ -27,6 +27,7 @@ import com.arinc.arinc838.ThwDefinition;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder.IntegrityType;
+import edu.cmu.sv.arinc838.util.Converter;
 import edu.cmu.sv.arinc838.validation.DataValidator;
 import edu.cmu.sv.arinc838.validation.ReferenceData;
 
@@ -43,12 +44,12 @@ public class SoftwareDefinitionFileBuilderTest {
 		
 		integrity = new com.arinc.arinc838.IntegrityDefinition();
 		integrity.setIntegrityType(IntegrityType.CRC16.getType());
-		integrity.setIntegrityValue("0xABCD");
+		integrity.setIntegrityValue(Converter.hexToBytes("ABCD"));
 
 		description = new SoftwareDescription();
 		description.setSoftwarePartnumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
 		description.setSoftwareTypeDescription("desc");
-		description.setSoftwareTypeId(10l);
+		description.setSoftwareTypeId(Converter.hexToBytes("0000000A"));
 
 		fileDef = new com.arinc.arinc838.FileDefinition();
 		fileDef.setFileName("file");
@@ -90,7 +91,6 @@ public class SoftwareDefinitionFileBuilderTest {
 		assertEquals(swDefFileBuilder.getSoftwareDescription().getSoftwarePartNumber(), 
 				swDefFile.getSoftwareDescription().getSoftwarePartnumber());
 	}
-
 
 	@Test
 	public void testBuildAddsFileFormatVersion() {
@@ -164,7 +164,7 @@ public class SoftwareDefinitionFileBuilderTest {
 
 		IntegrityDefinitionBuilder newDef = mock(IntegrityDefinitionBuilder.class);
 		when(newDef.getIntegrityType()).thenReturn(10l);
-		when(newDef.getIntegrityValue()).thenReturn("new test");
+		when(newDef.getIntegrityValue()).thenReturn(new byte[] {1,2,3,4});
 
 		swDefFileBuilder.setLspIntegrityDefinition(newDef);
 
@@ -187,7 +187,7 @@ public class SoftwareDefinitionFileBuilderTest {
 
 		IntegrityDefinitionBuilder newDef = mock(IntegrityDefinitionBuilder.class);
 		when(newDef.getIntegrityType()).thenReturn(10l);
-		when(newDef.getIntegrityValue()).thenReturn("new test");
+		when(newDef.getIntegrityValue()).thenReturn(new byte[] {1,2,3,4});
 
 		swDefFileBuilder.setSdfIntegrityDefinition(newDef);
 
@@ -214,7 +214,7 @@ public class SoftwareDefinitionFileBuilderTest {
 		newDesc.setSoftwarePartNumber(DataValidator.generateSoftwarePartNumber("YZT??-ABCD-EFGH"));
 
 		newDesc.setSoftwareTypeDescription("new desc");
-		newDesc.setSoftwareTypeId(10l);
+		newDesc.setSoftwareTypeId(Converter.hexToBytes("0000000A"));
 
 		swDefFileBuilder.setSoftwareDescription(newDesc);
 

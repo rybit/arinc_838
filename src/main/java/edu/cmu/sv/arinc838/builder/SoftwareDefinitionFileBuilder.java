@@ -18,6 +18,7 @@ import com.arinc.arinc838.SdfFile;
 import com.arinc.arinc838.ThwDefinition;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
+import edu.cmu.sv.arinc838.util.Converter;
 import edu.cmu.sv.arinc838.validation.DataValidator;
 
 public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
@@ -25,13 +26,14 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 	/**
 	 * The default file format version as defined in the spec. Value is {@value}
 	 */
-	public static final long DEFAULT_FILE_FORMAT_VERSION = 528384;
+	public static final byte[] DEFAULT_FILE_FORMAT_VERSION = Converter.hexToBytes("00008100");
 
 	private List<FileDefinitionBuilder> fileDefinitions = new ArrayList<FileDefinitionBuilder>();
 	private List<TargetHardwareDefinitionBuilder> thwDefinitions = new ArrayList<TargetHardwareDefinitionBuilder>();
 	private SoftwareDescriptionBuilder softwareDescription;
 	private IntegrityDefinitionBuilder lspIntegrityDefinition;
 	private IntegrityDefinitionBuilder sdfIntegrityDefinition;
+	
 	public SoftwareDefinitionFileBuilder(SdfFile swDefFile) {
 		this.initialize(swDefFile);
 	}
@@ -64,7 +66,7 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 				swDefFile.getSdfIntegrityDefinition());
 	}
 
-	public long getFileFormatVersion() {
+	public byte[] getFileFormatVersion() {
 		return DEFAULT_FILE_FORMAT_VERSION;
 	}
 

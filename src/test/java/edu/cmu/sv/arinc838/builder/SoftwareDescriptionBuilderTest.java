@@ -20,6 +20,7 @@ import com.arinc.arinc838.SoftwareDescription;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.builder.SoftwareDescriptionBuilder;
+import edu.cmu.sv.arinc838.util.Converter;
 import edu.cmu.sv.arinc838.validation.DataValidator;
 import edu.cmu.sv.arinc838.validation.ReferenceData;
 import static org.testng.Assert.*;
@@ -34,12 +35,12 @@ public class SoftwareDescriptionBuilderTest {
 		first = new SoftwareDescriptionBuilder();
 		first.setSoftwarePartNumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
 		first.setSoftwareTypeDescription("description");
-		first.setSoftwareTypeId(10l);
+		first.setSoftwareTypeId(Converter.hexToBytes("0000000A"));
 
 		second = new SoftwareDescriptionBuilder();
 		second.setSoftwarePartNumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
 		second.setSoftwareTypeDescription("description");
-		second.setSoftwareTypeId(10l);
+		second.setSoftwareTypeId(Converter.hexToBytes("0000000A"));
 	}
 
 	@Test
@@ -47,6 +48,7 @@ public class SoftwareDescriptionBuilderTest {
 		SoftwareDescription jaxbDesc = new SoftwareDescription();
 		jaxbDesc.setSoftwarePartnumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
 		jaxbDesc.setSoftwareTypeDescription("test");
+		jaxbDesc.setSoftwareTypeId(new byte[] {1,2,3,4});
 		SoftwareDescriptionBuilder xmlDesc = new SoftwareDescriptionBuilder(
 				jaxbDesc);
 
@@ -59,6 +61,7 @@ public class SoftwareDescriptionBuilderTest {
 		SoftwareDescription jaxbDesc = new SoftwareDescription();
 		jaxbDesc.setSoftwarePartnumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
 		jaxbDesc.setSoftwareTypeDescription("test");
+		jaxbDesc.setSoftwareTypeId(new byte[] {1,2,3,4});
 		SoftwareDescriptionBuilder xmlDesc = new SoftwareDescriptionBuilder(
 				jaxbDesc);
 
@@ -69,9 +72,10 @@ public class SoftwareDescriptionBuilderTest {
 	@Test
 	public void getSoftwareTypeId() {
 		SoftwareDescription jaxbDesc = new SoftwareDescription();
-		jaxbDesc.setSoftwareTypeId(7);
+		jaxbDesc.setSoftwareTypeId(Converter.hexToBytes("00000007"));
 		jaxbDesc.setSoftwarePartnumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
 		jaxbDesc.setSoftwareTypeDescription("test");
+		jaxbDesc.setSoftwareTypeId(new byte[] {1,2,3,4});
 		SoftwareDescriptionBuilder xmlDesc = new SoftwareDescriptionBuilder(
 				jaxbDesc);
 
@@ -83,11 +87,13 @@ public class SoftwareDescriptionBuilderTest {
 		SoftwareDescription jaxbDesc = new SoftwareDescription();
 		jaxbDesc.setSoftwarePartnumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
 		jaxbDesc.setSoftwareTypeDescription("test");
+		jaxbDesc.setSoftwareTypeId(new byte[] {1,2,3,4});
 		SoftwareDescriptionBuilder xmlDesc = new SoftwareDescriptionBuilder(
 				jaxbDesc);
 
-		String value = DataValidator.generateSoftwarePartNumber("8GC??-0987-PLMT");
-		
+		String value = DataValidator
+				.generateSoftwarePartNumber("8GC??-0987-PLMT");
+
 		xmlDesc.setSoftwarePartNumber(value);
 
 		assertEquals(value, xmlDesc.getSoftwarePartNumber());
@@ -98,6 +104,7 @@ public class SoftwareDescriptionBuilderTest {
 		SoftwareDescription jaxbDesc = new SoftwareDescription();
 		jaxbDesc.setSoftwarePartnumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
 		jaxbDesc.setSoftwareTypeDescription("test");
+		jaxbDesc.setSoftwareTypeId(new byte[] {1,2,3,4});
 		SoftwareDescriptionBuilder xmlDesc = new SoftwareDescriptionBuilder(
 				jaxbDesc);
 
@@ -113,11 +120,11 @@ public class SoftwareDescriptionBuilderTest {
 		SoftwareDescription jaxbDesc = new SoftwareDescription();
 		jaxbDesc.setSoftwarePartnumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
 		jaxbDesc.setSoftwareTypeDescription("test");
-		jaxbDesc.setSoftwareTypeId(7);
+		jaxbDesc.setSoftwareTypeId(Converter.hexToBytes("00000007"));
 		SoftwareDescriptionBuilder xmlDesc = new SoftwareDescriptionBuilder(
 				jaxbDesc);
 
-		long value = 21;
+		byte[] value = new byte[] { 1, 2, 3, 4 };
 
 		xmlDesc.setSoftwareTypeId(value);
 
@@ -134,19 +141,20 @@ public class SoftwareDescriptionBuilderTest {
 		assertEquals(desc.getSoftwarePartnumber(),
 				first.getSoftwarePartNumber());
 	}
-	
+
 	@Test
-	public void testBuildBinaryWritesSoftwareTypeDescription() throws IOException{
+	public void testBuildBinaryWritesSoftwareTypeDescription()
+			throws IOException {
 		BdfFile file = mock(BdfFile.class);
-		
+
 		InOrder order = inOrder(file);
-		
+
 		first.buildBinary(file);
-							
+
 		order.verify(file).writeSoftwareDescriptionPointer();
 		order.verify(file).writeStr64k(first.getSoftwarePartNumber());
 		order.verify(file).writeStr64k(first.getSoftwareTypeDescription());
-		order.verify(file).writeUint32(first.getSoftwareTypeId());		
+		order.verify(file).write(first.getSoftwareTypeId());
 		order.verifyNoMoreInteractions();
 	}
 }

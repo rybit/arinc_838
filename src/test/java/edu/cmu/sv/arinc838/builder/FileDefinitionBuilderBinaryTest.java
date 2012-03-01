@@ -11,6 +11,7 @@ import org.testng.annotations.Test;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder.IntegrityType;
+import edu.cmu.sv.arinc838.util.Converter;
 
 public class FileDefinitionBuilderBinaryTest {
 	
@@ -24,7 +25,7 @@ public class FileDefinitionBuilderBinaryTest {
 		fileDefBuilder.setFileSize(123456);
 		IntegrityDefinitionBuilder integ = new IntegrityDefinitionBuilder();
 		integ.setIntegrityType(IntegrityType.CRC32.getType());
-		integ.setIntegrityValue("0xDEADBEEF");
+		integ.setIntegrityValue(Converter.hexToBytes("DEADBEEF"));
 		fileDefBuilder.setFileIntegrityDefinition(integ);
 		
 	}

@@ -17,6 +17,17 @@
 		<xsd:restriction base="xsd:unsignedInt" />
 	</xsd:simpleType>
 
+	<xsd:simpleType name="HEXBIN64K">
+		<xsd:restriction base="xsd:hexBinary">
+		<xsd:maxLength value="32768"></xsd:maxLength>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="HEXBIN32">
+		<xsd:restriction base="xsd:hexBinary">
+			<xsd:length value="4" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
 	<xsd:simpleType name="SOFTWARE-PARTNUMBER">
 		<xsd:restriction base="xsd:string">
 			<xsd:pattern
@@ -38,7 +49,7 @@
 	</xsd:simpleType>
 
 	<xsd:simpleType name="INTEGRITY-VALUE">
-		<xsd:restriction base="xsd:string" />
+		<xsd:restriction base="sdf:HEXBIN64K" />
 	</xsd:simpleType>
 
 	<!--COMPLEX TYPE DEFINITIONS -->
@@ -73,7 +84,7 @@
 			<xsd:element name="software-partnumber" type="sdf:SOFTWARE-PARTNUMBER">
 			</xsd:element>
 			<xsd:element name="software-type-description" type="sdf:STR64K"></xsd:element>
-			<xsd:element name="software-type-id" type="sdf:UINT32"></xsd:element>
+			<xsd:element name="software-type-id" type="sdf:HEXBIN32"></xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -81,7 +92,7 @@
 	<xsd:element name="sdf-file">
 		<xsd:complexType>
 			<xsd:sequence>
-				<xsd:element name="file-format-version" type="sdf:UINT32"></xsd:element>
+				<xsd:element name="file-format-version" type="sdf:HEXBIN32"></xsd:element>
 				<xsd:element name="software-description" type="sdf:software-description">
 				</xsd:element>
 				<xsd:element minOccurs="0" maxOccurs="unbounded" name="thw-definitions"

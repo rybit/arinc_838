@@ -54,7 +54,7 @@ public class IntegrityDefinitionBuilder implements Builder<IntegrityDefinition> 
 	}
 
 	private long integType;
-	private String integValue;
+	private byte[] integValue;
 	
 	public IntegrityDefinitionBuilder(){
 	}
@@ -72,11 +72,11 @@ public class IntegrityDefinitionBuilder implements Builder<IntegrityDefinition> 
 		return integType;
 	}
 
-	public void setIntegrityValue(String value) {
+	public void setIntegrityValue(byte[] value) {
 		integValue = DataValidator.validateIntegrityValue(value);
 	}
 
-	public String getIntegrityValue() {
+	public byte[] getIntegrityValue() {
 		return integValue;
 	}
 
@@ -95,8 +95,7 @@ public class IntegrityDefinitionBuilder implements Builder<IntegrityDefinition> 
 		int initialPosition = (int) bdfFile.getFilePointer();
 		
 		bdfFile.writeUint32(getIntegrityType());
-		// this strips the 0x from the beginning so we don't write this to the file
-		bdfFile.writeStr64k(getIntegrityValue().substring(2));
+		bdfFile.write(getIntegrityValue());
 	
 		int finalPosition = (int) bdfFile.getFilePointer();
 
