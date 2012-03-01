@@ -39,29 +39,30 @@ public class XdfWriterTest {
 		SdfFile file = getTestFile();
 		File writtenXmlFile = File.createTempFile("test_xdf_writer", "xml");
 		// write the file based on the input
-		XdfWriter writer = new XdfWriter ();
+		XdfWriter writer = new XdfWriter();
 		writer.write(writtenXmlFile, file);
-		
+
 		// read the file back in
 		SdfFile jaxbFile = readJaxb(writtenXmlFile);
 
 		// verify the files match
 		vefifyMatch(file, jaxbFile);
 	}
-	
+
 	@Test
-	public void testWriteReturnsFileName() throws Exception{
+	public void testWriteReturnsFileName() throws Exception {
 		SdfFile file = getTestFile();
-		SoftwareDefinitionFileBuilder builder = new SoftwareDefinitionFileBuilder(file);
-		XdfWriter writer = new XdfWriter ();
-		
+		SoftwareDefinitionFileBuilder builder = new SoftwareDefinitionFileBuilder(
+				file);
+		XdfWriter writer = new XdfWriter();
+
 		String path = System.getProperty("java.io.tmpdir");
-		
+
 		String writtenFile = writer.write(path, builder);
-				
-		assertEquals(writtenFile, path+builder.getXmlFileName());
-	}	
-	
+
+		assertEquals(writtenFile, path + builder.getXmlFileName());
+	}
+
 	private void vefifyMatch(SdfFile file1, SdfFile file2) {
 		assertEquals(file1.getFileFormatVersion(), file2.getFileFormatVersion());
 
@@ -128,27 +129,32 @@ public class XdfWriterTest {
 		swDesc.setSoftwareTypeId(Converter.hexToBytes("DEADBEEF"));
 
 		swDefFile.setSoftwareDescription(swDesc);
-		
+
 		FileDefinition file = new FileDefinition();
 		file.setFileIntegrityDefinition(lspInteg);
 		file.setFileName("test");
 		file.setFileSize(42);
 		file.setFileLoadable(true);
-		
+
 		swDefFile.getFileDefinitions().add(file);
 
 		swDefFile
 				.setFileFormatVersion(SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION);
 		return swDefFile;
 	}
-	
+
 	@Test
-	public void testBuildsCorrectFileName(){
-		SoftwareDefinitionFileBuilder builder = mock(SoftwareDefinitionFileBuilder.class);
-		when(builder.getXmlFileName()).thenReturn("xml");
-		
+	public void testBuildsCorrectFileName() throws Exception {
+		SoftwareDefinitionFileBuilder builder = new SoftwareDefinitionFileBuilder(
+				getTestFile());
+
 		XdfWriter writer = new XdfWriter();
+
+		String tempPath = System.getProperty("java.io.tmpdir");
+		String file = writer.write(tempPath, builder);
+
+		assertEquals(file, tempPath + builder.getXmlFileName());
 		
-		assertEquals(writer.getFileNameAndPath("path", builder), "pathxml");
-	}	
+		new File(file).delete();
+	}
 }
