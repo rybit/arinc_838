@@ -12,6 +12,8 @@ package edu.cmu.sv.arinc838.builder;
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -261,6 +263,27 @@ public class SoftwareDefinitionFileBuilderTest {
 	}
 	
 	@Test
+	public void testBuildBinaryWritesHeader() throws FileNotFoundException, IOException
+	{
+		BdfFile file = new BdfFile(File.createTempFile("tmp", "bin"));
+		int bytesWritten = swDefFileBuilder.buildBinary(file);
+		
+		assertEquals(bytesWritten, 153);
+		
+		file.seek(0);
+		assertEquals(file.readUint32(), file.length());
+		byte[] fileFormatVersion = new byte[4];
+		file.read(fileFormatVersion);
+		assertEquals(fileFormatVersion, SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION);
+		
+		assertEquals(file.readUint32(), 28); // software description pointer
+		assertEquals(file.readUint32(), 28 + 27);  // target hardware definition pointer
+		assertEquals(file.readUint32(), 28 + 27 + 36);// file definition pointer
+		assertEquals(file.readUint32(), 28 + 27 + 36 + 46);// SDF integrity definition pointer
+		assertEquals(file.readUint32(), 28 + 27 + 36 + 46 + 8);// LSP integrity definition pointer
+	}
+	
+	@Test
 	public void testBuildBinaryWritesSoftwareDefinition() throws IOException{
 		BdfFile file = mock(BdfFile.class);
 		SoftwareDescriptionBuilder swDescription = mock(SoftwareDescriptionBuilder.class);
@@ -292,7 +315,7 @@ public class SoftwareDefinitionFileBuilderTest {
 		assertEquals(bytesWritten, 14L);
 			
 		order.verify(file).writePlaceholder();
-		order.verify(file).writeFileFormatVersion(swDefFileBuilder.getFileFormatVersion());
+		order.verify(file).write(swDefFileBuilder.getFileFormatVersion());
 		order.verify(file,times(5)).writePlaceholder();
 		order.verify(swDescription).buildBinary(file);
 		order.verify(thdBuilderLast).setIsLast(true);

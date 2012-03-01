@@ -152,18 +152,6 @@ public class BdfFileTest {
 	}
 
 	@Test
-	public void testWriteFileFormatVersion() throws Exception {
-		byte[] expectedFileFormatVersion = SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION;
-
-		f.writeFileFormatVersion(expectedFileFormatVersion);
-
-		f.seek(BdfFile.BINARY_FILE_FORMAT_VERSION_LOCATION);
-		byte[] actualFileFormatVerion = new byte[4];
-		f.read(actualFileFormatVerion);
-		assertEquals(actualFileFormatVerion, expectedFileFormatVersion);
-	}
-
-	@Test
 	public void testWriteSoftwareDescriptionPointer() throws Exception {
 		long expected = 42;
 		f.seek(expected);

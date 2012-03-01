@@ -26,14 +26,15 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 	/**
 	 * The default file format version as defined in the spec. Value is {@value}
 	 */
-	public static final byte[] DEFAULT_FILE_FORMAT_VERSION = Converter.hexToBytes("00008100");
+	public static final byte[] DEFAULT_FILE_FORMAT_VERSION = Converter
+			.hexToBytes("00008100");
 
 	private List<FileDefinitionBuilder> fileDefinitions = new ArrayList<FileDefinitionBuilder>();
 	private List<TargetHardwareDefinitionBuilder> thwDefinitions = new ArrayList<TargetHardwareDefinitionBuilder>();
 	private SoftwareDescriptionBuilder softwareDescription;
 	private IntegrityDefinitionBuilder lspIntegrityDefinition;
 	private IntegrityDefinitionBuilder sdfIntegrityDefinition;
-	
+
 	public SoftwareDefinitionFileBuilder(SdfFile swDefFile) {
 		this.initialize(swDefFile);
 	}
@@ -44,7 +45,8 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 
 	@SuppressWarnings("unchecked")
 	public void initialize(SdfFile swDefFile) {
-		DataValidator.validateFileFormatVersion(swDefFile.getFileFormatVersion());
+		DataValidator.validateFileFormatVersion(swDefFile
+				.getFileFormatVersion());
 		List<FileDefinition> fileDefs = (List<FileDefinition>) DataValidator
 				.validateList1(swDefFile.getFileDefinitions());
 
@@ -67,7 +69,6 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 	public byte[] getFileFormatVersion() {
 		return DEFAULT_FILE_FORMAT_VERSION;
 	}
-
 
 	public SoftwareDescriptionBuilder getSoftwareDescription() {
 		return softwareDescription;
@@ -122,44 +123,54 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 		file.setLspIntegrityDefinition(lspIntegrityDefinition.buildXml());
 		file.setSdfIntegrityDefinition(sdfIntegrityDefinition.buildXml());
 		file.setSoftwareDescription(softwareDescription.buildXml());
-		
+
 		return file;
 	}
 
 	@Override
 	public int buildBinary(BdfFile file) throws IOException {
-		file.writePlaceholder();
-		file.writeFileFormatVersion(getFileFormatVersion());
-		file.writePlaceholder();
-		file.writePlaceholder();
-		file.writePlaceholder();
-		file.writePlaceholder();
-		file.writePlaceholder();
+
+		// write the header
+		file.writePlaceholder(); // file size
+		file.write(getFileFormatVersion());
+		file.writePlaceholder(); // software description pointer
+		file.writePlaceholder(); // target hardware definition pointer
+		file.writePlaceholder(); // file definition pointer
+		file.writePlaceholder(); // SDF integrity definition pointer
+		file.writePlaceholder(); // LSP integrity definition pointer
 		this.getSoftwareDescription().buildBinary(file);
-	
+
+		// Write the target hardware definitions
 		int size = this.getTargetHardwareDefinitions().size();
-		
-		this.getTargetHardwareDefinitions().get(size-1).setIsLast(true);
-		
-		
-		for (int i=0; i<size; i++) {
-			this.getTargetHardwareDefinitions().get(i).buildBinary(file);
+		if (size > 0) {
+			file.writeTargetDefinitionsPointer();
+			this.getTargetHardwareDefinitions().get(size - 1).setIsLast(true);
+			for (int i = 0; i < size; i++) {
+				this.getTargetHardwareDefinitions().get(i).buildBinary(file);
+			}
 		}
-		
+
+		// write the file definitions
 		size = this.getFileDefinitions().size();
-		this.getFileDefinitions().get(size-1).setIsLast(true);
-			
-		for (int i=0; i<size; i++) {
+		this.getFileDefinitions().get(size - 1).setIsLast(true);
+		file.writeFileDefinitionsPointer();
+		for (int i = 0; i < size; i++) {
 			this.getFileDefinitions().get(i).buildBinary(file);
 		}
-		
+
+		// write the SDF integrity def
+		file.writeSdfIntegrityDefinitionPointer();
 		this.getSdfIntegrityDefinition().buildBinary(file);
+
+		// write the LSP integrity def
+		file.writeLspIntegrityDefinitionPointer();
 		this.getLspIntegrityDefinition().buildBinary(file);
-		
+
+		// write the file size
 		file.seek(0);
 		file.writeUint32(file.length());
-		
-	
-		return (int)file.length();
+		file.seek(file.length());
+
+		return (int) file.length();
 	}
 }

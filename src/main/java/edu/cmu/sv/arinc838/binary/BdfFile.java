@@ -40,13 +40,6 @@ public class BdfFile extends RandomAccessFile {
 		return asUint32(super.readInt());
 	}
 
-	public void writeFileFormatVersion(byte[] version) throws IOException {
-		long currentLocation = super.getFilePointer();
-		super.seek(BINARY_FILE_FORMAT_VERSION_LOCATION);
-		write(version);
-		super.seek(currentLocation);
-	}
-
 	public void writeSoftwareDescriptionPointer() throws IOException {
 		writePointer(SOFTWARE_DESCRIPTION_POINTER_LOCATION);
 	}

@@ -71,11 +71,13 @@ public class SoftwareDescriptionBuilder implements Builder<SoftwareDescription> 
 	
 	@Override
 	public int buildBinary(BdfFile file) throws IOException {
+		int initialPosition = (int) file.getFilePointer();
+
 		file.writeSoftwareDescriptionPointer();
 		file.writeStr64k(this.getSoftwarePartNumber());		
 		file.writeStr64k(this.getSoftwareTypeDescription());
 		file.write(this.getSoftwareTypeId());
 		
-		return 0;
+		return (int) (file.getFilePointer() - initialPosition);
 	}
 }

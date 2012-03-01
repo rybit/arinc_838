@@ -11,6 +11,8 @@ package edu.cmu.sv.arinc838.builder;
 
 import static org.mockito.Mockito.*;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.mockito.InOrder;
@@ -141,6 +143,24 @@ public class SoftwareDescriptionBuilderTest {
 		assertEquals(desc.getSoftwarePartnumber(),
 				first.getSoftwarePartNumber());
 	}
+	
+	@Test
+	public void testBuildBinary() throws FileNotFoundException, IOException
+	{
+		BdfFile file = new BdfFile(File.createTempFile("tmp", "bin"));
+		int bytesWritten = first.buildBinary(file);
+		
+		// 2 + "MMMCC-SSSS-SSSS".length + 2 + "description".length + 0x0000000A length in bytes
+		// 17 + 13 + 4
+		assertEquals(bytesWritten, 34);
+		file.seek(0);
+		assertEquals(file.readUTF(), first.getSoftwarePartNumber());
+		assertEquals(file.readUTF(), first.getSoftwareTypeDescription());
+		byte[] typeId = new byte[4];
+		file.read(typeId);
+		assertEquals(typeId, first.getSoftwareTypeId());
+		
+	}
 
 	@Test
 	public void testBuildBinaryWritesSoftwareTypeDescription()
@@ -155,6 +175,7 @@ public class SoftwareDescriptionBuilderTest {
 		order.verify(file).writeStr64k(first.getSoftwarePartNumber());
 		order.verify(file).writeStr64k(first.getSoftwareTypeDescription());
 		order.verify(file).write(first.getSoftwareTypeId());
+		order.verify(file).getFilePointer();
 		order.verifyNoMoreInteractions();
 	}
 }
