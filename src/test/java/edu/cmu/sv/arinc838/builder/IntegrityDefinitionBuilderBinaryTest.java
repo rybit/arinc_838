@@ -26,9 +26,15 @@ public class IntegrityDefinitionBuilderBinaryTest {
 		
 		bdfFile.seek(0);
 		
-		assertEquals(bytesWritten, 10);
+		// 4 bytes integ type + 4 bytes integ value (2 bytes for length, 2 for byte array)
+		assertEquals(bytesWritten, 8);
 		assertEquals(bdfFile.readUint32(), IntegrityType.CRC16.getType());
-		assertEquals(bdfFile.readUTF(), "ABCD");
+		assertEquals(bdfFile.readShort(), 2);
+		
+		byte[] integValue = new byte[2];
+		bdfFile.read(integValue);
+		
+		assertEquals(integValue, Converter.hexToBytes("ABCD"));
 	}
 	
 	@Test
@@ -43,9 +49,15 @@ public class IntegrityDefinitionBuilderBinaryTest {
 		
 		bdfFile.seek(0);
 		
-		assertEquals(bytesWritten, 14);
+		// 4 bytes integ type + 6 bytes integ value (2 bytes for length, 4 for byte array)
+		assertEquals(bytesWritten, 10);
 		assertEquals(bdfFile.readUint32(), IntegrityType.CRC32.getType());
-		assertEquals(bdfFile.readUTF(), "DEADBEEF");
+		assertEquals(bdfFile.readShort(), 4);
+		
+		byte[] integValue = new byte[4];
+		bdfFile.read(integValue);
+		
+		assertEquals(integValue, Converter.hexToBytes("DEADBEEF"));
 	}
 	
 	@Test
@@ -60,8 +72,13 @@ public class IntegrityDefinitionBuilderBinaryTest {
 		
 		bdfFile.seek(0);
 		
-		assertEquals(bytesWritten, 22);
+		// 4 bytes integ type + 10 bytes integ value (2 bytes for length, 8 for byte array)
+		assertEquals(bytesWritten, 14);
 		assertEquals(bdfFile.readUint32(), IntegrityType.CRC64.getType());
-		assertEquals(bdfFile.readUTF(), "DEADBEEFDEADBEEF");
-	}
+		assertEquals(bdfFile.readShort(), 8);
+		
+		byte[] integValue = new byte[8];
+		bdfFile.read(integValue);
+		
+		assertEquals(integValue, Converter.hexToBytes("DEADBEEFDEADBEEF"));	}
 }

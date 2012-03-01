@@ -13,6 +13,7 @@ import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.fail;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.testng.annotations.BeforeTest;
@@ -285,6 +286,23 @@ public class DataValidatorTest {
 	public void testValidateHexbin32() {
 		byte[] hexBin32 = new byte[] { 1, 2, 3, 4 };
 		assertEquals(hexBin32, DataValidator.validateHexbin32(hexBin32));
+	}
+	
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testValidateHexbin64kNull() {
+		DataValidator.validateHexbin64k((byte[]) null);
+	}
+
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testValidateHexbin64kOutOfRange() {
+		DataValidator.validateHexbin64k(new byte[DataValidator.HEXBIN64K_MAX_LENGTH + 1]);
+	}
+
+	@Test
+	public void testValidateHexbin64k() {
+		byte[] hexBin64k = new byte[DataValidator.HEXBIN64K_MAX_LENGTH];
+		Arrays.fill(hexBin64k, (byte)0xAB);
+		assertEquals(hexBin64k, DataValidator.validateHexbin64k(hexBin64k));
 	}
 
 }

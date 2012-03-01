@@ -57,7 +57,13 @@ public class DataValidator {
 	/**
 	 * The maximum length of a STR64k. Value is {@value}
 	 */
-	public static final long STR64K_MAX_LENGTH = 65535;
+	public static final int STR64K_MAX_LENGTH = 65535;
+	
+	
+	/**
+	 * The maximum length (in bytes) of a HEXBIN64k. Value is {@value}
+	 */
+	public static final int HEXBIN64K_MAX_LENGTH = 32768;
 
 	/**
 	 * Validates that the given value is an unsigned 32-bit integer.
@@ -359,6 +365,15 @@ public class DataValidator {
 			throw new IllegalArgumentException("Hexbin 32 type cannot be null");
 		} else if(value.length != 4) {
 			throw new IllegalArgumentException("Hexbin 32 type must be 4 bytes");			
+		}
+		return value;
+	}
+
+	public static byte[] validateHexbin64k(byte[] value) {
+		if(value == null) {
+			throw new IllegalArgumentException("Hexbin 64k type cannot be null");
+		} else if(value.length > HEXBIN64K_MAX_LENGTH) {
+			throw new IllegalArgumentException("Hexbin 64k type must be =< " + HEXBIN64K_MAX_LENGTH + " bytes");			
 		}
 		return value;
 	}

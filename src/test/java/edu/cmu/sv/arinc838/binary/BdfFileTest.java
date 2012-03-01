@@ -5,6 +5,7 @@ import static org.testng.Assert.assertEquals;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -91,6 +92,36 @@ public class BdfFileTest {
 		}
 
 		f.writeStr64k(value.toString());
+	}
+	
+	@Test
+	public void writeHexbin64k() throws IOException
+	{
+		byte[] hexBin = new byte[10];
+		Arrays.fill(hexBin, (byte)99);
+		
+		f.writeHexbin64k(hexBin);
+		// offset 2 bytes for length
+		f.seek(2);
+		byte[] hexBin2 = new byte[hexBin.length];
+		
+		assertEquals(f.read(hexBin2), hexBin.length);
+		assertEquals(hexBin2, hexBin);
+	}
+	
+	@Test
+	public void writeHexbin64kMax() throws IOException
+	{
+		byte[] hexBin = new byte[DataValidator.HEXBIN64K_MAX_LENGTH];
+		Arrays.fill(hexBin, (byte)104);
+		
+		f.writeHexbin64k(hexBin);
+		// offset 2 bytes for length
+		f.seek(2);
+		byte[] hexBin2 = new byte[DataValidator.HEXBIN64K_MAX_LENGTH];
+		
+		assertEquals(f.read(hexBin2), DataValidator.HEXBIN64K_MAX_LENGTH);
+		assertEquals(hexBin2, hexBin);
 	}
 
 	@Test

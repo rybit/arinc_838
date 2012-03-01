@@ -35,9 +35,9 @@ public class FileDefinitionBuilderBinaryTest {
 		BdfFile bdfFile = new BdfFile(File.createTempFile("tmpFile", ".bdf"));
 		int bytesWritten = fileDefBuilder.buildBinary(bdfFile);
 
-		// 4 ptr to next + 1 is loadable + 14 file name + 4 file size + 14 CRC32 integrity
+		// 4 ptr to next + 1 is loadable + 14 file name + 4 file size + 10 CRC32 integrity
 		// 4 + 1 + 14 + 4 + 14 = 37
-		assertEquals(bytesWritten, 37);
+		assertEquals(bytesWritten, 33);
 		
 		bdfFile.seek(0);
 
@@ -47,7 +47,10 @@ public class FileDefinitionBuilderBinaryTest {
 		assertEquals(bdfFile.readUTF(), "someFile.bin"); // file name
 		assertEquals(bdfFile.readUint32(), 123456); // file size
 		assertEquals(bdfFile.readUint32(), IntegrityType.CRC32.getType()); // integrity type
-		assertEquals(bdfFile.readUTF(), "DEADBEEF");
+		assertEquals(bdfFile.readShort(), 4); // integrity value length
+		byte[] integValue = new byte[4];
+		bdfFile.read(integValue);
+		assertEquals(integValue, Converter.hexToBytes("DEADBEEF"));
 	}
 
 	@Test
@@ -56,9 +59,9 @@ public class FileDefinitionBuilderBinaryTest {
 		BdfFile bdfFile = new BdfFile(File.createTempFile("tmpFile", ".bdf"));
 		int bytesWritten = fileDefBuilder.buildBinary(bdfFile);
 
-		// 4 ptr to next + 1 is loadable + 14 file name + 4 file size + 14 CRC32 integrity
+		// 4 ptr to next + 1 is loadable + 14 file name + 4 file size + 10 CRC32 integrity
 		// 4 + 1 + 14 + 4 + 14 = 37
-		assertEquals(bytesWritten, 37);
+		assertEquals(bytesWritten, 33);
 		
 		bdfFile.seek(0);
 

@@ -75,4 +75,11 @@ public class BdfFile extends RandomAccessFile {
 		writeUint32(currentLocation);
 		super.seek(currentLocation);
 	}
+
+	public void writeHexbin64k(byte[] hexBin) throws IOException {
+		byte[] hexBinToWrite = DataValidator.validateHexbin64k(hexBin);
+		
+		writeShort(hexBinToWrite.length);
+		write(hexBinToWrite);
+	}
 }

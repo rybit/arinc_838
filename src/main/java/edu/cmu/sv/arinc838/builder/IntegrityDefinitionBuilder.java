@@ -95,7 +95,7 @@ public class IntegrityDefinitionBuilder implements Builder<IntegrityDefinition> 
 		int initialPosition = (int) bdfFile.getFilePointer();
 		
 		bdfFile.writeUint32(getIntegrityType());
-		bdfFile.write(getIntegrityValue());
+		bdfFile.writeHexbin64k(getIntegrityValue());
 	
 		int finalPosition = (int) bdfFile.getFilePointer();
 

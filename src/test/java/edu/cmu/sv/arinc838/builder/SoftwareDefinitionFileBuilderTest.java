@@ -12,7 +12,7 @@ package edu.cmu.sv.arinc838.builder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,7 +122,7 @@ public class SoftwareDefinitionFileBuilderTest {
 	public void testDefaultConstructor() {
 		SoftwareDefinitionFileBuilder builder = new SoftwareDefinitionFileBuilder();
 
-		assertEquals(builder.getFileFormatVersion(), 0);
+		assertNull(builder.getFileFormatVersion());
 
 	}
 
