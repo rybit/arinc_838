@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2012 Chris Ellison, Mike Deats, Liron Yahdav, Ryan Neal,
+ * Brandon Sutherlin, Scott Griffin
+ * 
+ * This software is released under the MIT license
+ * (http://www.opensource.org/licenses/mit-license.php)
+ * 
+ * Created on Feb 20, 2012
+ */
 package edu.cmu.sv.arinc838.binary;
 
 import java.io.File;
@@ -21,7 +30,6 @@ public class BdfFile extends RandomAccessFile {
 
 	public BdfFile(File file) throws FileNotFoundException {
 		super(file, "rw");
-
 	}
 
 	public void writeUint32(long value) throws IOException {

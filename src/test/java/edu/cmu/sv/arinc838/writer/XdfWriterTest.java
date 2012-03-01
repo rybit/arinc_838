@@ -7,7 +7,7 @@
  * 
  * Created on Feb 6, 2012
  */
-package edu.cmu.sv.arinc838.xml;
+package edu.cmu.sv.arinc838.writer;
 
 import static org.testng.Assert.assertEquals;
 

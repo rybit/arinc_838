@@ -10,7 +10,6 @@ import java.util.Arrays;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
 import edu.cmu.sv.arinc838.validation.DataValidator;
 
 public class BdfFileTest {
