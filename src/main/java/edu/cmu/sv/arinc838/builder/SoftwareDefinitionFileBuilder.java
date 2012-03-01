@@ -28,12 +28,12 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 	 */
 	public static final byte[] DEFAULT_FILE_FORMAT_VERSION = Converter.hexToBytes("00008100");
 
-	private byte[] fileFormatVersion;
 	private List<FileDefinitionBuilder> fileDefinitions = new ArrayList<FileDefinitionBuilder>();
 	private List<TargetHardwareDefinitionBuilder> thwDefinitions = new ArrayList<TargetHardwareDefinitionBuilder>();
 	private SoftwareDescriptionBuilder softwareDescription;
 	private IntegrityDefinitionBuilder lspIntegrityDefinition;
 	private IntegrityDefinitionBuilder sdfIntegrityDefinition;
+	
 	public SoftwareDefinitionFileBuilder(SdfFile swDefFile) {
 		this.initialize(swDefFile);
 	}
@@ -44,7 +44,9 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 
 	@SuppressWarnings("unchecked")
 	public void initialize(SdfFile swDefFile) {
-		fileFormatVersion = swDefFile.getFileFormatVersion();
+		
+		//TODO Write a test to verify that the file matches the final
+		//fileFormatVersion = swDefFile.getFileFormatVersion();
 		List<FileDefinition> fileDefs = (List<FileDefinition>) DataValidator
 				.validateList1(swDefFile.getFileDefinitions());
 
@@ -65,14 +67,8 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 	}
 
 	public byte[] getFileFormatVersion() {
-		return fileFormatVersion;
+		return DEFAULT_FILE_FORMAT_VERSION;
 	}
-
-	public void setFileFormatVersion(byte[] value) {
-		fileFormatVersion = DataValidator.validateFileFormatVersion(value);
-	}
-
-	
 
 
 	public SoftwareDescriptionBuilder getSoftwareDescription() {
@@ -134,8 +130,30 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 
 	@Override
 	public int buildBinary(BdfFile file) throws IOException {
-		file.writeFileFormatVersion(fileFormatVersion);
-
+		file.writePlaceholder();
+		file.writeFileFormatVersion(getFileFormatVersion());
+		file.writePlaceholder();
+		file.writePlaceholder();
+		file.writePlaceholder();
+		file.writePlaceholder();
+		file.writePlaceholder();
+		this.getSoftwareDescription().buildBinary(file);
+	
+		for (int i=0; i<this.getTargetHardwareDefinitions().size(); i++) {
+			this.getTargetHardwareDefinitions().get(i).buildBinary(file);
+		}
+			
+		for (int i=0; i<this.getFileDefinitions().size(); i++) {
+			this.getFileDefinitions().get(i).buildBinary(file);
+		}
+		
+		this.getSdfIntegrityDefinition().buildBinary(file);
+		this.getLspIntegrityDefinition().buildBinary(file);
+		
+		file.seek(0);
+		file.writeUint32(file.length());
+		
+	
 		return 0;
 	}
 }

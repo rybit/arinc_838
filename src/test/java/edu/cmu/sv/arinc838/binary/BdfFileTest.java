@@ -37,6 +37,21 @@ public class BdfFileTest {
 
 		assertEquals(actualUint32, uInt32);
 	}
+	
+	@Test
+	public void writePlaceholderTest() throws Exception {
+		// Grab on more than the max value if we get a negative we know we go
+		// boom
+
+		f.writePlaceholder();
+		
+		assertEquals(f.length(), BdfFile.UINT32_LENGTH);
+		f.seek(0);
+
+		long actualUint32 = BdfFile.asUint32(f.readInt());
+
+		assertEquals(actualUint32, 0);
+	}
 
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void writeUint32UsesValidationTest() throws Exception {
