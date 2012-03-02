@@ -68,6 +68,10 @@ public class FileDefinitionBuilder implements Builder<FileDefinition>{
 		integDefBuilder = new IntegrityDefinitionBuilder(fileDef.getFileIntegrityDefinition());
 	}
 
+	public FileDefinitionBuilder(BdfFile file) {
+		// TODO Auto-generated constructor stub
+	}
+
 	public IntegrityDefinitionBuilder getFileIntegrityDefinition() {
 		return integDefBuilder;
 	}

@@ -357,24 +357,22 @@ public class SoftwareDefinitionFileBuilderTest {
 	@Test
 	public void testHasBinaryFileName() {
 		assertEquals(swDefFileBuilder.getBinaryFileName(), swDefFileBuilder
-				.getSoftwareDescription().getSoftwarePartNumber() + ".BDF");
+				.getSoftwareDescription().getSoftwarePartNumber().replace("-", "") + ".BDF");
 	}
 
 	@Test
 	public void testHasXmlFileName() {
 		assertEquals(swDefFileBuilder.getXmlFileName(), swDefFileBuilder
-				.getSoftwareDescription().getSoftwarePartNumber() + ".XDF");
+				.getSoftwareDescription().getSoftwarePartNumber().replace("-", "") + ".XDF");
 	}
 
 	@Test
 	public void testReadBinary() throws Exception {
-		SoftwareDefinitionFileBuilder expected = swDefFileBuilder;
-
 		BdfWriter writer = new BdfWriter();
 
 		String path = System.getProperty("java.io.tmpdir");
 
-		String firstFileName = writer.write(path, expected);
+		String firstFileName = writer.write(path, swDefFileBuilder);
 		File firstOnDisk = new File(firstFileName);
 		
 		BdfFile file = new BdfFile(firstOnDisk);
@@ -397,6 +395,15 @@ public class SoftwareDefinitionFileBuilderTest {
 		
 		firstOnDisk.delete();
 		secondOnDisk.delete();
+	}
+	
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testReadBinaryWithWrongFileFormatThrowsException() throws IOException{
+		BdfFile file = new BdfFile(File.createTempFile("prefix", "suffix"));
+		file.writeUint32(14); //write bogus length of file		
+		file.write(Converter.hexToBytes("00008111")); //write invalid file format version
+				
+		new SoftwareDefinitionFileBuilder(file);
 	}
 	
 	@Test

@@ -34,6 +34,10 @@ public class SoftwareDescriptionBuilder implements Builder<SoftwareDescription> 
 	public SoftwareDescriptionBuilder() {
 	}
 
+	public SoftwareDescriptionBuilder(BdfFile file) {
+		// TODO Auto-generated constructor stub
+	}
+
 	public String getSoftwarePartNumber() {
 		return this.softwarePartNumber;
 	}

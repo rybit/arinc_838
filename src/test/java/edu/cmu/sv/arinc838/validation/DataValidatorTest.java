@@ -69,16 +69,20 @@ public class DataValidatorTest {
 				DataValidator.validateStr64kBinary("hello&amp&ampthere"));
 
 	}
+
 	@Test
-	public void testValidateStr64kXmlMaxSizeWithEscapedChars()
-	{
-		// this creates a max-sized string, with an escaped '&' as the last character. 
-		// This will make the absolute length > than the max string length, but the 
+	public void testValidateStr64kXmlMaxSizeWithEscapedChars() {
+		// this creates a max-sized string, with an escaped '&' as the last
+		// character.
+		// This will make the absolute length > than the max string length, but
+		// the
 		// true length will be = the max length, and should still be valid
-		String str64kMaxWithEscaped = str64kMax.substring(0, str64kMax.length() - 1) + "&amp";
-		assertEquals(str64kMaxWithEscaped, DataValidator.validateStr64kXml(str64kMaxWithEscaped));
+		String str64kMaxWithEscaped = str64kMax.substring(0,
+				str64kMax.length() - 1) + "&amp";
+		assertEquals(str64kMaxWithEscaped,
+				DataValidator.validateStr64kXml(str64kMaxWithEscaped));
 	}
-	
+
 	@Test
 	public void testValidateStr64kXml() {
 		String inputStr = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789 -_=+`~'\"[]{}\\|;:,./?!@#$%^*()";
@@ -136,8 +140,6 @@ public class DataValidatorTest {
 	public void testValidateStr64kBinaryNull() {
 		DataValidator.validateStr64kBinary(null);
 	}
-	
-
 
 	@Test
 	public void testValidateFileFormatVersion() {
@@ -172,11 +174,15 @@ public class DataValidatorTest {
 
 	@Test
 	public void testValidateIntegrityValue() {
-		assertEquals(Converter.hexToBytes("ABCD"), DataValidator.validateIntegrityValue(Converter.hexToBytes("ABCD")));
+		assertEquals(Converter.hexToBytes("ABCD"),
+				DataValidator.validateIntegrityValue(Converter
+						.hexToBytes("ABCD")));
 		assertEquals(Converter.hexToBytes("ABCDEF01"),
-				DataValidator.validateIntegrityValue(Converter.hexToBytes("ABCDEF01")));
+				DataValidator.validateIntegrityValue(Converter
+						.hexToBytes("ABCDEF01")));
 		assertEquals(Converter.hexToBytes("DEADBEEFDEADBEEF"),
-				DataValidator.validateIntegrityValue(Converter.hexToBytes("DEADBEEFDEADBEEF")));
+				DataValidator.validateIntegrityValue(Converter
+						.hexToBytes("DEADBEEFDEADBEEF")));
 	}
 
 	@Test(expectedExceptions = IllegalArgumentException.class)
@@ -231,6 +237,18 @@ public class DataValidatorTest {
 		}
 
 		try {
+			DataValidator.validateSoftwarePartNumber("ACm47-1234-5678");
+			fail("Did not fail on lower case letter");
+		} catch (IllegalArgumentException e) {
+		}
+
+		try {
+			DataValidator.validateSoftwarePartNumber("1CM37-1234-5678");
+		} catch (IllegalArgumentException e) {
+			fail("Failed incorrectly with a number first " + e.toString());
+		}
+
+		try {
 			DataValidator.validateSoftwarePartNumber("ACM23-1234-5678");
 			fail("Did not fail on invalid check characters");
 		} catch (IllegalArgumentException e) {
@@ -249,7 +267,7 @@ public class DataValidatorTest {
 		}
 
 		try {
-			DataValidator.validateSoftwarePartNumber("ACM47-123q-5678");
+			DataValidator.validateSoftwarePartNumber("ACM47-123Q-5678");
 			fail("Did not fail on illegal character Q");
 		} catch (IllegalArgumentException e) {
 		}
@@ -298,7 +316,7 @@ public class DataValidatorTest {
 		byte[] hexBin32 = new byte[] { 1, 2, 3, 4 };
 		assertEquals(hexBin32, DataValidator.validateHexbin32(hexBin32));
 	}
-	
+
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void testValidateHexbin64kNull() {
 		DataValidator.validateHexbin64k((byte[]) null);
@@ -306,13 +324,14 @@ public class DataValidatorTest {
 
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void testValidateHexbin64kOutOfRange() {
-		DataValidator.validateHexbin64k(new byte[DataValidator.HEXBIN64K_MAX_LENGTH + 1]);
+		DataValidator
+				.validateHexbin64k(new byte[DataValidator.HEXBIN64K_MAX_LENGTH + 1]);
 	}
 
 	@Test
 	public void testValidateHexbin64k() {
 		byte[] hexBin64k = new byte[DataValidator.HEXBIN64K_MAX_LENGTH];
-		Arrays.fill(hexBin64k, (byte)0xAB);
+		Arrays.fill(hexBin64k, (byte) 0xAB);
 		assertEquals(hexBin64k, DataValidator.validateHexbin64k(hexBin64k));
 	}
 

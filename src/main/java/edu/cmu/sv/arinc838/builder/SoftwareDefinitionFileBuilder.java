@@ -48,7 +48,7 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void initialize(SdfFile swDefFile) {
+	public void initialize(SdfFile swDefFile) {
 		DataValidator.validateFileFormatVersion(swDefFile
 				.getFileFormatVersion());
 		List<FileDefinition> fileDefs = (List<FileDefinition>) DataValidator
@@ -70,9 +70,66 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 				swDefFile.getSdfIntegrityDefinition());
 	}
 
-	private void initialize(BdfFile bdfFile) throws IOException {
-		setLspIntegrityDefinition(new IntegrityDefinitionBuilder(bdfFile));
-		setSdfIntegrityDefinition(new IntegrityDefinitionBuilder(bdfFile));
+	public void initialize(BdfFile file) throws IOException {
+
+		file.seek(BdfFile.FILE_FORMAT_VERSION_LOCATION);
+		byte[] fileFormatVersion = file.readHexbin32k();
+		if (fileFormatVersion != SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION) {
+			throw new IllegalArgumentException(
+					"File format not recognized. Expected: "
+							+ SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION
+							+ " Got: " + fileFormatVersion);
+		}
+
+		file.seek(BdfFile.SOFTWARE_DESCRIPTION_POINTER_LOCATION);
+		long pointer = file.readUint32();
+		file.seek(pointer);
+
+		softwareDescription = new SoftwareDescriptionBuilder(file);
+
+		file.seek(BdfFile.TARGET_DEFINITIONS_POINTER_LOCATION);
+		pointer = file.readUint32();
+		file.seek(pointer);
+
+		long targetHardwareCount = file.readUint32();
+
+		for (int i = 0; i < targetHardwareCount; i++) {
+			long nextHardware = file.readUint32();
+			TargetHardwareDefinitionBuilder hardware = new TargetHardwareDefinitionBuilder(
+					file);
+
+			this.getTargetHardwareDefinitions().add(hardware);
+
+			file.seek(nextHardware);
+		}
+
+		file.seek(BdfFile.FILE_DEFINITIONS_POINTER_LOCATION);
+		pointer = file.readUint32();
+		file.seek(pointer);
+
+		long fileDefinitionCount = file.readUint32();
+
+		for (int i = 0; i < fileDefinitionCount; i++) {
+			long nextFile = file.readUint32();
+			FileDefinitionBuilder fileDefinition = new FileDefinitionBuilder(
+					file);
+
+			this.getFileDefinitions().add(fileDefinition);
+
+			file.seek(nextFile);
+		}
+
+		file.seek(BdfFile.SDF_INTEGRITY_POINTER_LOCATION);
+		pointer = file.readUint32();
+		file.seek(pointer);
+
+		this.setSdfIntegrityDefinition(new IntegrityDefinitionBuilder(file));
+
+		file.seek(BdfFile.LSP_INTEGRITY_POINTER_LOCATION);
+		pointer = file.readUint32();
+		file.seek(pointer);
+
+		this.setLspIntegrityDefinition(new IntegrityDefinitionBuilder(file));
 	}
 
 	public byte[] getFileFormatVersion() {
@@ -190,10 +247,12 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 	}
 
 	public String getBinaryFileName() {
-		return getSoftwareDescription().getSoftwarePartNumber() + ".BDF";
+		return getSoftwareDescription().getSoftwarePartNumber()
+				.replace("-", "") + ".BDF";
 	}
 
 	public String getXmlFileName() {
-		return getSoftwareDescription().getSoftwarePartNumber() + ".XDF";
+		return getSoftwareDescription().getSoftwarePartNumber()
+				.replace("-", "") + ".XDF";
 	}
 }
