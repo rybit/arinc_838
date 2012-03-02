@@ -43,12 +43,12 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 		this.initialize(swDefFile);
 	}
 
-	public SoftwareDefinitionFileBuilder(BdfFile file) {
-		this.initialize(file);
+	public SoftwareDefinitionFileBuilder(BdfFile bdfFile) throws IOException {
+		this.initialize(bdfFile);
 	}
 
 	@SuppressWarnings("unchecked")
-	public void initialize(SdfFile swDefFile) {
+	private void initialize(SdfFile swDefFile) {
 		DataValidator.validateFileFormatVersion(swDefFile
 				.getFileFormatVersion());
 		List<FileDefinition> fileDefs = (List<FileDefinition>) DataValidator
@@ -69,9 +69,10 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 		sdfIntegrityDefinition = new IntegrityDefinitionBuilder(
 				swDefFile.getSdfIntegrityDefinition());
 	}
-	
-	public void initialize(BdfFile file){
-		
+
+	private void initialize(BdfFile bdfFile) throws IOException {
+		setLspIntegrityDefinition(new IntegrityDefinitionBuilder(bdfFile));
+		setSdfIntegrityDefinition(new IntegrityDefinitionBuilder(bdfFile));
 	}
 
 	public byte[] getFileFormatVersion() {
@@ -152,7 +153,7 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 		int size = this.getTargetHardwareDefinitions().size();
 		file.writeUint32(size);
 		file.writeTargetDefinitionsPointer();
-		if (size > 0) {			
+		if (size > 0) {
 			this.getTargetHardwareDefinitions().get(size - 1).setIsLast(true);
 			for (int i = 0; i < size; i++) {
 				this.getTargetHardwareDefinitions().get(i).buildBinary(file);
@@ -163,19 +164,21 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 		size = this.getFileDefinitions().size();
 		file.writeUint32(size);
 		file.writeFileDefinitionsPointer();
-		this.getFileDefinitions().get(size - 1).setIsLast(true);		
+		this.getFileDefinitions().get(size - 1).setIsLast(true);
 		for (int i = 0; i < size; i++) {
 			this.getFileDefinitions().get(i).buildBinary(file);
 		}
 
 		// write the SDF integrity def
 		file.writeSdfIntegrityDefinitionPointer();
-		this.getSdfIntegrityDefinition().setIntegrityValue(Converter.hexToBytes("0000000A"));
+		this.getSdfIntegrityDefinition().setIntegrityValue(
+				Converter.hexToBytes("0000000A"));
 		this.getSdfIntegrityDefinition().buildBinary(file);
 
 		// write the LSP integrity def
 		file.writeLspIntegrityDefinitionPointer();
-		this.getLspIntegrityDefinition().setIntegrityValue(Converter.hexToBytes("0000000A"));
+		this.getLspIntegrityDefinition().setIntegrityValue(
+				Converter.hexToBytes("0000000A"));
 		this.getLspIntegrityDefinition().buildBinary(file);
 
 		// write the file size

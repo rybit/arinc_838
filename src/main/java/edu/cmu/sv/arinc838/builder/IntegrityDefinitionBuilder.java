@@ -64,6 +64,11 @@ public class IntegrityDefinitionBuilder implements Builder<IntegrityDefinition> 
 		setIntegrityValue(integDef.getIntegrityValue());
 	}
 
+	public IntegrityDefinitionBuilder(BdfFile bdfFile) throws IOException {
+		setIntegrityType(bdfFile.readUint32());
+		setIntegrityValue(bdfFile.readHexbin64k());
+	}
+
 	public void setIntegrityType(long value) {
 		integType = DataValidator.validateIntegrityType(value);
 	}

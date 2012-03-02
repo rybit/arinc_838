@@ -398,4 +398,15 @@ public class SoftwareDefinitionFileBuilderTest {
 		firstOnDisk.delete();
 		secondOnDisk.delete();
 	}
+	
+	@Test
+	public void testSoftwareDefinitionFileBuilderBdfFile() throws FileNotFoundException, IOException {
+		BdfFile bdfFile = new BdfFile(File.createTempFile("tmp", "bin"));
+		swDefFileBuilder.buildBinary(bdfFile);
+		bdfFile.seek(bdfFile.readSdfIntegrityDefinitionPointer());
+		
+		SoftwareDefinitionFileBuilder swDefFileBuilder2 = new SoftwareDefinitionFileBuilder(bdfFile);
+		assertEquals(swDefFileBuilder2.getLspIntegrityDefinition().getIntegrityValue(), swDefFileBuilder.getLspIntegrityDefinition().getIntegrityValue()); 
+		assertEquals(swDefFileBuilder2.getSdfIntegrityDefinition().getIntegrityValue(), swDefFileBuilder.getSdfIntegrityDefinition().getIntegrityValue()); 
+	}
 }

@@ -36,14 +36,14 @@ public class BdfFileTest {
 
 		assertEquals(actualUint32, uInt32);
 	}
-	
+
 	@Test
 	public void writePlaceholderTest() throws Exception {
 		// Grab on more than the max value if we get a negative we know we go
 		// boom
 
 		f.writePlaceholder();
-		
+
 		assertEquals(f.length(), BdfFile.UINT32_LENGTH);
 		f.seek(0);
 
@@ -107,33 +107,31 @@ public class BdfFileTest {
 
 		f.writeStr64k(value.toString());
 	}
-	
+
 	@Test
-	public void writeHexbin64k() throws IOException
-	{
+	public void writeHexbin64k() throws IOException {
 		byte[] hexBin = new byte[10];
-		Arrays.fill(hexBin, (byte)99);
-		
+		Arrays.fill(hexBin, (byte) 99);
+
 		f.writeHexbin64k(hexBin);
 		// offset 2 bytes for length
 		f.seek(2);
 		byte[] hexBin2 = new byte[hexBin.length];
-		
+
 		assertEquals(f.read(hexBin2), hexBin.length);
 		assertEquals(hexBin2, hexBin);
 	}
-	
+
 	@Test
-	public void writeHexbin64kMax() throws IOException
-	{
+	public void writeHexbin64kMax() throws IOException {
 		byte[] hexBin = new byte[DataValidator.HEXBIN64K_MAX_LENGTH];
-		Arrays.fill(hexBin, (byte)104);
-		
+		Arrays.fill(hexBin, (byte) 104);
+
 		f.writeHexbin64k(hexBin);
 		// offset 2 bytes for length
 		f.seek(2);
 		byte[] hexBin2 = new byte[DataValidator.HEXBIN64K_MAX_LENGTH];
-		
+
 		assertEquals(f.read(hexBin2), DataValidator.HEXBIN64K_MAX_LENGTH);
 		assertEquals(hexBin2, hexBin);
 	}
@@ -148,6 +146,14 @@ public class BdfFileTest {
 		f.seek(0);
 
 		assertEquals(f.readUint32(), uInt32);
+	}
+
+	@Test
+	public void readHexbin64k() throws IOException {
+		byte[] hexbin64k = new byte[] { 1, 2, 3, 4, 5, 6 };
+		f.writeHexbin64k(hexbin64k);
+		f.seek(0);
+		assertEquals(f.readHexbin64k(), hexbin64k);
 	}
 
 	@Test
@@ -212,6 +218,41 @@ public class BdfFileTest {
 
 		f.seek(BdfFile.LSP_INTEGRITY_POINTER_LOCATION);
 		assertEquals(f.readUint32(), expected);
+	}
+	
+	@Test
+	public void testReadSoftwareDescriptionPointer() throws IOException {
+		f.seek(100); // pretend the software-description starts at byte 100
+		f.writeSoftwareDescriptionPointer();
+		assertEquals(f.readSoftwareDescriptionPointer(), 100);
+	}
+
+	@Test
+	public void testReadTargetDefinitionsPointer() throws IOException {
+		f.seek(100); // pretend the target-definitions starts at byte 100
+		f.writeTargetDefinitionsPointer();
+		assertEquals(f.readTargetDefinitionsPointer(), 100);
+	}
+
+	@Test
+	public void testReadFileDefinitionsPointer() throws IOException {
+		f.seek(100); // pretend the file-definitions starts at byte 100
+		f.writeFileDefinitionsPointer();
+		assertEquals(f.readFileDefinitionsPointer(), 100);
+	}
+
+	@Test
+	public void testReadSdfIntegrityDefinitionPointer() throws IOException {
+		f.seek(100); // pretend the sdf-integrity-definition starts at byte 100
+		f.writeSdfIntegrityDefinitionPointer();
+		assertEquals(f.readSdfIntegrityDefinitionPointer(), 100);
+	}
+
+	@Test
+	public void testReadLspIntegrityDefinitionPointer() throws IOException {
+		f.seek(100); // pretend the lsp-integrity-definition starts at byte 100
+		f.writeLspIntegrityDefinitionPointer();
+		assertEquals(f.readLspIntegrityDefinitionPointer(), 100);
 	}
 
 }
