@@ -10,6 +10,7 @@
 package edu.cmu.sv.arinc838.builder;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import com.arinc.arinc838.SoftwareDescription;
 
@@ -45,7 +46,8 @@ public class SoftwareDescriptionBuilder implements Builder<SoftwareDescription> 
 	}
 
 	public void setSoftwarePartNumber(String value) {
-		this.softwarePartNumber = DataValidator.validateSoftwarePartNumber(value);
+		this.softwarePartNumber = DataValidator
+				.validateSoftwarePartNumber(value);
 	}
 
 	public String getSoftwareTypeDescription() {
@@ -74,16 +76,40 @@ public class SoftwareDescriptionBuilder implements Builder<SoftwareDescription> 
 
 		return desc;
 	}
-	
+
 	@Override
 	public int buildBinary(BdfFile file) throws IOException {
 		int initialPosition = (int) file.getFilePointer();
 
 		file.writeSoftwareDescriptionPointer();
-		file.writeStr64k(this.getSoftwarePartNumber());		
+		file.writeStr64k(this.getSoftwarePartNumber());
 		file.writeStr64k(this.getSoftwareTypeDescription());
 		file.writeHexbin32(this.getSoftwareTypeId());
-		
+
 		return (int) (file.getFilePointer() - initialPosition);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return obj != null &&
+				this == obj ||
+				(obj instanceof SoftwareDescriptionBuilder &&
+				equals((SoftwareDescriptionBuilder)obj));
+	}
+	
+	public boolean equals(SoftwareDescriptionBuilder obj){
+		return obj != null &&
+				this == obj ||
+				(this.getSoftwarePartNumber().equals(obj.getSoftwarePartNumber()) &&
+				this.getSoftwareTypeDescription().equals(obj.getSoftwareTypeDescription()) &&
+				Arrays.equals(this.getSoftwareTypeId(), obj.getSoftwareTypeId()));
+	}
+	
+	@Override
+	public int hashCode() {
+		if (this.getSoftwarePartNumber() != null) {
+			return this.getSoftwarePartNumber().hashCode();
+		}
+		return 0;
 	}
 }

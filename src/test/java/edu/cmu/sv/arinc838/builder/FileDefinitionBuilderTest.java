@@ -17,7 +17,6 @@ import org.testng.annotations.Test;
 
 import com.arinc.arinc838.FileDefinition;
 
-import edu.cmu.sv.arinc838.builder.FileDefinitionBuilder;
 import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder.IntegrityType;
 import edu.cmu.sv.arinc838.util.Converter;
 
@@ -133,5 +132,22 @@ public class FileDefinitionBuilderTest {
 		assertEquals(built.getFileName(), xmlFileDef.getFileName());
 		assertEquals(built.getFileSize(), xmlFileDef.getFileSize());
 		assertEquals(built.isFileLoadable(), xmlFileDef.isFileLoadable());
+	}
+	
+	@Test
+	public void testHashCode(){
+		assertEquals(fileBuilder.hashCode(), fileBuilder.getFileIntegrityDefinition().hashCode());
+	}
+	
+	@Test 
+	public void testHashCodeWithNoIntegrity(){
+		assertEquals(new FileDefinitionBuilder().hashCode(), 0);
+	}
+	
+	@Test
+	public void testEquals(){
+		FileDefinitionBuilder second = new FileDefinitionBuilder(xmlFileDef);
+		
+		assertEquals(fileBuilder, second);	
 	}
 }

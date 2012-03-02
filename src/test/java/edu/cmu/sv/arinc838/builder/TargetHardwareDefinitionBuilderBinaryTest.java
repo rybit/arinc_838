@@ -66,7 +66,10 @@ public class TargetHardwareDefinitionBuilderBinaryTest {
 	public void targetHardwareDefinitionBuilderBdfFile() throws FileNotFoundException, IOException {
 		BdfFile bdfFile = new BdfFile(File.createTempFile("tmpFile", ".bdf"));
 		thwDefBuilder.buildBinary(bdfFile);
-		bdfFile.seek(0);
+
+		bdfFile.seek(0); //return to start of file
+		bdfFile.readUint32(); //parent object reads the pointers
+		
 		TargetHardwareDefinitionBuilder thwDefBuilder2 = new TargetHardwareDefinitionBuilder(bdfFile);
 		assertEquals(thwDefBuilder2.getId(), thwDefBuilder.getId());
 		assertEquals(thwDefBuilder2.getPositions().size(), thwDefBuilder.getPositions().size());

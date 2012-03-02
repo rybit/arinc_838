@@ -12,6 +12,7 @@ package edu.cmu.sv.arinc838.builder;
 import static org.testng.Assert.*;
 
 import org.testng.annotations.*;
+
 import com.arinc.arinc838.IntegrityDefinition;
 
 import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder;
@@ -94,5 +95,22 @@ public class IntegrityDefinitionBuilderTest {
 		assertEquals(IntegrityDefinitionBuilder.IntegrityType.CRC32, IntegrityDefinitionBuilder.IntegrityType.fromLong(3));
 		assertEquals(IntegrityDefinitionBuilder.IntegrityType.CRC64, IntegrityDefinitionBuilder.IntegrityType.fromLong(6));
 		assertNull(IntegrityDefinitionBuilder.IntegrityType.fromLong(-1));
+	}
+	
+	@Test
+	public void testHashCode(){
+		assertEquals(builder.hashCode(), builder.getIntegrityValue().hashCode());
+	}
+	
+	@Test 
+	public void testHashCodeWithNoIntegrity(){
+		assertEquals(new IntegrityDefinitionBuilder().hashCode(), 0);
+	}
+	
+	@Test
+	public void testEquals(){
+		IntegrityDefinitionBuilder second = new IntegrityDefinitionBuilder(integDef);
+		
+		assertEquals(builder, second);	
 	}
 }

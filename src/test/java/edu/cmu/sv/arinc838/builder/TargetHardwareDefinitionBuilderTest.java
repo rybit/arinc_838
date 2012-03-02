@@ -100,7 +100,6 @@ public class TargetHardwareDefinitionBuilderTest {
 		assertNotEquals(first, second);
 	}
 
-
 	@Test
 	public void testBuildReturnsProperJaxbObject() {
 		ThwDefinition def = first.buildXml();
@@ -110,5 +109,20 @@ public class TargetHardwareDefinitionBuilderTest {
 		for(int i = 0; i < def.getThwPosition().size(); i++){
 			assertEquals(def.getThwPosition().get(i), first.getPositions().get(i));
 		}
+	}
+	
+	@Test
+	public void testHashCode(){
+		assertEquals(first.hashCode(), first.getId().hashCode());
+	}
+	
+	@Test 
+	public void testHashCodeWithNoId(){
+		assertEquals(new TargetHardwareDefinitionBuilder().hashCode(), 0);
+	}
+	
+	@Test
+	public void testEquals(){
+		assertEquals(first, second);	
 	}
 }

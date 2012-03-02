@@ -146,4 +146,30 @@ public class FileDefinitionBuilder implements Builder<FileDefinition>{
 	public void setIsLast(boolean value) {
 		isLast = value;	
 	}
+	
+	@Override
+	public int hashCode() {
+		if(this.getFileIntegrityDefinition() != null){
+			return this.getFileIntegrityDefinition().hashCode();
+		}
+		
+		return 0;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return obj !=  null &&
+				this == obj ||
+				(obj instanceof FileDefinitionBuilder &&
+				equals((FileDefinitionBuilder)obj));		
+	}
+	
+	public boolean equals(FileDefinitionBuilder obj){
+		return obj != null &&
+				this == obj ||
+				(this.getFileIntegrityDefinition().equals(obj.getFileIntegrityDefinition()) &&
+				((this.isFileLoadable() && obj.isFileLoadable() || (!this.isFileLoadable() && !obj.isFileLoadable()))) &&
+				this.getFileName().equals(obj.getFileName()) &&
+				(this.getFileSize() == obj.getFileSize()));
+	}
 }

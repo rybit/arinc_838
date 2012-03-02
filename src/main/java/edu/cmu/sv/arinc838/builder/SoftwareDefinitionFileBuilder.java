@@ -12,11 +12,13 @@ package edu.cmu.sv.arinc838.builder;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.arinc.arinc838.FileDefinition;
 import com.arinc.arinc838.SdfFile;
 import com.arinc.arinc838.ThwDefinition;
+import com.beust.jcommander.internal.Lists;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.util.Converter;
@@ -190,7 +192,7 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 		// Write the target hardware definitions
 		int size = this.getTargetHardwareDefinitions().size();
 		file.writeTargetDefinitionsPointer();
-		file.writeUint32(size);		
+		file.writeUint32(size);
 		if (size > 0) {
 			this.getTargetHardwareDefinitions().get(size - 1).setIsLast(true);
 			for (int i = 0; i < size; i++) {
@@ -201,7 +203,7 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 		// write the file definitions
 		size = this.getFileDefinitions().size();
 		file.writeFileDefinitionsPointer();
-		file.writeUint32(size);		
+		file.writeUint32(size);
 		this.getFileDefinitions().get(size - 1).setIsLast(true);
 		for (int i = 0; i < size; i++) {
 			this.getFileDefinitions().get(i).buildBinary(file);
@@ -235,5 +237,33 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 	public String getXmlFileName() {
 		return getSoftwareDescription().getSoftwarePartNumber()
 				.replace("-", "") + ".XDF";
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return obj !=  null &&
+				this == obj ||
+				(obj instanceof SoftwareDefinitionFileBuilder &&
+				equals((SoftwareDefinitionFileBuilder)obj));		
+	}
+	
+	public boolean equals(SoftwareDefinitionFileBuilder obj){
+		return obj != null &&
+				this == obj ||
+				(this.getSoftwareDescription().equals(obj.getSoftwareDescription()) &&
+				this.getFileFormatVersion().equals(obj.getFileFormatVersion()) &&
+				this.getTargetHardwareDefinitions().equals(obj.getTargetHardwareDefinitions()) &&
+				this.getFileDefinitions().equals(obj.getFileDefinitions()) &&
+				this.getSdfIntegrityDefinition().equals(obj.getSdfIntegrityDefinition()) &&
+				this.getLspIntegrityDefinition().equals(obj.getLspIntegrityDefinition()));
+	}
+
+	@Override
+	public int hashCode() {
+		if (this.getSoftwareDescription() != null
+				&& this.getSoftwareDescription().getSoftwarePartNumber() != null) {
+			return this.getXmlFileName().hashCode();
+		}
+		return 0;
 	}
 }

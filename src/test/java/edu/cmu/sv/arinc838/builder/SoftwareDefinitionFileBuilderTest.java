@@ -9,7 +9,10 @@
  */
 package edu.cmu.sv.arinc838.builder;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
 import java.io.File;
@@ -334,13 +337,13 @@ public class SoftwareDefinitionFileBuilderTest {
 		order.verify(swDescription).buildBinary(file);
 
 		order.verify(file).writeTargetDefinitionsPointer();
-		order.verify(file).writeUint32(2);		
+		order.verify(file).writeUint32(2);
 		order.verify(thdBuilderLast).setIsLast(true);
 		order.verify(thdBuilder).buildBinary(file);
 		order.verify(thdBuilderLast).buildBinary(file);
 
 		order.verify(file).writeFileDefinitionsPointer();
-		order.verify(file).writeUint32(3);		
+		order.verify(file).writeUint32(3);
 		order.verify(fdBuilderLast).setIsLast(true);
 		order.verify(fdBuilder, times(2)).buildBinary(file);
 		order.verify(fdBuilderLast).buildBinary(file);
@@ -379,6 +382,12 @@ public class SoftwareDefinitionFileBuilderTest {
 
 	@Test
 	public void testReadBinary() throws Exception {
+		SoftwareDefinitionFileBuilder actual = new SoftwareDefinitionFileBuilder(binaryFile);		
+		assertEquals(actual,  swDefFileBuilder);
+	}
+	
+	@Test
+	public void testReadBinaryActualFilesOnDisk() throws Exception {
 		BdfWriter writer = new BdfWriter();
 
 		String path = System.getProperty("java.io.tmpdir");
@@ -391,7 +400,7 @@ public class SoftwareDefinitionFileBuilderTest {
 		SoftwareDefinitionFileBuilder actual = new SoftwareDefinitionFileBuilder(
 				file);
 
-		String secondFileName = writer.write(path + "second\\", actual);
+		String secondFileName = writer.write(path, actual);
 
 		RandomAccessFile first = new RandomAccessFile(firstOnDisk, "r");
 		byte[] firstBytes = new byte[(int) first.length()];
@@ -417,12 +426,13 @@ public class SoftwareDefinitionFileBuilderTest {
 														// format version
 
 		new SoftwareDefinitionFileBuilder(file);
-	}	
+	}
 
 	@Test
 	public void testBinaryConstructorReadsDescription() {
-		assertEquals(readBinaryFile.getSoftwareDescription().getSoftwareTypeDescription(),
-				swDefFileBuilder.getSoftwareDescription().getSoftwareTypeDescription());
+		assertEquals(readBinaryFile.getSoftwareDescription()
+				.getSoftwareTypeDescription(), swDefFileBuilder
+				.getSoftwareDescription().getSoftwareTypeDescription());
 	}
 
 	@Test
@@ -434,5 +444,24 @@ public class SoftwareDefinitionFileBuilderTest {
 		assertEquals(readBinaryFile.getSdfIntegrityDefinition()
 				.getIntegrityValue(), swDefFileBuilder
 				.getSdfIntegrityDefinition().getIntegrityValue());
+	}
+	
+	@Test
+	public void testEquals(){
+		SoftwareDefinitionFileBuilder copy = new SoftwareDefinitionFileBuilder(swDefFile);
+		
+		assertEquals(swDefFileBuilder, copy);		
+	}
+	
+	@Test
+	public void testHashcode(){
+		assertEquals(swDefFileBuilder.hashCode(), swDefFileBuilder.getXmlFileName().hashCode());
+	}
+	
+	@Test
+	public void testHashcodeWithNoDescriptionSet(){
+		SoftwareDefinitionFileBuilder builder = new SoftwareDefinitionFileBuilder();
+		
+		assertEquals(builder.hashCode(), 0);
 	}
 }

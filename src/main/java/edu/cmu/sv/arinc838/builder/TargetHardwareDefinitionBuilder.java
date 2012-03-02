@@ -11,6 +11,7 @@ package edu.cmu.sv.arinc838.builder;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.arinc.arinc838.ThwDefinition;
@@ -72,7 +73,7 @@ public class TargetHardwareDefinitionBuilder implements Builder<ThwDefinition> {
 	public int buildBinary(BdfFile bdfFile) throws IOException {
 		int initialPosition = (int) bdfFile.getFilePointer();
 
-		bdfFile.writeUint32(0);
+		bdfFile.writePlaceholder();
 		bdfFile.writeStr64k(getId());
 		bdfFile.writeUint32(getPositions().size());
 		for (int i = 0; i < getPositions().size(); i++) {
@@ -107,5 +108,29 @@ public class TargetHardwareDefinitionBuilder implements Builder<ThwDefinition> {
 
 	public void setIsLast(boolean value) {
 		isLast = value;
+	}
+	
+	@Override
+	public int hashCode() {
+		if(this.getId() != null){
+			return this.getId().hashCode();
+		}
+		
+		return 0;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return obj !=  null &&
+				this == obj ||
+				(obj instanceof TargetHardwareDefinitionBuilder &&
+				equals((TargetHardwareDefinitionBuilder)obj));		
+	}
+	
+	public boolean equals(TargetHardwareDefinitionBuilder obj){
+		return obj != null &&
+				this == obj ||
+				(this.getId().equals(obj.getId()) &&
+				this.getPositions().equals(obj.getPositions()));
 	}
 }

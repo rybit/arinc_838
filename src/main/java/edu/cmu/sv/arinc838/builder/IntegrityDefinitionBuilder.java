@@ -10,6 +10,7 @@
 package edu.cmu.sv.arinc838.builder;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import com.arinc.arinc838.IntegrityDefinition;
 
@@ -30,10 +31,9 @@ public class IntegrityDefinitionBuilder implements Builder<IntegrityDefinition> 
 		public long getType() {
 			return type;
 		}
-		
+
 		@Override
-		public String toString()
-		{
+		public String toString() {
 			return super.toString() + "(" + type + ")";
 		}
 
@@ -55,8 +55,8 @@ public class IntegrityDefinitionBuilder implements Builder<IntegrityDefinition> 
 
 	private long integType;
 	private byte[] integValue;
-	
-	public IntegrityDefinitionBuilder(){
+
+	public IntegrityDefinitionBuilder() {
 	}
 
 	public IntegrityDefinitionBuilder(IntegrityDefinition integDef) {
@@ -94,16 +94,40 @@ public class IntegrityDefinitionBuilder implements Builder<IntegrityDefinition> 
 
 		return retDef;
 	}
-	
+
 	@Override
 	public int buildBinary(BdfFile bdfFile) throws IOException {
 		int initialPosition = (int) bdfFile.getFilePointer();
-		
+
 		bdfFile.writeUint32(getIntegrityType());
 		bdfFile.writeHexbin64k(getIntegrityValue());
-	
+
 		int finalPosition = (int) bdfFile.getFilePointer();
 
 		return (int) (finalPosition - initialPosition);
+	}
+
+	@Override
+	public int hashCode() {
+		if (this.getIntegrityValue() != null) {
+			return this.getIntegrityValue().hashCode();
+		}
+
+		return 0;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return obj != null
+				&& this == obj
+				|| (obj instanceof IntegrityDefinitionBuilder && equals((IntegrityDefinitionBuilder) obj));
+	}
+
+	public boolean equals(IntegrityDefinitionBuilder obj) {
+		return obj != null
+				&& this == obj
+				|| (Arrays.equals(this.getIntegrityValue(),
+						obj.getIntegrityValue()) && (this.getIntegrityType() == obj
+						.getIntegrityType()));
 	}
 }

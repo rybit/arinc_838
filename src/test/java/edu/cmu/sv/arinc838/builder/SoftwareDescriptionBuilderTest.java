@@ -174,7 +174,7 @@ public class SoftwareDescriptionBuilderTest {
 		order.verify(file).writeSoftwareDescriptionPointer();
 		order.verify(file).writeStr64k(first.getSoftwarePartNumber());
 		order.verify(file).writeStr64k(first.getSoftwareTypeDescription());
-		order.verify(file).write(first.getSoftwareTypeId());
+		order.verify(file).writeHexbin32(first.getSoftwareTypeId());
 		order.verify(file).getFilePointer();
 		order.verifyNoMoreInteractions();
 	}
@@ -197,5 +197,22 @@ public class SoftwareDescriptionBuilderTest {
 		assertEquals(desc.getSoftwarePartNumber(), partNumber);
 		assertEquals(desc.getSoftwareTypeDescription(), description);
 		assertEquals(desc.getSoftwareTypeId(), typeId);				
+	}
+	
+	@Test
+	public void testhashcode(){
+		assertEquals(first.hashCode(), first.getSoftwarePartNumber().hashCode());
+	}
+	
+	@Test
+	public void testhashcodeWithNoPartNumber(){
+		SoftwareDescriptionBuilder desc = new SoftwareDescriptionBuilder();
+		
+		assertEquals(desc.hashCode(), 0);	
+	}
+	
+	@Test
+	public void testEquals(){
+		assertEquals(first, second);	
 	}
 }
