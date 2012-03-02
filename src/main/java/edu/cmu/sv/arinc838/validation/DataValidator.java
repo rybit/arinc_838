@@ -268,7 +268,7 @@ public class DataValidator {
 		}
 
 		// Just check the basic format first: MMMCC-SSSS-SSSS
-		if (!value.matches("\\w{5}-\\w{4}-\\w{4}")) {
+		if (!value.matches("[A-Z0-9]{5}-[A-Z0-9]{4}-[A-Z0-9]{4}")) {
 			throw new IllegalArgumentException(
 					"Software part number format was invalid. Got "
 							+ value

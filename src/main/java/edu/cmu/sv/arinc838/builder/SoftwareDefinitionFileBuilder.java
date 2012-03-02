@@ -187,10 +187,10 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 	}
 
 	public String getBinaryFileName() {
-		return getSoftwareDescription().getSoftwarePartNumber() + ".BDF";
+		return getSoftwareDescription().getSoftwarePartNumber().replace("-", "") + ".BDF";
 	}
 
 	public String getXmlFileName() {
-		return getSoftwareDescription().getSoftwarePartNumber() + ".XDF";
+		return getSoftwareDescription().getSoftwarePartNumber().replace("-", "") + ".XDF";
 	}
 }
