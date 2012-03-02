@@ -43,7 +43,7 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 		this.initialize(swDefFile);
 	}
 
-	public SoftwareDefinitionFileBuilder(BdfFile file) {
+	public SoftwareDefinitionFileBuilder(BdfFile file) throws IOException {
 		this.initialize(file);
 	}
 
@@ -69,9 +69,59 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 		sdfIntegrityDefinition = new IntegrityDefinitionBuilder(
 				swDefFile.getSdfIntegrityDefinition());
 	}
-	
-	public void initialize(BdfFile file){
+
+	public void initialize(BdfFile file) throws IOException {
+		// TODO check file format version
+
+		file.seek(BdfFile.SOFTWARE_DESCRIPTION_POINTER_LOCATION);
+		long pointer = file.readUint32();
+		file.seek(pointer);
 		
+		softwareDescription = new SoftwareDescriptionBuilder(file);
+
+		file.seek(BdfFile.TARGET_DEFINITIONS_POINTER_LOCATION);
+		pointer = file.readUint32();
+		file.seek(pointer);
+
+		long targetHardwareCount = file.readUint32();
+
+		for (int i = 0; i < targetHardwareCount; i++) {
+			long nextHardware = file.readUint32();
+			TargetHardwareDefinitionBuilder hardware = new TargetHardwareDefinitionBuilder(
+					file);
+
+			this.getTargetHardwareDefinitions().add(hardware);
+
+			file.seek(nextHardware);
+		}
+		
+		file.seek(BdfFile.FILE_DEFINITIONS_POINTER_LOCATION);
+		pointer = file.readUint32();
+		file.seek(pointer);
+		
+		long fileDefinitionCount = file.readUint32();
+
+		for (int i = 0; i < fileDefinitionCount; i++) {
+			long nextFile = file.readUint32();
+			FileDefinitionBuilder fileDefinition = new FileDefinitionBuilder(
+					file);
+
+			this.getFileDefinitions().add(fileDefinition);
+
+			file.seek(nextFile);
+		}
+		
+		file.seek(BdfFile.SDF_INTEGRITY_POINTER_LOCATION);
+		pointer = file.readUint32();
+		file.seek(pointer);
+		
+		this.setSdfIntegrityDefinition(new IntegrityDefinitionBuilder(file));
+		
+		file.seek(BdfFile.LSP_INTEGRITY_POINTER_LOCATION);
+		pointer = file.readUint32();
+		file.seek(pointer);
+		
+		this.setLspIntegrityDefinition(new IntegrityDefinitionBuilder(file));
 	}
 
 	public byte[] getFileFormatVersion() {
@@ -152,7 +202,7 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 		int size = this.getTargetHardwareDefinitions().size();
 		file.writeUint32(size);
 		file.writeTargetDefinitionsPointer();
-		if (size > 0) {			
+		if (size > 0) {
 			this.getTargetHardwareDefinitions().get(size - 1).setIsLast(true);
 			for (int i = 0; i < size; i++) {
 				this.getTargetHardwareDefinitions().get(i).buildBinary(file);
@@ -163,19 +213,21 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 		size = this.getFileDefinitions().size();
 		file.writeUint32(size);
 		file.writeFileDefinitionsPointer();
-		this.getFileDefinitions().get(size - 1).setIsLast(true);		
+		this.getFileDefinitions().get(size - 1).setIsLast(true);
 		for (int i = 0; i < size; i++) {
 			this.getFileDefinitions().get(i).buildBinary(file);
 		}
 
 		// write the SDF integrity def
 		file.writeSdfIntegrityDefinitionPointer();
-		this.getSdfIntegrityDefinition().setIntegrityValue(Converter.hexToBytes("0000000A"));
+		this.getSdfIntegrityDefinition().setIntegrityValue(
+				Converter.hexToBytes("0000000A"));
 		this.getSdfIntegrityDefinition().buildBinary(file);
 
 		// write the LSP integrity def
 		file.writeLspIntegrityDefinitionPointer();
-		this.getLspIntegrityDefinition().setIntegrityValue(Converter.hexToBytes("0000000A"));
+		this.getLspIntegrityDefinition().setIntegrityValue(
+				Converter.hexToBytes("0000000A"));
 		this.getLspIntegrityDefinition().buildBinary(file);
 
 		// write the file size
@@ -187,10 +239,12 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 	}
 
 	public String getBinaryFileName() {
-		return getSoftwareDescription().getSoftwarePartNumber().replace("-", "") + ".BDF";
+		return getSoftwareDescription().getSoftwarePartNumber()
+				.replace("-", "") + ".BDF";
 	}
 
 	public String getXmlFileName() {
-		return getSoftwareDescription().getSoftwarePartNumber().replace("-", "") + ".XDF";
+		return getSoftwareDescription().getSoftwarePartNumber()
+				.replace("-", "") + ".XDF";
 	}
 }

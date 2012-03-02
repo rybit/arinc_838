@@ -64,6 +64,10 @@ public class IntegrityDefinitionBuilder implements Builder<IntegrityDefinition> 
 		setIntegrityValue(integDef.getIntegrityValue());
 	}
 
+	public IntegrityDefinitionBuilder(BdfFile file) {
+		// TODO Auto-generated constructor stub
+	}
+
 	public void setIntegrityType(long value) {
 		integType = DataValidator.validateIntegrityType(value);
 	}

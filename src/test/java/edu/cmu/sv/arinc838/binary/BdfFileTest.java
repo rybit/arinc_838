@@ -39,7 +39,7 @@ public class BdfFileTest {
 	
 	@Test
 	public void writePlaceholderTest() throws Exception {
-		// Grab on more than the max value if we get a negative we know we go
+		// Grab one more than the max value if we get a negative we know we go
 		// boom
 
 		f.writePlaceholder();
@@ -68,9 +68,7 @@ public class BdfFileTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void writeBoolean() throws Exception {
-		// Grab on more than the max value if we get a negative we know we go
-		// boom
+	public void writeAndReadBoolean() throws Exception {
 		boolean expected = true;
 
 		f.writeBoolean(expected);
@@ -80,10 +78,10 @@ public class BdfFileTest {
 		boolean actual = f.readBoolean();
 
 		assertEquals(actual, expected);
-	}
+	}	
 
 	@Test
-	public void writeStr64k() throws Exception {
+	public void writeAndReadStr64k() throws Exception {
 		String ipsum = "lorum ipsum";
 
 		f.writeStr64k(ipsum);

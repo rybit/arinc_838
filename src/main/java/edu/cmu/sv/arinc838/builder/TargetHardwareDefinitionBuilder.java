@@ -35,6 +35,10 @@ public class TargetHardwareDefinitionBuilder implements Builder<ThwDefinition> {
 	public TargetHardwareDefinitionBuilder() {
 	}
 
+	public TargetHardwareDefinitionBuilder(BdfFile file) {
+		// TODO Auto-generated constructor stub
+	}
+
 	public String getId() {
 		return id;
 	}
