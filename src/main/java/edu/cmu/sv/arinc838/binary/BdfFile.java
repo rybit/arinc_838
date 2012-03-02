@@ -43,6 +43,15 @@ public class BdfFile extends RandomAccessFile {
 	public void writeStr64k(String value) throws IOException {
 		super.writeUTF(DataValidator.validateStr64kBinary(value));
 	}
+	
+	/**
+	 * Simple wrapper around {@link #readUTF()} to keep the API of this class symmetric.
+	 * @return
+	 * @throws IOException
+	 */
+	public String readStr64k() throws IOException {
+		return readUTF();
+	}
 
 	public long readUint32() throws IOException {
 		return asUint32(super.readInt());
@@ -125,10 +134,6 @@ public class BdfFile extends RandomAccessFile {
 
 	public long readLspIntegrityDefinitionPointer() throws IOException {
 		return readPointer(LSP_INTEGRITY_POINTER_LOCATION);
-	}
-
-	public String readStr64k() throws IOException {
-		return this.readUTF();
 	}
 
 	private long readPointer(int pointerLocation) throws IOException {
