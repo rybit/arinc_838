@@ -35,6 +35,16 @@ public class TargetHardwareDefinitionBuilder implements Builder<ThwDefinition> {
 	public TargetHardwareDefinitionBuilder() {
 	}
 
+	public TargetHardwareDefinitionBuilder(BdfFile bdfFile) throws IOException {
+		bdfFile.readUint32(); // Read out the pointer to the next thw-definition. We don't use it.
+		setId(bdfFile.readStr64k());
+		long positionsLength = bdfFile.readUint32();
+		for(int i=0; i<positionsLength; i++) {
+			bdfFile.readUint32(); // Read out the pointer to the next thw-position. We don't use it.
+			getPositions().add(bdfFile.readStr64k());
+		}
+	}
+
 	public String getId() {
 		return id;
 	}
