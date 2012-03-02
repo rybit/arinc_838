@@ -20,7 +20,7 @@ public class BdfFile extends RandomAccessFile {
 
 	public static final int UINT32_LENGTH = 4;
 	public static final int BOOLEAN_LENGTH = 1;
-	public static final int BINARY_FILE_FORMAT_VERSION_LOCATION = 4;
+	public static final int FILE_FORMAT_VERSION_LOCATION = 4;
 	public static final int SOFTWARE_DESCRIPTION_POINTER_LOCATION = 8;
 	public static final int TARGET_DEFINITIONS_POINTER_LOCATION = 12;
 	public static final int FILE_DEFINITIONS_POINTER_LOCATION = 16;
@@ -66,7 +66,7 @@ public class BdfFile extends RandomAccessFile {
 
 	public void writeLspIntegrityDefinitionPointer() throws IOException {
 		writePointer(LSP_INTEGRITY_POINTER_LOCATION);
-		
+
 	}
 
 	private void writePointer(int pointerLocation) throws IOException {
@@ -78,12 +78,28 @@ public class BdfFile extends RandomAccessFile {
 
 	public void writeHexbin64k(byte[] hexBin) throws IOException {
 		byte[] hexBinToWrite = DataValidator.validateHexbin64k(hexBin);
-		
+
 		writeShort(hexBinToWrite.length);
 		write(hexBinToWrite);
 	}
 
 	public void writePlaceholder() throws IOException {
 		writeUint32(0);
+	}
+
+	public byte[] readHexbin32k() throws IOException {
+		byte[] hexbin = new byte[4];
+
+		this.read(hexbin);
+
+		return hexbin;
+	}
+
+	public byte[] readHexbin64k() throws IOException {
+		byte[] hexbin = new byte[8];
+
+		this.read(hexbin);		
+
+		return hexbin;
 	}
 }

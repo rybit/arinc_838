@@ -396,4 +396,13 @@ public class SoftwareDefinitionFileBuilderTest {
 		firstOnDisk.delete();
 		secondOnDisk.delete();
 	}
+	
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testReadBinaryWithWrongFileFormatThrowsException() throws IOException{
+		BdfFile file = new BdfFile(File.createTempFile("prefix", "suffix"));
+		file.writeUint32(14); //write bogus length of file		
+		file.write(Converter.hexToBytes("00008111")); //write invalid file format version
+				
+		new SoftwareDefinitionFileBuilder(file);
+	}
 }

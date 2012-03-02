@@ -71,12 +71,20 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 	}
 
 	public void initialize(BdfFile file) throws IOException {
-		// TODO check file format version
+
+		file.seek(BdfFile.FILE_FORMAT_VERSION_LOCATION);
+		byte[] fileFormatVersion = file.readHexbin32k();
+		if (fileFormatVersion != SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION) {
+			throw new IllegalArgumentException(
+					"File format not recognized. Expected: "
+							+ SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION
+							+ " Got: " + fileFormatVersion);
+		}
 
 		file.seek(BdfFile.SOFTWARE_DESCRIPTION_POINTER_LOCATION);
 		long pointer = file.readUint32();
 		file.seek(pointer);
-		
+
 		softwareDescription = new SoftwareDescriptionBuilder(file);
 
 		file.seek(BdfFile.TARGET_DEFINITIONS_POINTER_LOCATION);
@@ -94,11 +102,11 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 
 			file.seek(nextHardware);
 		}
-		
+
 		file.seek(BdfFile.FILE_DEFINITIONS_POINTER_LOCATION);
 		pointer = file.readUint32();
 		file.seek(pointer);
-		
+
 		long fileDefinitionCount = file.readUint32();
 
 		for (int i = 0; i < fileDefinitionCount; i++) {
@@ -110,17 +118,17 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 
 			file.seek(nextFile);
 		}
-		
+
 		file.seek(BdfFile.SDF_INTEGRITY_POINTER_LOCATION);
 		pointer = file.readUint32();
 		file.seek(pointer);
-		
+
 		this.setSdfIntegrityDefinition(new IntegrityDefinitionBuilder(file));
-		
+
 		file.seek(BdfFile.LSP_INTEGRITY_POINTER_LOCATION);
 		pointer = file.readUint32();
 		file.seek(pointer);
-		
+
 		this.setLspIntegrityDefinition(new IntegrityDefinitionBuilder(file));
 	}
 

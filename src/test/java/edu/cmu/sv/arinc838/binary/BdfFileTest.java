@@ -212,4 +212,37 @@ public class BdfFileTest {
 		assertEquals(f.readUint32(), expected);
 	}
 
+	@Test
+	public void testReadHexbin32k() throws Exception{
+		byte[] expected = new byte[4];
+		expected[0] = 1;
+		expected[1] = 2;
+		expected[2] = 3;
+		expected[3] = 4;
+		
+		f.write(expected);
+		
+		f.seek(0);
+		
+		assertEquals(f.readHexbin32k(), expected);		
+	}
+	
+	@Test
+	public void testReadHexbin64k() throws Exception{
+		byte[] expected = new byte[8];
+		expected[0] = 1;
+		expected[1] = 2;
+		expected[2] = 3;
+		expected[3] = 4;
+		expected[4] = 5;
+		expected[5] = 6;
+		expected[6] = 7;
+		expected[7] = 8;
+		
+		f.write(expected);
+		
+		f.seek(0);
+		
+		assertEquals(f.readHexbin64k(), expected);		
+	}
 }
