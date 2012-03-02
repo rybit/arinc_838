@@ -11,6 +11,7 @@ package edu.cmu.sv.arinc838.builder;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.arinc.arinc838.FileDefinition;
@@ -74,13 +75,14 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 
 		file.seek(BdfFile.FILE_FORMAT_VERSION_LOCATION);
 		byte[] fileFormatVersion = file.readHexbin32();
-		if (fileFormatVersion != SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION) {
+		if (!Arrays.equals(fileFormatVersion,
+				SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION)) {
 			throw new IllegalArgumentException(
 					"File format not recognized. Expected: "
 							+ SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION
 							+ " Got: " + fileFormatVersion);
 		}
-		
+
 		file.seek(file.readSoftwareDescriptionPointer());
 		softwareDescription = new SoftwareDescriptionBuilder(file);
 
@@ -174,10 +176,10 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 
 	@Override
 	public int buildBinary(BdfFile file) throws IOException {
-
+		file.seek(0);
 		// write the header
 		file.writePlaceholder(); // file size
-		file.write(getFileFormatVersion());
+		file.writeHexbin32(getFileFormatVersion());
 		file.writePlaceholder(); // software description pointer
 		file.writePlaceholder(); // target hardware definition pointer
 		file.writePlaceholder(); // file definition pointer
@@ -187,8 +189,8 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 
 		// Write the target hardware definitions
 		int size = this.getTargetHardwareDefinitions().size();
-		file.writeUint32(size);
 		file.writeTargetDefinitionsPointer();
+		file.writeUint32(size);		
 		if (size > 0) {
 			this.getTargetHardwareDefinitions().get(size - 1).setIsLast(true);
 			for (int i = 0; i < size; i++) {
@@ -198,8 +200,8 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 
 		// write the file definitions
 		size = this.getFileDefinitions().size();
-		file.writeUint32(size);
 		file.writeFileDefinitionsPointer();
+		file.writeUint32(size);		
 		this.getFileDefinitions().get(size - 1).setIsLast(true);
 		for (int i = 0; i < size; i++) {
 			this.getFileDefinitions().get(i).buildBinary(file);

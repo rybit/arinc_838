@@ -82,7 +82,7 @@ public class SoftwareDescriptionBuilder implements Builder<SoftwareDescription> 
 		file.writeSoftwareDescriptionPointer();
 		file.writeStr64k(this.getSoftwarePartNumber());		
 		file.writeStr64k(this.getSoftwareTypeDescription());
-		file.write(this.getSoftwareTypeId());
+		file.writeHexbin32(this.getSoftwareTypeId());
 		
 		return (int) (file.getFilePointer() - initialPosition);
 	}

@@ -10,6 +10,7 @@ import java.util.Arrays;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import edu.cmu.sv.arinc838.util.Converter;
 import edu.cmu.sv.arinc838.validation.DataValidator;
 
 public class BdfFileTest {
@@ -268,36 +269,26 @@ public class BdfFileTest {
 	}
 
 	@Test
-	public void testReadHexbin32k() throws Exception{
-		byte[] expected = new byte[4];
-		expected[0] = 1;
-		expected[1] = 2;
-		expected[2] = 3;
-		expected[3] = 4;
+	public void testReadHexbin32() throws Exception{
+		byte[] expected = Converter.hexToBytes("1234BEEF");
 		
-		f.write(expected);
+		f.writeHexbin32(expected);
 		
 		f.seek(0);
 		
+		assertEquals(f.length(), 4);
 		assertEquals(f.readHexbin32(), expected);		
 	}
 	
 	@Test
 	public void testReadHexbin64k() throws Exception{
-		byte[] expected = new byte[8];
-		expected[0] = 1;
-		expected[1] = 2;
-		expected[2] = 3;
-		expected[3] = 4;
-		expected[4] = 5;
-		expected[5] = 6;
-		expected[6] = 7;
-		expected[7] = 8;
+		byte[] expected = Converter.hexToBytes("1234BEEF1234BEEF");
 		
 		f.writeHexbin64k(expected);
 		
 		f.seek(0);
 		
+		assertEquals(f.length(), 10);
 		assertEquals(f.readHexbin64k(), expected);		
 	}
 }

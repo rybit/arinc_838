@@ -42,13 +42,15 @@ public class SoftwareDefinitionFileBuilderTest {
 	private SoftwareDescription description;
 	private com.arinc.arinc838.FileDefinition fileDef;
 	private com.arinc.arinc838.ThwDefinition hardwareDef;
+	private BdfFile binaryFile;
+	private SoftwareDefinitionFileBuilder readBinaryFile;
 
 	@BeforeMethod
-	public void beforeMethod() {
+	public void beforeMethod() throws Exception {
 
 		integrity = new com.arinc.arinc838.IntegrityDefinition();
 		integrity.setIntegrityType(IntegrityType.CRC16.getType());
-		integrity.setIntegrityValue(Converter.hexToBytes("ABCD"));
+		integrity.setIntegrityValue(Converter.hexToBytes("0000000A"));
 
 		description = new SoftwareDescription();
 		description
@@ -81,6 +83,10 @@ public class SoftwareDefinitionFileBuilderTest {
 		swDefFile.getThwDefinitions().add(hardwareDef);
 
 		swDefFileBuilder = new SoftwareDefinitionFileBuilder(swDefFile);
+
+		binaryFile = new BdfFile(File.createTempFile("tmp", "bin"));
+		swDefFileBuilder.buildBinary(binaryFile);
+		readBinaryFile = new SoftwareDefinitionFileBuilder(binaryFile);
 	}
 
 	@Test
@@ -268,7 +274,7 @@ public class SoftwareDefinitionFileBuilderTest {
 		BdfFile file = new BdfFile(File.createTempFile("tmp", "bin"));
 		int bytesWritten = swDefFileBuilder.buildBinary(file);
 
-		assertEquals(bytesWritten, 165);
+		assertEquals(bytesWritten, 169);
 
 		file.seek(0);
 		assertEquals(file.readUint32(), file.length());
@@ -278,13 +284,13 @@ public class SoftwareDefinitionFileBuilderTest {
 				SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION);
 
 		assertEquals(file.readUint32(), 28); // software description pointer
-		assertEquals(file.readUint32(), 28 + 31); // target hardware definition
+		assertEquals(file.readUint32(), 28 + 27); // target hardware definition
 													// pointer
-		assertEquals(file.readUint32(), 28 + 31 + 40);// file definition pointer
-		assertEquals(file.readUint32(), 28 + 31 + 40 + 46);// SDF integrity
+		assertEquals(file.readUint32(), 28 + 27 + 40);// file definition pointer
+		assertEquals(file.readUint32(), 28 + 27 + 40 + 54);// SDF integrity
 															// definition
 															// pointer
-		assertEquals(file.readUint32(), 28 + 31 + 40 + 46 + 10);// LSP integrity
+		assertEquals(file.readUint32(), 28 + 27 + 40 + 54 + 10);// LSP integrity
 																// definition
 																// pointer
 	}
@@ -317,23 +323,24 @@ public class SoftwareDefinitionFileBuilderTest {
 
 		when(file.length()).thenReturn(14L);
 		int bytesWritten = swDefFileBuilder.buildBinary(file);
-
 		assertEquals(bytesWritten, 14L);
 
+		order.verify(file).seek(0);
 		order.verify(file).writePlaceholder();
-		order.verify(file).write(swDefFileBuilder.getFileFormatVersion());
+		order.verify(file).writeHexbin32(
+				swDefFileBuilder.getFileFormatVersion());
 		order.verify(file, times(5)).writePlaceholder();
 
 		order.verify(swDescription).buildBinary(file);
 
-		order.verify(file).writeUint32(2);
 		order.verify(file).writeTargetDefinitionsPointer();
+		order.verify(file).writeUint32(2);		
 		order.verify(thdBuilderLast).setIsLast(true);
 		order.verify(thdBuilder).buildBinary(file);
 		order.verify(thdBuilderLast).buildBinary(file);
 
-		order.verify(file).writeUint32(3);
 		order.verify(file).writeFileDefinitionsPointer();
+		order.verify(file).writeUint32(3);		
 		order.verify(fdBuilderLast).setIsLast(true);
 		order.verify(fdBuilder, times(2)).buildBinary(file);
 		order.verify(fdBuilderLast).buildBinary(file);
@@ -356,14 +363,18 @@ public class SoftwareDefinitionFileBuilderTest {
 
 	@Test
 	public void testHasBinaryFileName() {
-		assertEquals(swDefFileBuilder.getBinaryFileName(), swDefFileBuilder
-				.getSoftwareDescription().getSoftwarePartNumber().replace("-", "") + ".BDF");
+		assertEquals(swDefFileBuilder.getBinaryFileName(),
+				swDefFileBuilder.getSoftwareDescription()
+						.getSoftwarePartNumber().replace("-", "")
+						+ ".BDF");
 	}
 
 	@Test
 	public void testHasXmlFileName() {
-		assertEquals(swDefFileBuilder.getXmlFileName(), swDefFileBuilder
-				.getSoftwareDescription().getSoftwarePartNumber().replace("-", "") + ".XDF");
+		assertEquals(swDefFileBuilder.getXmlFileName(),
+				swDefFileBuilder.getSoftwareDescription()
+						.getSoftwarePartNumber().replace("-", "")
+						+ ".XDF");
 	}
 
 	@Test
@@ -374,46 +385,54 @@ public class SoftwareDefinitionFileBuilderTest {
 
 		String firstFileName = writer.write(path, swDefFileBuilder);
 		File firstOnDisk = new File(firstFileName);
-		
+
 		BdfFile file = new BdfFile(firstOnDisk);
 
 		SoftwareDefinitionFileBuilder actual = new SoftwareDefinitionFileBuilder(
 				file);
 
-		String secondFileName = writer.write(path + "/second/", actual);
+		String secondFileName = writer.write(path + "second\\", actual);
 
-		RandomAccessFile first = new RandomAccessFile( firstOnDisk, "r");
-		byte[] firstBytes = new byte[(int)first.length()];
+		RandomAccessFile first = new RandomAccessFile(firstOnDisk, "r");
+		byte[] firstBytes = new byte[(int) first.length()];
 		first.readFully(firstBytes);
-		
+
 		File secondOnDisk = new File(secondFileName);
 		RandomAccessFile second = new RandomAccessFile(secondOnDisk, "r");
-		byte[] secondBytes = new byte[(int)second.length()];
+		byte[] secondBytes = new byte[(int) second.length()];
 		second.readFully(secondBytes);
-		
+
 		assertEquals(firstBytes, secondBytes);
-		
+
 		firstOnDisk.delete();
 		secondOnDisk.delete();
 	}
-	
+
 	@Test(expectedExceptions = IllegalArgumentException.class)
-	public void testReadBinaryWithWrongFileFormatThrowsException() throws IOException{
+	public void testReadBinaryWithWrongFileFormatThrowsException()
+			throws IOException {
 		BdfFile file = new BdfFile(File.createTempFile("prefix", "suffix"));
-		file.writeUint32(14); //write bogus length of file		
-		file.write(Converter.hexToBytes("00008111")); //write invalid file format version
-				
+		file.writeUint32(14); // write bogus length of file
+		file.write(Converter.hexToBytes("00008111")); // write invalid file
+														// format version
+
 		new SoftwareDefinitionFileBuilder(file);
-	}
-	
+	}	
+
 	@Test
-	public void testSoftwareDefinitionFileBuilderBdfFile() throws FileNotFoundException, IOException {
-		BdfFile bdfFile = new BdfFile(File.createTempFile("tmp", "bin"));
-		swDefFileBuilder.buildBinary(bdfFile);
-		bdfFile.seek(bdfFile.readSdfIntegrityDefinitionPointer());
-		
-		SoftwareDefinitionFileBuilder swDefFileBuilder2 = new SoftwareDefinitionFileBuilder(bdfFile);
-		assertEquals(swDefFileBuilder2.getLspIntegrityDefinition().getIntegrityValue(), swDefFileBuilder.getLspIntegrityDefinition().getIntegrityValue()); 
-		assertEquals(swDefFileBuilder2.getSdfIntegrityDefinition().getIntegrityValue(), swDefFileBuilder.getSdfIntegrityDefinition().getIntegrityValue()); 
+	public void testBinaryConstructorReadsDescription() {
+		assertEquals(readBinaryFile.getSoftwareDescription().getSoftwareTypeDescription(),
+				swDefFileBuilder.getSoftwareDescription().getSoftwareTypeDescription());
+	}
+
+	@Test
+	public void testSoftwareDefinitionFileBuilderBdfFile()
+			throws FileNotFoundException, IOException {
+		assertEquals(readBinaryFile.getLspIntegrityDefinition()
+				.getIntegrityValue(), swDefFileBuilder
+				.getLspIntegrityDefinition().getIntegrityValue());
+		assertEquals(readBinaryFile.getSdfIntegrityDefinition()
+				.getIntegrityValue(), swDefFileBuilder
+				.getSdfIntegrityDefinition().getIntegrityValue());
 	}
 }
