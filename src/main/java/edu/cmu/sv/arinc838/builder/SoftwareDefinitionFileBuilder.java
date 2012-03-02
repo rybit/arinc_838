@@ -73,62 +73,41 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 	public void initialize(BdfFile file) throws IOException {
 
 		file.seek(BdfFile.FILE_FORMAT_VERSION_LOCATION);
-		byte[] fileFormatVersion = file.readHexbin32k();
+		byte[] fileFormatVersion = file.readHexbin32();
 		if (fileFormatVersion != SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION) {
 			throw new IllegalArgumentException(
 					"File format not recognized. Expected: "
 							+ SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION
 							+ " Got: " + fileFormatVersion);
 		}
-
-		file.seek(BdfFile.SOFTWARE_DESCRIPTION_POINTER_LOCATION);
-		long pointer = file.readUint32();
-		file.seek(pointer);
-
+		
+		file.seek(file.readSoftwareDescriptionPointer());
 		softwareDescription = new SoftwareDescriptionBuilder(file);
 
-		file.seek(BdfFile.TARGET_DEFINITIONS_POINTER_LOCATION);
-		pointer = file.readUint32();
-		file.seek(pointer);
-
+		file.seek(file.readTargetDefinitionsPointer());
 		long targetHardwareCount = file.readUint32();
-
 		for (int i = 0; i < targetHardwareCount; i++) {
 			long nextHardware = file.readUint32();
 			TargetHardwareDefinitionBuilder hardware = new TargetHardwareDefinitionBuilder(
 					file);
-
 			this.getTargetHardwareDefinitions().add(hardware);
-
 			file.seek(nextHardware);
 		}
 
-		file.seek(BdfFile.FILE_DEFINITIONS_POINTER_LOCATION);
-		pointer = file.readUint32();
-		file.seek(pointer);
-
+		file.seek(file.readFileDefinitionsPointer());
 		long fileDefinitionCount = file.readUint32();
-
 		for (int i = 0; i < fileDefinitionCount; i++) {
 			long nextFile = file.readUint32();
 			FileDefinitionBuilder fileDefinition = new FileDefinitionBuilder(
 					file);
-
 			this.getFileDefinitions().add(fileDefinition);
-
 			file.seek(nextFile);
 		}
 
-		file.seek(BdfFile.SDF_INTEGRITY_POINTER_LOCATION);
-		pointer = file.readUint32();
-		file.seek(pointer);
-
+		file.seek(file.readSdfIntegrityDefinitionPointer());
 		this.setSdfIntegrityDefinition(new IntegrityDefinitionBuilder(file));
 
-		file.seek(BdfFile.LSP_INTEGRITY_POINTER_LOCATION);
-		pointer = file.readUint32();
-		file.seek(pointer);
-
+		file.seek(file.readLspIntegrityDefinitionPointer());
 		this.setLspIntegrityDefinition(new IntegrityDefinitionBuilder(file));
 	}
 

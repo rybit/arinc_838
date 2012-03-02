@@ -37,12 +37,12 @@ public class TargetHardwareDefinitionBuilderBinaryTest {
 
 		long nextThwPointer = bdfFile.readUint32();
 		assertEquals(bytesWritten, nextThwPointer);
-		assertEquals(bdfFile.readUTF(), "ID3");
+		assertEquals(bdfFile.readStr64k(), "ID3");
 		assertEquals(bdfFile.readUint32(), 2); // 2 thw-positions
 		assertEquals(bdfFile.readUint32(), 20); // pointer to next thw-position
-		assertEquals(bdfFile.readUTF(), "R");
+		assertEquals(bdfFile.readStr64k(), "R");
 		assertEquals(bdfFile.readUint32(), 0); // pointer to next thw-position
-		assertEquals(bdfFile.readUTF(), "L");
+		assertEquals(bdfFile.readStr64k(), "L");
 	}
 
 	@Test

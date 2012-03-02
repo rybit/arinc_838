@@ -75,6 +75,12 @@ public class BdfFile extends RandomAccessFile {
 		super.seek(currentLocation);
 	}
 
+	public void writeHexbin32(byte[] hexBin) throws IOException {
+		byte[] hexBinToWrite = DataValidator.validateHexbin32(hexBin);
+
+		write(hexBinToWrite);
+	}
+
 	public void writeHexbin64k(byte[] hexBin) throws IOException {
 		byte[] hexBinToWrite = DataValidator.validateHexbin64k(hexBin);
 
@@ -86,7 +92,7 @@ public class BdfFile extends RandomAccessFile {
 		writeUint32(0);
 	}
 
-	public byte[] readHexbin32k() throws IOException {
+	public byte[] readHexbin32() throws IOException {
 		byte[] hexbin = new byte[4];
 
 		this.read(hexbin);
@@ -99,11 +105,6 @@ public class BdfFile extends RandomAccessFile {
 		byte[] data = new byte[length];
 		read(data);
 		return data;
-	}
-
-	private long readPointer(int pointerLocation) throws IOException {
-		seek(pointerLocation);
-		return readUint32();
 	}
 	
 	public long readSoftwareDescriptionPointer() throws IOException {
@@ -124,5 +125,14 @@ public class BdfFile extends RandomAccessFile {
 
 	public long readLspIntegrityDefinitionPointer() throws IOException {
 		return readPointer(LSP_INTEGRITY_POINTER_LOCATION);
+	}
+
+	public String readStr64k() throws IOException {
+		return this.readUTF();
+	}
+
+	private long readPointer(int pointerLocation) throws IOException {
+		seek(pointerLocation);
+		return readUint32();
 	}
 }

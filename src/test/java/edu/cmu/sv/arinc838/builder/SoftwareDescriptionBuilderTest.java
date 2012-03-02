@@ -154,8 +154,8 @@ public class SoftwareDescriptionBuilderTest {
 		// 17 + 13 + 4
 		assertEquals(bytesWritten, 34);
 		file.seek(0);
-		assertEquals(file.readUTF(), first.getSoftwarePartNumber());
-		assertEquals(file.readUTF(), first.getSoftwareTypeDescription());
+		assertEquals(file.readStr64k(), first.getSoftwarePartNumber());
+		assertEquals(file.readStr64k(), first.getSoftwareTypeDescription());
 		byte[] typeId = new byte[4];
 		file.read(typeId);
 		assertEquals(typeId, first.getSoftwareTypeId());
@@ -177,5 +177,25 @@ public class SoftwareDescriptionBuilderTest {
 		order.verify(file).write(first.getSoftwareTypeId());
 		order.verify(file).getFilePointer();
 		order.verifyNoMoreInteractions();
+	}
+	
+	@Test
+	public void testCanConstructFromBinary()
+			throws IOException {
+		String partNumber = ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE; 
+		String description = "description";
+		byte[] typeId = Converter.hexToBytes("0000000A");
+		
+		BdfFile file = new BdfFile(File.createTempFile("prefix", "suffix"));
+		file.writeStr64k(partNumber);
+		file.writeStr64k(description);
+		file.writeHexbin32(typeId);	
+		file.seek(0);
+		
+		SoftwareDescriptionBuilder desc = new SoftwareDescriptionBuilder(file);
+
+		assertEquals(desc.getSoftwarePartNumber(), partNumber);
+		assertEquals(desc.getSoftwareTypeDescription(), description);
+		assertEquals(desc.getSoftwareTypeId(), typeId);				
 	}
 }

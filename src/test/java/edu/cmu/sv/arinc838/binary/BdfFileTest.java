@@ -88,7 +88,7 @@ public class BdfFileTest {
 		assertEquals(f.length(), ipsum.toCharArray().length + 2);
 		f.seek(0);
 
-		String actual = f.readUTF();
+		String actual = f.readStr64k();
 
 		assertEquals(actual, ipsum);
 	}
@@ -104,6 +104,20 @@ public class BdfFileTest {
 		}
 
 		f.writeStr64k(value.toString());
+	}
+
+	@Test
+	public void writeHexbin32() throws IOException {
+		byte[] hexBin = new byte[4];
+		Arrays.fill(hexBin, (byte) 99);
+
+		f.writeHexbin32(hexBin);
+		// offset 2 bytes for length
+		f.seek(0);
+		
+		byte[] hexBin2 = f.readHexbin32();
+				
+		assertEquals(hexBin2, hexBin);
 	}
 
 	@Test
@@ -265,7 +279,7 @@ public class BdfFileTest {
 		
 		f.seek(0);
 		
-		assertEquals(f.readHexbin32k(), expected);		
+		assertEquals(f.readHexbin32(), expected);		
 	}
 	
 	@Test

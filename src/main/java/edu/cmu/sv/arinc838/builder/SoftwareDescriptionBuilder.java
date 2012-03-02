@@ -34,8 +34,10 @@ public class SoftwareDescriptionBuilder implements Builder<SoftwareDescription> 
 	public SoftwareDescriptionBuilder() {
 	}
 
-	public SoftwareDescriptionBuilder(BdfFile file) {
-		// TODO Auto-generated constructor stub
+	public SoftwareDescriptionBuilder(BdfFile file) throws IOException {
+		setSoftwarePartNumber(file.readStr64k());
+		setSoftwareTypeDescription(file.readStr64k());
+		setSoftwareTypeId(file.readHexbin32());
 	}
 
 	public String getSoftwarePartNumber() {

@@ -44,7 +44,7 @@ public class FileDefinitionBuilderBinaryTest {
 		long nextFileDefPointer = bdfFile.readUint32();
 		assertEquals(bytesWritten, nextFileDefPointer);
 		assertEquals(bdfFile.readBoolean(), true); // file is loadable
-		assertEquals(bdfFile.readUTF(), "someFile.bin"); // file name
+		assertEquals(bdfFile.readStr64k(), "someFile.bin"); // file name
 		assertEquals(bdfFile.readUint32(), 123456); // file size
 		assertEquals(bdfFile.readUint32(), IntegrityType.CRC32.getType()); // integrity type
 		assertEquals(bdfFile.readShort(), 4); // integrity value length
