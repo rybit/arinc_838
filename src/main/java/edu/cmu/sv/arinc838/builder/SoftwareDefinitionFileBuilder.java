@@ -43,8 +43,8 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 		this.initialize(swDefFile);
 	}
 
-	public SoftwareDefinitionFileBuilder(BdfFile file) throws IOException {
-		this.initialize(file);
+	public SoftwareDefinitionFileBuilder(BdfFile bdfFile) throws IOException {
+		this.initialize(bdfFile);
 	}
 
 	@SuppressWarnings("unchecked")

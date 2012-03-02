@@ -66,7 +66,6 @@ public class BdfFile extends RandomAccessFile {
 
 	public void writeLspIntegrityDefinitionPointer() throws IOException {
 		writePointer(LSP_INTEGRITY_POINTER_LOCATION);
-
 	}
 
 	private void writePointer(int pointerLocation) throws IOException {
@@ -96,10 +95,34 @@ public class BdfFile extends RandomAccessFile {
 	}
 
 	public byte[] readHexbin64k() throws IOException {
-		byte[] hexbin = new byte[8];
+		short length = readShort();
+		byte[] data = new byte[length];
+		read(data);
+		return data;
+	}
 
-		this.read(hexbin);		
+	private long readPointer(int pointerLocation) throws IOException {
+		seek(pointerLocation);
+		return readUint32();
+	}
+	
+	public long readSoftwareDescriptionPointer() throws IOException {
+		return readPointer(SOFTWARE_DESCRIPTION_POINTER_LOCATION);
+	}
 
-		return hexbin;
+	public long readTargetDefinitionsPointer() throws IOException {
+		return readPointer(TARGET_DEFINITIONS_POINTER_LOCATION);
+	}
+
+	public long readFileDefinitionsPointer() throws IOException {
+		return readPointer(FILE_DEFINITIONS_POINTER_LOCATION);
+	}
+
+	public long readSdfIntegrityDefinitionPointer() throws IOException {
+		return readPointer(SDF_INTEGRITY_POINTER_LOCATION);
+	}
+
+	public long readLspIntegrityDefinitionPointer() throws IOException {
+		return readPointer(LSP_INTEGRITY_POINTER_LOCATION);
 	}
 }
