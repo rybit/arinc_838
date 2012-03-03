@@ -122,24 +122,48 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00009"></a>00009 <span class="comment"> */</span>
 <a name="l00010"></a>00010 <span class="keyword">package </span>edu.cmu.sv.arinc838.ui.item;
 <a name="l00011"></a>00011 
-<a name="l00012"></a><a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1item_1_1_abstract_menu_item.html">00012</a> <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class </span><a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1item_1_1_abstract_menu_item.html">AbstractMenuItem</a> <span class="keyword">implements</span> <a class="code" href="interfaceedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1item_1_1_menu_item.html">MenuItem</a>{
-<a name="l00013"></a>00013         <span class="keyword">private</span> String prompt;
-<a name="l00014"></a>00014         <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1item_1_1_abstract_menu_item.html">AbstractMenuItem</a> (String prompt) {
-<a name="l00015"></a>00015                 this.prompt = prompt;
-<a name="l00016"></a>00016         }
-<a name="l00017"></a>00017         
-<a name="l00018"></a>00018         @Override
-<a name="l00019"></a>00019         <span class="keyword">public</span> String getPrompt () {
-<a name="l00020"></a>00020                 <span class="keywordflow">return</span> prompt;
-<a name="l00021"></a>00021         }
-<a name="l00022"></a>00022 }
+<a name="l00012"></a>00012 <span class="keyword">import</span> java.io.BufferedReader;
+<a name="l00013"></a>00013 <span class="keyword">import</span> java.io.IOException;
+<a name="l00014"></a>00014 <span class="keyword">import</span> java.io.InputStreamReader;
+<a name="l00015"></a>00015 
+<a name="l00016"></a><a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1item_1_1_abstract_menu_item.html">00016</a> <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class </span><a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1item_1_1_abstract_menu_item.html">AbstractMenuItem</a> <span class="keyword">implements</span> <a class="code" href="interfaceedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1item_1_1_menu_item.html">MenuItem</a> {
+<a name="l00017"></a>00017         <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <a class="code" href="interfaceedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1item_1_1_menu_item.html">MenuItem</a>[] EMPTY_ITEMS = <span class="keyword">new</span> <a class="code" href="interfaceedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1item_1_1_menu_item.html">MenuItem</a>[0];
+<a name="l00018"></a>00018         
+<a name="l00019"></a>00019         <span class="keyword">private</span> String prompt;
+<a name="l00020"></a>00020 
+<a name="l00021"></a>00021         <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1item_1_1_abstract_menu_item.html">AbstractMenuItem</a>(String prompt) {
+<a name="l00022"></a>00022                 this.prompt = prompt;
+<a name="l00023"></a>00023         }
+<a name="l00024"></a>00024 
+<a name="l00025"></a>00025         @Override
+<a name="l00026"></a>00026         <span class="keyword">public</span> String getPrompt() {
+<a name="l00027"></a>00027                 <span class="keywordflow">return</span> prompt;
+<a name="l00028"></a>00028         }
+<a name="l00029"></a>00029 
+<a name="l00030"></a>00030         <span class="keyword">public</span> String getHeader() {
+<a name="l00031"></a>00031                 <span class="keywordflow">return</span> null;
+<a name="l00032"></a>00032         }
+<a name="l00033"></a>00033 
+<a name="l00034"></a>00034         <span class="keyword">public</span> <span class="keyword">static</span> String promptForResponse(String toSay) <span class="keywordflow">throws</span> IOException {
+<a name="l00035"></a>00035 
+<a name="l00036"></a>00036                 System.out.print(toSay + <span class="stringliteral">&quot; &quot;</span>);
+<a name="l00037"></a>00037 
+<a name="l00038"></a>00038                 BufferedReader br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(System.in));
+<a name="l00039"></a>00039                 String ret = br.readLine();
+<a name="l00040"></a>00040                 <span class="keywordflow">return</span> ret;
+<a name="l00041"></a>00041         }
+<a name="l00042"></a>00042 
+<a name="l00043"></a>00043         <span class="keyword">public</span> <a class="code" href="interfaceedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1item_1_1_menu_item.html">MenuItem</a>[] getEmptyItems() {
+<a name="l00044"></a>00044                 <span class="keywordflow">return</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1item_1_1_abstract_menu_item.html">AbstractMenuItem</a>.EMPTY_ITEMS;
+<a name="l00045"></a>00045         }
+<a name="l00046"></a>00046 }
 </pre></div></div><!-- contents -->
 </div>
   <div id="nav-path" class="navpath">
     <ul>
       <li class="navelem"><b>AbstractMenuItem.java</b>      </li>
 
-    <li class="footer">Generated on Sat Feb 25 2012 22:45:47 for ARINC 838 by
+    <li class="footer">Generated on Sat Mar 3 2012 13:00:59 for ARINC 838 by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.0 </li>
    </ul>

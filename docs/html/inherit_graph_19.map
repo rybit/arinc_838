@@ -1,3 +1,5 @@
 <map id="G" name="G">
-<area shape="rect" id="node1" href="$classedu_1_1cmu_1_1sv_1_1arinc838_1_1xml_1_1_xdf_writer.html" title="edu.cmu.sv.arinc838.xml.XdfWriter" alt="" coords="7,5,233,33"/>
+<area shape="rect" id="node1" href="$interfaceedu_1_1cmu_1_1sv_1_1arinc838_1_1writer_1_1_sdf_writer.html" title="edu.cmu.sv.arinc838.writer.SdfWriter" alt="" coords="7,30,244,58"/>
+<area shape="rect" id="node3" href="$classedu_1_1cmu_1_1sv_1_1arinc838_1_1writer_1_1_bdf_writer.html" title="edu.cmu.sv.arinc838.writer.BdfWriter" alt="" coords="295,5,532,33"/>
+<area shape="rect" id="node5" href="$classedu_1_1cmu_1_1sv_1_1arinc838_1_1writer_1_1_xdf_writer.html" title="edu.cmu.sv.arinc838.writer.XdfWriter" alt="" coords="295,55,532,83"/>
 </map>

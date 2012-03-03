@@ -9,6 +9,7 @@
  */
 package edu.cmu.sv.arinc838.validation;
 
+import java.util.Arrays;
 import java.util.List;
 
 import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder.IntegrityType;
@@ -188,8 +189,7 @@ public class DataValidator {
 	 *             if the input value does not validate.
 	 */
 	public static byte[] validateFileFormatVersion(byte[] version) {
-
-		if (!version.equals(SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION)) {
+		if (!Arrays.equals(version, SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION)) {
 			throw new IllegalArgumentException(
 					"File format version was set to "
 							+ version

@@ -123,6 +123,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a571c3fa165c1e561dc2eae45c76d7f67"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a571c3fa165c1e561dc2eae45c76d7f67"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>FileDefinitionBuilder</b> (<a class="el" href="classcom_1_1arinc_1_1arinc838_1_1_file_definition.html">FileDefinition</a> fileDef)</td></tr>
+<tr class="memitem:a7b0adc0ff66869ebedb03e69fbbbe50b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7b0adc0ff66869ebedb03e69fbbbe50b"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>FileDefinitionBuilder</b> (<a class="el" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1binary_1_1_bdf_file.html">BdfFile</a> bdfFile)  throws IOException </td></tr>
 <tr class="memitem:ac95db1d1b1160a8c1897bd706da2cbab"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac95db1d1b1160a8c1897bd706da2cbab"></a>
 <a class="el" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_integrity_definition_builder.html">IntegrityDefinitionBuilder</a>&#160;</td><td class="memItemRight" valign="bottom"><b>getFileIntegrityDefinition</b> ()</td></tr>
 <tr class="memitem:a1a85a28ec9eb7882f61a9ceb23621fca"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1a85a28ec9eb7882f61a9ceb23621fca"></a>
@@ -147,6 +149,12 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>buildBinary</b> (<a cl
 boolean&#160;</td><td class="memItemRight" valign="bottom"><b>isLast</b> ()</td></tr>
 <tr class="memitem:a9e8f770e5a549fef0fbab45e33f860af"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9e8f770e5a549fef0fbab45e33f860af"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setIsLast</b> (boolean value)</td></tr>
+<tr class="memitem:a7694c41347bbb0b70095d4cf0cb87da9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7694c41347bbb0b70095d4cf0cb87da9"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>hashCode</b> ()</td></tr>
+<tr class="memitem:aa0aee42c2d599b7425c2272bd47dac06"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa0aee42c2d599b7425c2272bd47dac06"></a>
+boolean&#160;</td><td class="memItemRight" valign="bottom"><b>equals</b> (Object obj)</td></tr>
+<tr class="memitem:a4839904dd3c0205512272899c218bf77"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4839904dd3c0205512272899c218bf77"></a>
+boolean&#160;</td><td class="memItemRight" valign="bottom"><b>equals</b> (<a class="el" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_file_definition_builder.html">FileDefinitionBuilder</a> obj)</td></tr>
 </table>
 <hr/><a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p>The builder paradigm is that all the fields will be extracted and stored in their native data types and then stuffed back in at build time. This means that all the fields will map. The reason to extract the fields is so that modifications to the builder after the construction does NOT effect the original xml container.</p>
@@ -173,7 +181,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>setIsLast</b> (boolea
       <li class="navelem"><b>builder</b>      </li>
       <li class="navelem"><a class="el" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_file_definition_builder.html">FileDefinitionBuilder</a>      </li>
 
-    <li class="footer">Generated on Sat Feb 25 2012 22:45:48 for ARINC 838 by
+    <li class="footer">Generated on Sat Mar 3 2012 13:00:59 for ARINC 838 by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.0 </li>
    </ul>

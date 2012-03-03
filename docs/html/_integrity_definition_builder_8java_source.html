@@ -123,30 +123,30 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00010"></a>00010 <span class="keyword">package </span>edu.cmu.sv.arinc838.builder;
 <a name="l00011"></a>00011 
 <a name="l00012"></a>00012 <span class="keyword">import</span> java.io.IOException;
-<a name="l00013"></a>00013 
-<a name="l00014"></a>00014 <span class="keyword">import</span> com.arinc.arinc838.IntegrityDefinition;
-<a name="l00015"></a>00015 
-<a name="l00016"></a>00016 <span class="keyword">import</span> edu.cmu.sv.arinc838.binary.BdfFile;
-<a name="l00017"></a>00017 <span class="keyword">import</span> edu.cmu.sv.arinc838.validation.DataValidator;
-<a name="l00018"></a>00018 
-<a name="l00019"></a><a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_integrity_definition_builder.html">00019</a> <span class="keyword">public</span> <span class="keyword">class </span><a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_integrity_definition_builder.html">IntegrityDefinitionBuilder</a> <span class="keyword">implements</span> Builder&lt;IntegrityDefinition&gt; {
-<a name="l00020"></a>00020 
-<a name="l00021"></a>00021         <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">enum</span> IntegrityType {
-<a name="l00022"></a>00022                 CRC16(2), CRC32(3), CRC64(6);
-<a name="l00023"></a>00023 
-<a name="l00024"></a>00024                 <span class="keyword">private</span> <span class="keywordtype">long</span> type;
-<a name="l00025"></a>00025 
-<a name="l00026"></a>00026                 <span class="keyword">private</span> IntegrityType(<span class="keywordtype">long</span> type) {
-<a name="l00027"></a>00027                         this.type = type;
-<a name="l00028"></a>00028                 }
-<a name="l00029"></a>00029 
-<a name="l00030"></a>00030                 <span class="keyword">public</span> <span class="keywordtype">long</span> getType() {
-<a name="l00031"></a>00031                         <span class="keywordflow">return</span> type;
-<a name="l00032"></a>00032                 }
-<a name="l00033"></a>00033                 
-<a name="l00034"></a>00034                 @Override
-<a name="l00035"></a>00035                 <span class="keyword">public</span> String toString()
-<a name="l00036"></a>00036                 {
+<a name="l00013"></a>00013 <span class="keyword">import</span> java.util.Arrays;
+<a name="l00014"></a>00014 
+<a name="l00015"></a>00015 <span class="keyword">import</span> com.arinc.arinc838.IntegrityDefinition;
+<a name="l00016"></a>00016 
+<a name="l00017"></a>00017 <span class="keyword">import</span> edu.cmu.sv.arinc838.binary.BdfFile;
+<a name="l00018"></a>00018 <span class="keyword">import</span> edu.cmu.sv.arinc838.validation.DataValidator;
+<a name="l00019"></a>00019 
+<a name="l00020"></a><a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_integrity_definition_builder.html">00020</a> <span class="keyword">public</span> <span class="keyword">class </span><a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_integrity_definition_builder.html">IntegrityDefinitionBuilder</a> <span class="keyword">implements</span> Builder&lt;IntegrityDefinition&gt; {
+<a name="l00021"></a>00021 
+<a name="l00022"></a>00022         <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">enum</span> IntegrityType {
+<a name="l00023"></a>00023                 CRC16(2), CRC32(3), CRC64(6);
+<a name="l00024"></a>00024 
+<a name="l00025"></a>00025                 <span class="keyword">private</span> <span class="keywordtype">long</span> type;
+<a name="l00026"></a>00026 
+<a name="l00027"></a>00027                 <span class="keyword">private</span> IntegrityType(<span class="keywordtype">long</span> type) {
+<a name="l00028"></a>00028                         this.type = type;
+<a name="l00029"></a>00029                 }
+<a name="l00030"></a>00030 
+<a name="l00031"></a>00031                 <span class="keyword">public</span> <span class="keywordtype">long</span> getType() {
+<a name="l00032"></a>00032                         <span class="keywordflow">return</span> type;
+<a name="l00033"></a>00033                 }
+<a name="l00034"></a>00034 
+<a name="l00035"></a>00035                 @Override
+<a name="l00036"></a>00036                 <span class="keyword">public</span> String toString() {
 <a name="l00037"></a>00037                         <span class="keywordflow">return</span> super.toString() + <span class="stringliteral">&quot;(&quot;</span> + type + <span class="stringliteral">&quot;)&quot;</span>;
 <a name="l00038"></a>00038                 }
 <a name="l00039"></a>00039 
@@ -167,62 +167,90 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00054"></a>00054         }
 <a name="l00055"></a>00055 
 <a name="l00056"></a>00056         <span class="keyword">private</span> <span class="keywordtype">long</span> integType;
-<a name="l00057"></a>00057         <span class="keyword">private</span> String integValue;
-<a name="l00058"></a>00058         
-<a name="l00059"></a>00059         <span class="keyword">public</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_integrity_definition_builder.html">IntegrityDefinitionBuilder</a>(){
+<a name="l00057"></a>00057         <span class="keyword">private</span> byte[] integValue;
+<a name="l00058"></a>00058 
+<a name="l00059"></a>00059         <span class="keyword">public</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_integrity_definition_builder.html">IntegrityDefinitionBuilder</a>() {
 <a name="l00060"></a>00060         }
 <a name="l00061"></a>00061 
 <a name="l00062"></a>00062         <span class="keyword">public</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_integrity_definition_builder.html">IntegrityDefinitionBuilder</a>(<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_integrity_definition.html">IntegrityDefinition</a> integDef) {
 <a name="l00063"></a>00063                 setIntegrityType(integDef.<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_integrity_definition.html#a30c1e9ba2f003dffc363f56b2a07a192">getIntegrityType</a>());
-<a name="l00064"></a>00064                 setIntegrityValue(integDef.<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_integrity_definition.html#a0b794a095edc5031cfb1635c3599ca7b">getIntegrityValue</a>());
+<a name="l00064"></a>00064                 setIntegrityValue(integDef.<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_integrity_definition.html#afe0157604aec1c4a9c43b039f673c610">getIntegrityValue</a>());
 <a name="l00065"></a>00065         }
 <a name="l00066"></a>00066 
-<a name="l00067"></a>00067         <span class="keyword">public</span> <span class="keywordtype">void</span> setIntegrityType(<span class="keywordtype">long</span> value) {
-<a name="l00068"></a>00068                 integType = <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1validation_1_1_data_validator.html">DataValidator</a>.<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1validation_1_1_data_validator.html#aad0d26e4e724bef7760ff930ca4114d1">validateIntegrityType</a>(value);
-<a name="l00069"></a>00069         }
-<a name="l00070"></a>00070 
-<a name="l00071"></a>00071         <span class="keyword">public</span> <span class="keywordtype">long</span> getIntegrityType() {
-<a name="l00072"></a>00072                 <span class="keywordflow">return</span> integType;
-<a name="l00073"></a>00073         }
-<a name="l00074"></a>00074 
-<a name="l00075"></a>00075         <span class="keyword">public</span> <span class="keywordtype">void</span> setIntegrityValue(String value) {
-<a name="l00076"></a>00076                 integValue = <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1validation_1_1_data_validator.html">DataValidator</a>.<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1validation_1_1_data_validator.html#aacd08fed3eebe4091c794bea20716d47">validateIntegrityValue</a>(value);
-<a name="l00077"></a>00077         }
-<a name="l00078"></a>00078 
-<a name="l00079"></a>00079         <span class="keyword">public</span> String getIntegrityValue() {
-<a name="l00080"></a>00080                 <span class="keywordflow">return</span> integValue;
-<a name="l00081"></a>00081         }
-<a name="l00082"></a>00082 
-<a name="l00083"></a>00083         @Override
-<a name="l00084"></a>00084         <span class="keyword">public</span> <a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_integrity_definition.html">IntegrityDefinition</a> buildXml() {
-<a name="l00085"></a>00085                 <a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_integrity_definition.html">IntegrityDefinition</a> retDef = <span class="keyword">new</span> <a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_integrity_definition.html">IntegrityDefinition</a>();
-<a name="l00086"></a>00086 
-<a name="l00087"></a>00087                 retDef.<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_integrity_definition.html#a4a913962fd2c5a331af4c5e35ff222a2">setIntegrityType</a>(integType);
-<a name="l00088"></a>00088                 retDef.<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_integrity_definition.html#a96032ca41b9342ac1299105385139298">setIntegrityValue</a>(integValue);
-<a name="l00089"></a>00089 
-<a name="l00090"></a>00090                 <span class="keywordflow">return</span> retDef;
-<a name="l00091"></a>00091         }
-<a name="l00092"></a>00092         
-<a name="l00093"></a>00093         @Override
-<a name="l00094"></a>00094         <span class="keyword">public</span> <span class="keywordtype">int</span> buildBinary(<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1binary_1_1_bdf_file.html">BdfFile</a> bdfFile) <span class="keywordflow">throws</span> IOException {
-<a name="l00095"></a>00095                 <span class="keywordtype">int</span> initialPosition = (int) bdfFile.getFilePointer();
-<a name="l00096"></a>00096                 
-<a name="l00097"></a>00097                 bdfFile.writeUint32(getIntegrityType());
-<a name="l00098"></a>00098                 <span class="comment">// this strips the 0x from the beginning so we don&#39;t write this to the file</span>
-<a name="l00099"></a>00099                 bdfFile.writeStr64k(getIntegrityValue().substring(2));
-<a name="l00100"></a>00100         
-<a name="l00101"></a>00101                 <span class="keywordtype">int</span> finalPosition = (int) bdfFile.getFilePointer();
-<a name="l00102"></a>00102 
-<a name="l00103"></a>00103                 <span class="keywordflow">return</span> (<span class="keywordtype">int</span>) (finalPosition - initialPosition);
-<a name="l00104"></a>00104         }
-<a name="l00105"></a>00105 }
+<a name="l00067"></a>00067         <span class="keyword">public</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_integrity_definition_builder.html">IntegrityDefinitionBuilder</a>(<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1binary_1_1_bdf_file.html">BdfFile</a> bdfFile) <span class="keywordflow">throws</span> IOException {
+<a name="l00068"></a>00068                 setIntegrityType(bdfFile.readUint32());
+<a name="l00069"></a>00069                 setIntegrityValue(bdfFile.readHexbin64k());
+<a name="l00070"></a>00070         }
+<a name="l00071"></a>00071 
+<a name="l00072"></a>00072         <span class="keyword">public</span> <span class="keywordtype">void</span> setIntegrityType(<span class="keywordtype">long</span> value) {
+<a name="l00073"></a>00073                 integType = <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1validation_1_1_data_validator.html">DataValidator</a>.<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1validation_1_1_data_validator.html#aad0d26e4e724bef7760ff930ca4114d1">validateIntegrityType</a>(value);
+<a name="l00074"></a>00074         }
+<a name="l00075"></a>00075 
+<a name="l00076"></a>00076         <span class="keyword">public</span> <span class="keywordtype">long</span> getIntegrityType() {
+<a name="l00077"></a>00077                 <span class="keywordflow">return</span> integType;
+<a name="l00078"></a>00078         }
+<a name="l00079"></a>00079 
+<a name="l00080"></a>00080         <span class="keyword">public</span> <span class="keywordtype">void</span> setIntegrityValue(byte[] value) {
+<a name="l00081"></a>00081                 integValue = <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1validation_1_1_data_validator.html">DataValidator</a>.<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1validation_1_1_data_validator.html#aacc7eb096c0b345b396e360946a9d122">validateIntegrityValue</a>(value);
+<a name="l00082"></a>00082         }
+<a name="l00083"></a>00083 
+<a name="l00084"></a>00084         <span class="keyword">public</span> byte[] getIntegrityValue() {
+<a name="l00085"></a>00085                 <span class="keywordflow">return</span> integValue;
+<a name="l00086"></a>00086         }
+<a name="l00087"></a>00087 
+<a name="l00088"></a>00088         @Override
+<a name="l00089"></a>00089         <span class="keyword">public</span> <a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_integrity_definition.html">IntegrityDefinition</a> buildXml() {
+<a name="l00090"></a>00090                 <a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_integrity_definition.html">IntegrityDefinition</a> retDef = <span class="keyword">new</span> <a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_integrity_definition.html">IntegrityDefinition</a>();
+<a name="l00091"></a>00091 
+<a name="l00092"></a>00092                 retDef.<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_integrity_definition.html#a4a913962fd2c5a331af4c5e35ff222a2">setIntegrityType</a>(integType);
+<a name="l00093"></a>00093                 retDef.<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_integrity_definition.html#a3f025798983ed5e08f2af339fa45515d">setIntegrityValue</a>(integValue);
+<a name="l00094"></a>00094 
+<a name="l00095"></a>00095                 <span class="keywordflow">return</span> retDef;
+<a name="l00096"></a>00096         }
+<a name="l00097"></a>00097 
+<a name="l00098"></a>00098         @Override
+<a name="l00099"></a>00099         <span class="keyword">public</span> <span class="keywordtype">int</span> buildBinary(<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1binary_1_1_bdf_file.html">BdfFile</a> bdfFile) <span class="keywordflow">throws</span> IOException {
+<a name="l00100"></a>00100                 <span class="keywordtype">int</span> initialPosition = (int) bdfFile.getFilePointer();
+<a name="l00101"></a>00101 
+<a name="l00102"></a>00102                 bdfFile.writeUint32(getIntegrityType());
+<a name="l00103"></a>00103                 bdfFile.writeHexbin64k(getIntegrityValue());
+<a name="l00104"></a>00104 
+<a name="l00105"></a>00105                 <span class="keywordtype">int</span> finalPosition = (int) bdfFile.getFilePointer();
+<a name="l00106"></a>00106 
+<a name="l00107"></a>00107                 <span class="keywordflow">return</span> (<span class="keywordtype">int</span>) (finalPosition - initialPosition);
+<a name="l00108"></a>00108         }
+<a name="l00109"></a>00109 
+<a name="l00110"></a>00110         @Override
+<a name="l00111"></a>00111         <span class="keyword">public</span> <span class="keywordtype">int</span> hashCode() {
+<a name="l00112"></a>00112                 <span class="keywordflow">if</span> (this.getIntegrityValue() != null) {
+<a name="l00113"></a>00113                         <span class="keywordflow">return</span> this.getIntegrityValue().hashCode();
+<a name="l00114"></a>00114                 }
+<a name="l00115"></a>00115 
+<a name="l00116"></a>00116                 <span class="keywordflow">return</span> 0;
+<a name="l00117"></a>00117         }
+<a name="l00118"></a>00118 
+<a name="l00119"></a>00119         @Override
+<a name="l00120"></a>00120         <span class="keyword">public</span> <span class="keywordtype">boolean</span> equals(Object obj) {
+<a name="l00121"></a>00121                 <span class="keywordflow">return</span> obj != null
+<a name="l00122"></a>00122                                 &amp;&amp; <span class="keyword">this</span> == obj
+<a name="l00123"></a>00123                                 || (obj instanceof <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_integrity_definition_builder.html">IntegrityDefinitionBuilder</a> &amp;&amp; equals((<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_integrity_definition_builder.html">IntegrityDefinitionBuilder</a>) obj));
+<a name="l00124"></a>00124         }
+<a name="l00125"></a>00125 
+<a name="l00126"></a>00126         <span class="keyword">public</span> <span class="keywordtype">boolean</span> equals(<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_integrity_definition_builder.html">IntegrityDefinitionBuilder</a> obj) {
+<a name="l00127"></a>00127                 <span class="keywordflow">return</span> obj != null
+<a name="l00128"></a>00128                                 &amp;&amp; <span class="keyword">this</span> == obj
+<a name="l00129"></a>00129                                 || (Arrays.equals(this.getIntegrityValue(),
+<a name="l00130"></a>00130                                                 obj.getIntegrityValue()) &amp;&amp; (this.getIntegrityType() == obj
+<a name="l00131"></a>00131                                                 .getIntegrityType()));
+<a name="l00132"></a>00132         }
+<a name="l00133"></a>00133 }
 </pre></div></div><!-- contents -->
 </div>
   <div id="nav-path" class="navpath">
     <ul>
       <li class="navelem"><b>IntegrityDefinitionBuilder.java</b>      </li>
 
-    <li class="footer">Generated on Sat Feb 25 2012 22:45:47 for ARINC 838 by
+    <li class="footer">Generated on Sat Mar 3 2012 13:00:59 for ARINC 838 by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.0 </li>
    </ul>

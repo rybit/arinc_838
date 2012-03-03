@@ -1,6 +1,7 @@
 <map id="G" name="G">
-<area shape="rect" id="node3" href="$classedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1item_1_1_abstract_menu_item.html" title="edu.cmu.sv.arinc838.ui.item.AbstractMenuItem" alt="" coords="139,83,435,111"/>
-<area shape="rect" id="node9" href="$classedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1item_1_1_exit_item.html" title="edu.cmu.sv.arinc838.ui.item.ExitItem" alt="" coords="459,83,696,111"/>
-<area shape="rect" id="node5" href="$classedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1item_1_1_xml_read_item.html" title="edu.cmu.sv.arinc838.ui.item.XmlReadItem" alt="" coords="5,161,275,189"/>
-<area shape="rect" id="node7" href="$classedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1item_1_1_xml_save_item.html" title="edu.cmu.sv.arinc838.ui.item.XmlSaveItem" alt="" coords="299,161,568,189"/>
+<area shape="rect" id="node3" href="$classedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1item_1_1_abstract_menu_item.html" title="edu.cmu.sv.arinc838.ui.item.AbstractMenuItem" alt="" coords="303,81,599,109"/>
+<area shape="rect" id="node5" href="$classedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1item_1_1_binary_read_item.html" title="edu.cmu.sv.arinc838.ui.item.BinaryReadItem" alt="" coords="649,5,935,33"/>
+<area shape="rect" id="node7" href="$classedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1item_1_1_exit_item.html" title="edu.cmu.sv.arinc838.ui.item.ExitItem" alt="" coords="673,55,911,83"/>
+<area shape="rect" id="node9" href="$classedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1item_1_1_save_item.html" title="edu.cmu.sv.arinc838.ui.item.SaveItem" alt="" coords="669,106,915,134"/>
+<area shape="rect" id="node11" href="$classedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1item_1_1_xml_read_item.html" title="edu.cmu.sv.arinc838.ui.item.XmlReadItem" alt="" coords="657,157,927,185"/>
 </map>
