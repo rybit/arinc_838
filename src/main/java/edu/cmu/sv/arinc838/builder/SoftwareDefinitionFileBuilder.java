@@ -55,10 +55,12 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 		List<FileDefinition> fileDefs = (List<FileDefinition>) DataValidator
 				.validateList1(swDefFile.getFileDefinitions());
 
+		fileDefinitions.clear();
 		for (FileDefinition fileDef : fileDefs) {
 			fileDefinitions.add(new FileDefinitionBuilder(fileDef));
 		}
 
+		thwDefinitions.clear();
 		for (ThwDefinition thwDef : swDefFile.getThwDefinitions()) {
 			thwDefinitions.add(new TargetHardwareDefinitionBuilder(thwDef));
 		}
@@ -86,6 +88,7 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 		file.seek(file.readSoftwareDescriptionPointer());
 		softwareDescription = new SoftwareDescriptionBuilder(file);
 
+		this.getTargetHardwareDefinitions().clear();
 		file.seek(file.readTargetDefinitionsPointer());
 		long targetHardwareCount = file.readUint32();
 		for (int i = 0; i < targetHardwareCount; i++) {
@@ -96,6 +99,7 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 			file.seek(nextHardware);
 		}
 
+		this.getFileDefinitions().clear();
 		file.seek(file.readFileDefinitionsPointer());
 		long fileDefinitionCount = file.readUint32();
 		for (int i = 0; i < fileDefinitionCount; i++) {
