@@ -48,6 +48,6 @@ public class XdfWriter implements SdfWriter {
 		// output pretty printed
 		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 		jaxbMarshaller.marshal(sdfFile, file);
-		return file.getCanonicalPath();
+		return file.getAbsolutePath();
 	}
 }

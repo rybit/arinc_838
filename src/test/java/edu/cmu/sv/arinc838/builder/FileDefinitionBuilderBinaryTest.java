@@ -67,5 +67,21 @@ public class FileDefinitionBuilderBinaryTest {
 
 		long nextFileDefPointer = bdfFile.readUint32();
 		assertEquals(nextFileDefPointer, 0);
-	}	
+	}
+	
+	@Test
+	public void fileDefinitionBuilderBdfFile() throws FileNotFoundException, IOException {
+		BdfFile bdfFile = new BdfFile(File.createTempFile("tmpFile", ".bdf"));
+		fileDefBuilder.buildBinary(bdfFile);
+
+		bdfFile.seek(0); //return to start of file
+		bdfFile.readUint32(); //parent object reads the pointers
+		
+		FileDefinitionBuilder fileDefBuilder2 = new FileDefinitionBuilder(bdfFile);
+		assertEquals(fileDefBuilder2.isFileLoadable(), fileDefBuilder.isFileLoadable());
+		assertEquals(fileDefBuilder2.getFileName(), fileDefBuilder.getFileName());
+		assertEquals(fileDefBuilder2.getFileSize(), fileDefBuilder.getFileSize());
+		assertEquals(fileDefBuilder2.getFileIntegrityDefinition().getIntegrityType(), fileDefBuilder.getFileIntegrityDefinition().getIntegrityType());
+		assertEquals(fileDefBuilder2.getFileIntegrityDefinition().getIntegrityValue(), fileDefBuilder.getFileIntegrityDefinition().getIntegrityValue());
+	}
 }

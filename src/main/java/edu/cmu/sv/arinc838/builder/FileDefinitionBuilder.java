@@ -68,8 +68,11 @@ public class FileDefinitionBuilder implements Builder<FileDefinition>{
 		integDefBuilder = new IntegrityDefinitionBuilder(fileDef.getFileIntegrityDefinition());
 	}
 
-	public FileDefinitionBuilder(BdfFile file) {
-		// TODO Auto-generated constructor stub
+	public FileDefinitionBuilder(BdfFile bdfFile) throws IOException {
+		setFileLoadable(bdfFile.readBoolean());
+		setFileName(bdfFile.readStr64k());
+		setFileSize(bdfFile.readUint32());
+		setFileIntegrityDefinition(new IntegrityDefinitionBuilder(bdfFile));
 	}
 
 	public IntegrityDefinitionBuilder getFileIntegrityDefinition() {

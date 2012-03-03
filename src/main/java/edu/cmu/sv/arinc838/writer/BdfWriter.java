@@ -27,7 +27,7 @@ public class BdfWriter implements SdfWriter {
 		
 		write(file, builder);
 		
-		return fileOnDisk.getCanonicalPath();
+		return fileOnDisk.getAbsolutePath();
 	}
 	
 	public void write(BdfFile file, SoftwareDefinitionFileBuilder builder) throws IOException{
