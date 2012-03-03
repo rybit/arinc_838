@@ -129,69 +129,76 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00016"></a>00016 <span class="keyword">import</span> edu.cmu.sv.arinc838.ui.item.MenuItem;
 <a name="l00017"></a>00017 
 <a name="l00018"></a><a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1_menu_runner.html">00018</a> <span class="keyword">public</span> <span class="keyword">class </span><a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1_menu_runner.html">MenuRunner</a> {
-<a name="l00019"></a>00019         <span class="keyword">private</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html">SoftwareDefinitionFileBuilder</a> builder;
-<a name="l00020"></a>00020         <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> BufferedReader br = <span class="keyword">new</span> BufferedReader(
-<a name="l00021"></a>00021                         <span class="keyword">new</span> InputStreamReader(System.in));
-<a name="l00022"></a>00022 
-<a name="l00023"></a>00023         <span class="keyword">private</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1_menu_runner.html">MenuRunner</a>() {
-<a name="l00024"></a>00024                 builder = <span class="keyword">new</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html">SoftwareDefinitionFileBuilder</a>();
-<a name="l00025"></a>00025         }
-<a name="l00026"></a>00026 
-<a name="l00027"></a>00027         <span class="keyword">private</span> <span class="keywordtype">void</span> runMenu(<a class="code" href="interfaceedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1_menu.html">Menu</a> menu) {
-<a name="l00028"></a>00028                 <span class="keywordflow">while</span> (menu != null) {
-<a name="l00029"></a>00029                         StringBuffer sb = <span class="keyword">new</span> StringBuffer();
-<a name="l00030"></a>00030 
-<a name="l00031"></a>00031                         <span class="keywordflow">if</span> (menu.getHeader() != null) {
-<a name="l00032"></a>00032                                 sb.append(menu.getHeader() + <span class="stringliteral">&quot;\n&quot;</span>);
-<a name="l00033"></a>00033                         }
-<a name="l00034"></a>00034 
-<a name="l00035"></a>00035                         <a class="code" href="interfaceedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1item_1_1_menu_item.html">MenuItem</a>[] items = menu.getItems();
-<a name="l00036"></a>00036                         <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; items.length; ++i) {
-<a name="l00037"></a>00037                                 sb.append(i + <span class="stringliteral">&quot;: &quot;</span> + items[i].getPrompt() + <span class="stringliteral">&quot;\n&quot;</span>);
-<a name="l00038"></a>00038                         }
-<a name="l00039"></a>00039 
-<a name="l00040"></a>00040                         System.out.println(<span class="stringliteral">&quot;\n\n&quot;</span> + sb);
-<a name="l00041"></a>00041                         System.out.print(<span class="stringliteral">&quot;Please make a selection: &quot;</span>);
-<a name="l00042"></a>00042 
-<a name="l00043"></a>00043                         <a class="code" href="interfaceedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1_menu.html">Menu</a> subMenu = null;
+<a name="l00019"></a>00019         <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String DASHED_LINE = <span class="stringliteral">&quot;-------------------&quot;</span>;
+<a name="l00020"></a>00020 
+<a name="l00021"></a>00021         <span class="keyword">private</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html">SoftwareDefinitionFileBuilder</a> builder;
+<a name="l00022"></a>00022         <span class="keyword">private</span> <span class="keyword">final</span> BufferedReader br;
+<a name="l00023"></a>00023         
+<a name="l00024"></a>00024         <span class="keyword">private</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1_menu_runner.html">MenuRunner</a>() {
+<a name="l00025"></a>00025                 br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(System.in));
+<a name="l00026"></a>00026                 builder = <span class="keyword">new</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html">SoftwareDefinitionFileBuilder</a>();
+<a name="l00027"></a>00027         }
+<a name="l00028"></a>00028 
+<a name="l00029"></a>00029         <span class="keyword">private</span> <span class="keywordtype">void</span> runMenu(<a class="code" href="interfaceedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1item_1_1_menu_item.html">MenuItem</a>[] menuItems, String header) {
+<a name="l00030"></a>00030                 <span class="keywordflow">while</span> (menuItems != null &amp;&amp; menuItems.length &gt; 0) {
+<a name="l00031"></a>00031                         StringBuffer sb = <span class="keyword">new</span> StringBuffer();
+<a name="l00032"></a>00032 
+<a name="l00033"></a>00033                         <span class="keywordflow">if</span> (header != null) {
+<a name="l00034"></a>00034                                 sb.append(DASHED_LINE);
+<a name="l00035"></a>00035                                 sb.append(header + <span class="stringliteral">&quot;\n&quot;</span>);
+<a name="l00036"></a>00036                         }
+<a name="l00037"></a>00037 
+<a name="l00038"></a>00038                         <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; menuItems.length; ++i) {
+<a name="l00039"></a>00039                                 sb.append(i + <span class="stringliteral">&quot;: &quot;</span> + menuItems[i].getPrompt() + <span class="stringliteral">&quot;\n&quot;</span>);
+<a name="l00040"></a>00040                         }
+<a name="l00041"></a>00041 
+<a name="l00042"></a>00042                         System.out.println(<span class="stringliteral">&quot;\n\n&quot;</span> + sb);
+<a name="l00043"></a>00043                         System.out.print(<span class="stringliteral">&quot;Please make a selection: &quot;</span>);
 <a name="l00044"></a>00044 
-<a name="l00045"></a>00045                         <span class="keywordflow">try</span> {
-<a name="l00046"></a>00046                                 <span class="keywordtype">int</span> convertedValue = inInt(br);
-<a name="l00047"></a>00047 
-<a name="l00048"></a>00048                                 <a class="code" href="interfaceedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1item_1_1_menu_item.html">MenuItem</a> itemToDo = menu.getItems()[convertedValue];
-<a name="l00049"></a>00049 
-<a name="l00050"></a>00050                                 subMenu = itemToDo.execute(builder);
-<a name="l00051"></a>00051                         } <span class="keywordflow">catch</span> (Exception e) {
-<a name="l00052"></a>00052                                 <span class="comment">// try again?</span>
-<a name="l00053"></a>00053                                 e.printStackTrace();
-<a name="l00054"></a>00054                         }
-<a name="l00055"></a>00055 
-<a name="l00056"></a>00056                         <span class="keywordflow">if</span> (subMenu != null) {
-<a name="l00057"></a>00057                                 runMenu(subMenu);
-<a name="l00058"></a>00058                         } <span class="keywordflow">else</span> {
-<a name="l00059"></a>00059                                 <span class="keywordflow">break</span>;
-<a name="l00060"></a>00060                         }
-<a name="l00061"></a>00061                 }
-<a name="l00062"></a>00062         }
-<a name="l00063"></a>00063 
-<a name="l00064"></a>00064         <span class="keyword">public</span> <span class="keyword">static</span> <span class="keywordtype">int</span> inInt(BufferedReader br) <span class="keywordflow">throws</span> Exception {
-<a name="l00065"></a>00065                 String inString = br.readLine();
-<a name="l00066"></a>00066                 <span class="keywordflow">return</span> Integer.valueOf(inString.trim()).intValue();
-<a name="l00067"></a>00067         }
-<a name="l00068"></a>00068 
-<a name="l00069"></a>00069         <span class="keyword">public</span> <span class="keyword">static</span> <span class="keywordtype">void</span> main(String[] args) {
-<a name="l00070"></a>00070                 <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1_menu_runner.html">MenuRunner</a> mr = <span class="keyword">new</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1_menu_runner.html">MenuRunner</a>();
-<a name="l00071"></a>00071 
-<a name="l00072"></a>00072                 mr.runMenu(<span class="keyword">new</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1_initial_menu.html">InitialMenu</a>());
-<a name="l00073"></a>00073         }
-<a name="l00074"></a>00074 }
+<a name="l00045"></a>00045                         <a class="code" href="interfaceedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1item_1_1_menu_item.html">MenuItem</a>[] subMenuItems = null;
+<a name="l00046"></a>00046                         String subHeader = null;
+<a name="l00047"></a>00047                         
+<a name="l00048"></a>00048                         <span class="keywordflow">try</span> {
+<a name="l00049"></a>00049                                 <span class="keywordtype">int</span> convertedValue = inInt(br);
+<a name="l00050"></a>00050 
+<a name="l00051"></a>00051                                 <a class="code" href="interfaceedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1item_1_1_menu_item.html">MenuItem</a> itemToDo = menuItems[convertedValue];
+<a name="l00052"></a>00052 
+<a name="l00053"></a>00053                                 subMenuItems = itemToDo.execute(builder);
+<a name="l00054"></a>00054                                 subHeader = itemToDo.getHeader ();
+<a name="l00055"></a>00055                         } <span class="keywordflow">catch</span> (Exception e) {
+<a name="l00056"></a>00056                                 <span class="comment">// try again?</span>
+<a name="l00057"></a>00057                                 e.printStackTrace();
+<a name="l00058"></a>00058                         }
+<a name="l00059"></a>00059 
+<a name="l00060"></a>00060                         <span class="keywordflow">if</span> (subMenuItems == null) { <span class="comment">// null is used to indicate breakout  </span>
+<a name="l00061"></a>00061                                 <span class="keywordflow">break</span>; 
+<a name="l00062"></a>00062                         } <span class="keywordflow">else</span> {
+<a name="l00063"></a>00063                                 <span class="comment">// empty indicates loop, otherwise exec the menu</span>
+<a name="l00064"></a>00064                                 runMenu(subMenuItems, subHeader);  
+<a name="l00065"></a>00065                         }
+<a name="l00066"></a>00066                         
+<a name="l00067"></a>00067                         System.out.flush();
+<a name="l00068"></a>00068                 }
+<a name="l00069"></a>00069         }
+<a name="l00070"></a>00070 
+<a name="l00071"></a>00071         <span class="keyword">public</span> <span class="keyword">static</span> <span class="keywordtype">int</span> inInt(BufferedReader br) <span class="keywordflow">throws</span> Exception {
+<a name="l00072"></a>00072                 String inString = br.readLine();
+<a name="l00073"></a>00073                 <span class="keywordflow">return</span> Integer.valueOf(inString.trim()).intValue();
+<a name="l00074"></a>00074         }
+<a name="l00075"></a>00075 
+<a name="l00076"></a>00076         <span class="keyword">public</span> <span class="keyword">static</span> <span class="keywordtype">void</span> main(String[] args) {
+<a name="l00077"></a>00077                 <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1_menu_runner.html">MenuRunner</a> mr = <span class="keyword">new</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1_menu_runner.html">MenuRunner</a>();
+<a name="l00078"></a>00078 
+<a name="l00079"></a>00079                 mr.runMenu(<span class="keyword">new</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1ui_1_1_initial_menu.html">InitialMenu</a>().getItems(), null);
+<a name="l00080"></a>00080         }
+<a name="l00081"></a>00081 }
 </pre></div></div><!-- contents -->
 </div>
   <div id="nav-path" class="navpath">
     <ul>
       <li class="navelem"><b>MenuRunner.java</b>      </li>
 
-    <li class="footer">Generated on Sat Feb 25 2012 22:45:47 for ARINC 838 by
+    <li class="footer">Generated on Sat Mar 3 2012 13:00:59 for ARINC 838 by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.0 </li>
    </ul>

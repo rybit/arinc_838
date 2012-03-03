@@ -126,16 +126,16 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1e2b9cc28ebdefd7921085a51458404b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html#a1e2b9cc28ebdefd7921085a51458404b">setSoftwarePartnumber</a> (String value)</td></tr>
 <tr class="memitem:a70f3f28645b8f95eead33c7c3cb92b6c"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html#a70f3f28645b8f95eead33c7c3cb92b6c">getSoftwareTypeDescription</a> ()</td></tr>
 <tr class="memitem:a1ae20f6d1b49d6dadd05796f346ffa42"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html#a1ae20f6d1b49d6dadd05796f346ffa42">setSoftwareTypeDescription</a> (String value)</td></tr>
-<tr class="memitem:a0c1735d84db3c875e5e849d8c60382fd"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html#a0c1735d84db3c875e5e849d8c60382fd">getSoftwareTypeId</a> ()</td></tr>
-<tr class="memitem:a7f81779a403e0b09ac547e81f7a4ba93"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html#a7f81779a403e0b09ac547e81f7a4ba93">setSoftwareTypeId</a> (long value)</td></tr>
+<tr class="memitem:a5eace113026aa014c77c986b2782462c"><td class="memItemLeft" align="right" valign="top">byte[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html#a5eace113026aa014c77c986b2782462c">getSoftwareTypeId</a> ()</td></tr>
+<tr class="memitem:abc81f0d20731e105ef04bd78c937c227"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html#abc81f0d20731e105ef04bd78c937c227">setSoftwareTypeId</a> (byte[] value)</td></tr>
 <tr><td colspan="2"><h2><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
 <tr class="memitem:a0494548dca1dcf29fef5dc8182b5aabf"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0494548dca1dcf29fef5dc8182b5aabf"></a>
 String&#160;</td><td class="memItemRight" valign="bottom"><b>softwarePartnumber</b></td></tr>
 <tr class="memitem:aa2ef587d120c9030238612f01216cdc6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa2ef587d120c9030238612f01216cdc6"></a>
 String&#160;</td><td class="memItemRight" valign="bottom"><b>softwareTypeDescription</b></td></tr>
-<tr class="memitem:ac7c2cef9f728296d437cad302d363aeb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac7c2cef9f728296d437cad302d363aeb"></a>
-long&#160;</td><td class="memItemRight" valign="bottom"><b>softwareTypeId</b></td></tr>
+<tr class="memitem:aea357219c79ab188ac9bb089b64876a4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aea357219c79ab188ac9bb089b64876a4"></a>
+byte[]&#160;</td><td class="memItemRight" valign="bottom"><b>softwareTypeId</b></td></tr>
 </table>
 <hr/><a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p>Java class for software-description complex type.</p>
@@ -147,13 +147,13 @@ long&#160;</td><td class="memItemRight" valign="bottom"><b>softwareTypeId</b></t
        &lt;sequence&gt;
          &lt;element name="software-partnumber" type="{http://www.arinc.com/arinc838}SOFTWARE-PARTNUMBER"/&gt;
          &lt;element name="software-type-description" type="{http://www.arinc.com/arinc838}STR64K"/&gt;
-         &lt;element name="software-type-id" type="{http://www.arinc.com/arinc838}UINT32"/&gt;
+         &lt;element name="software-type-id" type="{http://www.arinc.com/arinc838}HEXBIN32"/&gt;
        &lt;/sequence&gt;
      &lt;/restriction&gt;
    &lt;/complexContent&gt;
  &lt;/complexType&gt;
  </pre> 
-<p>Definition at line <a class="el" href="_software_description_8java_source.html#l00044">44</a> of file <a class="el" href="_software_description_8java_source.html">SoftwareDescription.java</a>.</p>
+<p>Definition at line <a class="el" href="_software_description_8java_source.html#l00046">46</a> of file <a class="el" href="_software_description_8java_source.html">SoftwareDescription.java</a>.</p>
 </div><hr/><h2>Member Function Documentation</h2>
 <a class="anchor" id="aa7cdaeeecd5dd3f196dacf992b237afc"></a>
 <div class="memitem">
@@ -171,7 +171,7 @@ long&#160;</td><td class="memItemRight" valign="bottom"><b>softwareTypeId</b></t
 <p>Gets the value of the softwarePartnumber property.</p>
 <dl class="section return"><dt>Returns:</dt><dd>possible object is <a class="el" href="">String</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_software_description_8java_source.html#l00061">61</a> of file <a class="el" href="_software_description_8java_source.html">SoftwareDescription.java</a>.</p>
+<p>Definition at line <a class="el" href="_software_description_8java_source.html#l00064">64</a> of file <a class="el" href="_software_description_8java_source.html">SoftwareDescription.java</a>.</p>
 
 </div>
 </div>
@@ -191,16 +191,16 @@ long&#160;</td><td class="memItemRight" valign="bottom"><b>softwareTypeId</b></t
 <p>Gets the value of the softwareTypeDescription property.</p>
 <dl class="section return"><dt>Returns:</dt><dd>possible object is <a class="el" href="">String</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_software_description_8java_source.html#l00085">85</a> of file <a class="el" href="_software_description_8java_source.html">SoftwareDescription.java</a>.</p>
+<p>Definition at line <a class="el" href="_software_description_8java_source.html#l00088">88</a> of file <a class="el" href="_software_description_8java_source.html">SoftwareDescription.java</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a0c1735d84db3c875e5e849d8c60382fd"></a>
+<a class="anchor" id="a5eace113026aa014c77c986b2782462c"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">long <a class="el" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html#a0c1735d84db3c875e5e849d8c60382fd">com.arinc.arinc838.SoftwareDescription.getSoftwareTypeId</a> </td>
+          <td class="memname">byte [] <a class="el" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html#a5eace113026aa014c77c986b2782462c">com.arinc.arinc838.SoftwareDescription.getSoftwareTypeId</a> </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -208,9 +208,10 @@ long&#160;</td><td class="memItemRight" valign="bottom"><b>softwareTypeId</b></t
       </table>
 </div>
 <div class="memdoc">
-<p>Gets the value of the softwareTypeId property. </p>
+<p>Gets the value of the softwareTypeId property.</p>
+<dl class="section return"><dt>Returns:</dt><dd>possible object is <a class="el" href="">String</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="_software_description_8java_source.html#l00105">105</a> of file <a class="el" href="_software_description_8java_source.html">SoftwareDescription.java</a>.</p>
+<p>Definition at line <a class="el" href="_software_description_8java_source.html#l00112">112</a> of file <a class="el" href="_software_description_8java_source.html">SoftwareDescription.java</a>.</p>
 
 </div>
 </div>
@@ -236,7 +237,7 @@ long&#160;</td><td class="memItemRight" valign="bottom"><b>softwareTypeId</b></t
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_software_description_8java_source.html#l00073">73</a> of file <a class="el" href="_software_description_8java_source.html">SoftwareDescription.java</a>.</p>
+<p>Definition at line <a class="el" href="_software_description_8java_source.html#l00076">76</a> of file <a class="el" href="_software_description_8java_source.html">SoftwareDescription.java</a>.</p>
 
 </div>
 </div>
@@ -262,27 +263,33 @@ long&#160;</td><td class="memItemRight" valign="bottom"><b>softwareTypeId</b></t
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_software_description_8java_source.html#l00097">97</a> of file <a class="el" href="_software_description_8java_source.html">SoftwareDescription.java</a>.</p>
+<p>Definition at line <a class="el" href="_software_description_8java_source.html#l00100">100</a> of file <a class="el" href="_software_description_8java_source.html">SoftwareDescription.java</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a7f81779a403e0b09ac547e81f7a4ba93"></a>
+<a class="anchor" id="abc81f0d20731e105ef04bd78c937c227"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html#a7f81779a403e0b09ac547e81f7a4ba93">com.arinc.arinc838.SoftwareDescription.setSoftwareTypeId</a> </td>
+          <td class="memname">void <a class="el" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html#abc81f0d20731e105ef04bd78c937c227">com.arinc.arinc838.SoftwareDescription.setSoftwareTypeId</a> </td>
           <td>(</td>
-          <td class="paramtype">long&#160;</td>
+          <td class="paramtype">byte[]&#160;</td>
           <td class="paramname"><em>value</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Sets the value of the softwareTypeId property. </p>
+<p>Sets the value of the softwareTypeId property.</p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">value</td><td>allowed object is <a class="el" href="">String</a> </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p>Definition at line <a class="el" href="_software_description_8java_source.html#l00113">113</a> of file <a class="el" href="_software_description_8java_source.html">SoftwareDescription.java</a>.</p>
+<p>Definition at line <a class="el" href="_software_description_8java_source.html#l00124">124</a> of file <a class="el" href="_software_description_8java_source.html">SoftwareDescription.java</a>.</p>
 
 </div>
 </div>
@@ -298,7 +305,7 @@ long&#160;</td><td class="memItemRight" valign="bottom"><b>softwareTypeId</b></t
       <li class="navelem"><b>arinc838</b>      </li>
       <li class="navelem"><a class="el" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html">SoftwareDescription</a>      </li>
 
-    <li class="footer">Generated on Sat Feb 25 2012 22:45:48 for ARINC 838 by
+    <li class="footer">Generated on Sat Mar 3 2012 13:00:59 for ARINC 838 by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.0 </li>
    </ul>

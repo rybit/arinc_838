@@ -123,82 +123,116 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00010"></a>00010 <span class="keyword">package </span>edu.cmu.sv.arinc838.builder;
 <a name="l00011"></a>00011 
 <a name="l00012"></a>00012 <span class="keyword">import</span> java.io.IOException;
-<a name="l00013"></a>00013 
-<a name="l00014"></a>00014 <span class="keyword">import</span> com.arinc.arinc838.SoftwareDescription;
-<a name="l00015"></a>00015 
-<a name="l00016"></a>00016 <span class="keyword">import</span> edu.cmu.sv.arinc838.binary.BdfFile;
-<a name="l00017"></a>00017 <span class="keyword">import</span> edu.cmu.sv.arinc838.validation.DataValidator;
-<a name="l00018"></a>00018 
-<a name="l00019"></a><a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_description_builder.html">00019</a> <span class="keyword">public</span> <span class="keyword">class </span><a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_description_builder.html">SoftwareDescriptionBuilder</a> <span class="keyword">implements</span> Builder&lt;SoftwareDescription&gt; {
-<a name="l00020"></a>00020 
-<a name="l00021"></a>00021         <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String SOFTWARE_PART_NUMBER_FORMAT = <span class="stringliteral">&quot;MMMCC-SSSS-SSSS&quot;</span>;
-<a name="l00022"></a>00022 
-<a name="l00023"></a>00023         <span class="keyword">private</span> String softwarePartNumber;
-<a name="l00024"></a>00024         <span class="keyword">private</span> String softwareTypeDescription;
-<a name="l00025"></a>00025         <span class="keyword">private</span> <span class="keywordtype">long</span> softwareTypeId;
-<a name="l00026"></a>00026 
-<a name="l00027"></a>00027         <span class="keyword">public</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_description_builder.html">SoftwareDescriptionBuilder</a>(<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html">SoftwareDescription</a> softwareDescription) {
-<a name="l00028"></a>00028                 setSoftwarePartNumber(softwareDescription.<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html#aa7cdaeeecd5dd3f196dacf992b237afc">getSoftwarePartnumber</a>());
-<a name="l00029"></a>00029                 setSoftwareTypeDescription(softwareDescription
-<a name="l00030"></a>00030                                 .getSoftwareTypeDescription());
-<a name="l00031"></a>00031                 setSoftwareTypeId(softwareDescription.<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html#a0c1735d84db3c875e5e849d8c60382fd">getSoftwareTypeId</a>());
-<a name="l00032"></a>00032         }
-<a name="l00033"></a>00033 
-<a name="l00034"></a>00034         <span class="keyword">public</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_description_builder.html">SoftwareDescriptionBuilder</a>() {
-<a name="l00035"></a>00035         }
-<a name="l00036"></a>00036 
-<a name="l00037"></a>00037         <span class="keyword">public</span> String getSoftwarePartNumber() {
-<a name="l00038"></a>00038                 <span class="keywordflow">return</span> this.softwarePartNumber;
-<a name="l00039"></a>00039         }
-<a name="l00040"></a>00040 
-<a name="l00041"></a>00041         <span class="keyword">public</span> <span class="keywordtype">void</span> setSoftwarePartNumber(String value) {
-<a name="l00042"></a>00042                 this.softwarePartNumber = <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1validation_1_1_data_validator.html">DataValidator</a>.<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1validation_1_1_data_validator.html#ab9c833dda7e4aa4b88d7ac8895462405">validateSoftwarePartNumber</a>(value);
-<a name="l00043"></a>00043         }
-<a name="l00044"></a>00044 
-<a name="l00045"></a>00045         <span class="keyword">public</span> String getSoftwareTypeDescription() {
-<a name="l00046"></a>00046                 <span class="keywordflow">return</span> this.softwareTypeDescription;
-<a name="l00047"></a>00047         }
-<a name="l00048"></a>00048 
-<a name="l00049"></a>00049         <span class="keyword">public</span> <span class="keywordtype">void</span> setSoftwareTypeDescription(String value) {
-<a name="l00050"></a>00050                 this.softwareTypeDescription = <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1validation_1_1_data_validator.html">DataValidator</a>.<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1validation_1_1_data_validator.html#a23f88bd552fdb2fb4cb00a38b525046c">validateStr64kXml</a>(value);
+<a name="l00013"></a>00013 <span class="keyword">import</span> java.util.Arrays;
+<a name="l00014"></a>00014 
+<a name="l00015"></a>00015 <span class="keyword">import</span> com.arinc.arinc838.SoftwareDescription;
+<a name="l00016"></a>00016 
+<a name="l00017"></a>00017 <span class="keyword">import</span> edu.cmu.sv.arinc838.binary.BdfFile;
+<a name="l00018"></a>00018 <span class="keyword">import</span> edu.cmu.sv.arinc838.validation.DataValidator;
+<a name="l00019"></a>00019 
+<a name="l00020"></a><a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_description_builder.html">00020</a> <span class="keyword">public</span> <span class="keyword">class </span><a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_description_builder.html">SoftwareDescriptionBuilder</a> <span class="keyword">implements</span> Builder&lt;SoftwareDescription&gt; {
+<a name="l00021"></a>00021 
+<a name="l00022"></a>00022         <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String SOFTWARE_PART_NUMBER_FORMAT = <span class="stringliteral">&quot;MMMCC-SSSS-SSSS&quot;</span>;
+<a name="l00023"></a>00023 
+<a name="l00024"></a>00024         <span class="keyword">private</span> String softwarePartNumber;
+<a name="l00025"></a>00025         <span class="keyword">private</span> String softwareTypeDescription;
+<a name="l00026"></a>00026         <span class="keyword">private</span> byte[] softwareTypeId;
+<a name="l00027"></a>00027 
+<a name="l00028"></a>00028         <span class="keyword">public</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_description_builder.html">SoftwareDescriptionBuilder</a>(<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html">SoftwareDescription</a> softwareDescription) {
+<a name="l00029"></a>00029                 setSoftwarePartNumber(softwareDescription.<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html#aa7cdaeeecd5dd3f196dacf992b237afc">getSoftwarePartnumber</a>());
+<a name="l00030"></a>00030                 setSoftwareTypeDescription(softwareDescription
+<a name="l00031"></a>00031                                 .getSoftwareTypeDescription());
+<a name="l00032"></a>00032                 setSoftwareTypeId(softwareDescription.<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html#a5eace113026aa014c77c986b2782462c">getSoftwareTypeId</a>());
+<a name="l00033"></a>00033         }
+<a name="l00034"></a>00034 
+<a name="l00035"></a>00035         <span class="keyword">public</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_description_builder.html">SoftwareDescriptionBuilder</a>() {
+<a name="l00036"></a>00036         }
+<a name="l00037"></a>00037 
+<a name="l00038"></a>00038         <span class="keyword">public</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_description_builder.html">SoftwareDescriptionBuilder</a>(<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1binary_1_1_bdf_file.html">BdfFile</a> file) <span class="keywordflow">throws</span> IOException {
+<a name="l00039"></a>00039                 setSoftwarePartNumber(file.<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1binary_1_1_bdf_file.html#aa5e88a8b7875f01bc31cb72c71e52d88">readStr64k</a>());
+<a name="l00040"></a>00040                 setSoftwareTypeDescription(file.<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1binary_1_1_bdf_file.html#aa5e88a8b7875f01bc31cb72c71e52d88">readStr64k</a>());
+<a name="l00041"></a>00041                 setSoftwareTypeId(file.readHexbin32());
+<a name="l00042"></a>00042         }
+<a name="l00043"></a>00043 
+<a name="l00044"></a>00044         <span class="keyword">public</span> String getSoftwarePartNumber() {
+<a name="l00045"></a>00045                 <span class="keywordflow">return</span> this.softwarePartNumber;
+<a name="l00046"></a>00046         }
+<a name="l00047"></a>00047 
+<a name="l00048"></a>00048         <span class="keyword">public</span> <span class="keywordtype">void</span> setSoftwarePartNumber(String value) {
+<a name="l00049"></a>00049                 this.softwarePartNumber = <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1validation_1_1_data_validator.html">DataValidator</a>
+<a name="l00050"></a>00050                                 .<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1validation_1_1_data_validator.html#ab9c833dda7e4aa4b88d7ac8895462405">validateSoftwarePartNumber</a>(value);
 <a name="l00051"></a>00051         }
 <a name="l00052"></a>00052 
-<a name="l00053"></a>00053         <span class="keyword">public</span> <span class="keywordtype">long</span> getSoftwareTypeId() {
-<a name="l00054"></a>00054                 <span class="keywordflow">return</span> this.softwareTypeId;
+<a name="l00053"></a>00053         <span class="keyword">public</span> String getSoftwareTypeDescription() {
+<a name="l00054"></a>00054                 <span class="keywordflow">return</span> this.softwareTypeDescription;
 <a name="l00055"></a>00055         }
 <a name="l00056"></a>00056 
-<a name="l00057"></a>00057         <span class="keyword">public</span> <span class="keywordtype">void</span> setSoftwareTypeId(<span class="keywordtype">long</span> value) {
-<a name="l00058"></a>00058                 this.softwareTypeId = <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1validation_1_1_data_validator.html">DataValidator</a>.<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1validation_1_1_data_validator.html#aaabc891f0cc828059c629fd39654079c">validateUint32</a>(value);
+<a name="l00057"></a>00057         <span class="keyword">public</span> <span class="keywordtype">void</span> setSoftwareTypeDescription(String value) {
+<a name="l00058"></a>00058                 this.softwareTypeDescription = <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1validation_1_1_data_validator.html">DataValidator</a>.<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1validation_1_1_data_validator.html#a23f88bd552fdb2fb4cb00a38b525046c">validateStr64kXml</a>(value);
 <a name="l00059"></a>00059         }
 <a name="l00060"></a>00060 
-<a name="l00061"></a>00061         @Override
-<a name="l00062"></a>00062         <span class="keyword">public</span> <a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html">SoftwareDescription</a> buildXml() {
-<a name="l00063"></a>00063                 <a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html">SoftwareDescription</a> desc = <span class="keyword">new</span> <a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html">SoftwareDescription</a>();
+<a name="l00061"></a>00061         <span class="keyword">public</span> byte[] getSoftwareTypeId() {
+<a name="l00062"></a>00062                 <span class="keywordflow">return</span> this.softwareTypeId;
+<a name="l00063"></a>00063         }
 <a name="l00064"></a>00064 
-<a name="l00065"></a>00065                 desc.<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html#a1e2b9cc28ebdefd7921085a51458404b">setSoftwarePartnumber</a>(this.getSoftwarePartNumber());
-<a name="l00066"></a>00066                 desc.<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html#a1ae20f6d1b49d6dadd05796f346ffa42">setSoftwareTypeDescription</a>(this.getSoftwareTypeDescription());
-<a name="l00067"></a>00067                 desc.<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html#a7f81779a403e0b09ac547e81f7a4ba93">setSoftwareTypeId</a>(this.getSoftwareTypeId());
+<a name="l00065"></a>00065         <span class="keyword">public</span> <span class="keywordtype">void</span> setSoftwareTypeId(byte[] value) {
+<a name="l00066"></a>00066                 this.softwareTypeId = <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1validation_1_1_data_validator.html">DataValidator</a>.validateHexbin32(value);
+<a name="l00067"></a>00067         }
 <a name="l00068"></a>00068 
-<a name="l00069"></a>00069                 <span class="keywordflow">return</span> desc;
-<a name="l00070"></a>00070         }
-<a name="l00071"></a>00071         
-<a name="l00072"></a>00072         @Override
-<a name="l00073"></a>00073         <span class="keyword">public</span> <span class="keywordtype">int</span> buildBinary(<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1binary_1_1_bdf_file.html">BdfFile</a> file) <span class="keywordflow">throws</span> IOException {
-<a name="l00074"></a>00074                 file.writeSoftwareDescriptionPointer();
-<a name="l00075"></a>00075                 file.writeStr64k(this.getSoftwarePartNumber());         
-<a name="l00076"></a>00076                 file.writeStr64k(this.getSoftwareTypeDescription());
-<a name="l00077"></a>00077                 file.writeUint32(this.getSoftwareTypeId());
-<a name="l00078"></a>00078                 
-<a name="l00079"></a>00079                 <span class="keywordflow">return</span> 0;
-<a name="l00080"></a>00080         }
-<a name="l00081"></a>00081 }
+<a name="l00069"></a>00069         @Override
+<a name="l00070"></a>00070         <span class="keyword">public</span> <a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html">SoftwareDescription</a> buildXml() {
+<a name="l00071"></a>00071                 <a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html">SoftwareDescription</a> desc = <span class="keyword">new</span> <a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html">SoftwareDescription</a>();
+<a name="l00072"></a>00072 
+<a name="l00073"></a>00073                 desc.<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html#a1e2b9cc28ebdefd7921085a51458404b">setSoftwarePartnumber</a>(this.getSoftwarePartNumber());
+<a name="l00074"></a>00074                 desc.<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html#a1ae20f6d1b49d6dadd05796f346ffa42">setSoftwareTypeDescription</a>(this.getSoftwareTypeDescription());
+<a name="l00075"></a>00075                 desc.<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_software_description.html#abc81f0d20731e105ef04bd78c937c227">setSoftwareTypeId</a>(this.getSoftwareTypeId());
+<a name="l00076"></a>00076 
+<a name="l00077"></a>00077                 <span class="keywordflow">return</span> desc;
+<a name="l00078"></a>00078         }
+<a name="l00079"></a>00079 
+<a name="l00080"></a>00080         @Override
+<a name="l00081"></a>00081         <span class="keyword">public</span> <span class="keywordtype">int</span> buildBinary(<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1binary_1_1_bdf_file.html">BdfFile</a> file) <span class="keywordflow">throws</span> IOException {
+<a name="l00082"></a>00082                 <span class="keywordtype">int</span> initialPosition = (int) file.getFilePointer();
+<a name="l00083"></a>00083 
+<a name="l00084"></a>00084                 file.writeSoftwareDescriptionPointer();
+<a name="l00085"></a>00085                 file.writeStr64k(this.getSoftwarePartNumber());
+<a name="l00086"></a>00086                 file.writeStr64k(this.getSoftwareTypeDescription());
+<a name="l00087"></a>00087                 file.writeHexbin32(this.getSoftwareTypeId());
+<a name="l00088"></a>00088 
+<a name="l00089"></a>00089                 <span class="keywordflow">return</span> (<span class="keywordtype">int</span>) (file.getFilePointer() - initialPosition);
+<a name="l00090"></a>00090         }
+<a name="l00091"></a>00091 
+<a name="l00092"></a>00092         @Override
+<a name="l00093"></a>00093         <span class="keyword">public</span> <span class="keywordtype">boolean</span> equals(Object obj) {
+<a name="l00094"></a>00094                 <span class="keywordflow">return</span> obj != null &amp;&amp;
+<a name="l00095"></a>00095                                 <span class="keyword">this</span> == obj ||
+<a name="l00096"></a>00096                                 (obj instanceof <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_description_builder.html">SoftwareDescriptionBuilder</a> &amp;&amp;
+<a name="l00097"></a>00097                                 equals((<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_description_builder.html">SoftwareDescriptionBuilder</a>)obj));
+<a name="l00098"></a>00098         }
+<a name="l00099"></a>00099         
+<a name="l00100"></a>00100         <span class="keyword">public</span> <span class="keywordtype">boolean</span> equals(<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_description_builder.html">SoftwareDescriptionBuilder</a> obj){
+<a name="l00101"></a>00101                 <span class="keywordflow">return</span> obj != null &amp;&amp;
+<a name="l00102"></a>00102                                 <span class="keyword">this</span> == obj ||
+<a name="l00103"></a>00103                                 (this.getSoftwarePartNumber().equals(obj.getSoftwarePartNumber()) &amp;&amp;
+<a name="l00104"></a>00104                                 this.getSoftwareTypeDescription().equals(obj.getSoftwareTypeDescription()) &amp;&amp;
+<a name="l00105"></a>00105                                 Arrays.equals(<span class="keyword">this</span>.getSoftwareTypeId(), obj.getSoftwareTypeId()));
+<a name="l00106"></a>00106         }
+<a name="l00107"></a>00107         
+<a name="l00108"></a>00108         @Override
+<a name="l00109"></a>00109         <span class="keyword">public</span> <span class="keywordtype">int</span> hashCode() {
+<a name="l00110"></a>00110                 <span class="keywordflow">if</span> (this.getSoftwarePartNumber() != null) {
+<a name="l00111"></a>00111                         <span class="keywordflow">return</span> this.getSoftwarePartNumber().hashCode();
+<a name="l00112"></a>00112                 }
+<a name="l00113"></a>00113                 <span class="keywordflow">return</span> 0;
+<a name="l00114"></a>00114         }
+<a name="l00115"></a>00115 }
 </pre></div></div><!-- contents -->
 </div>
   <div id="nav-path" class="navpath">
     <ul>
       <li class="navelem"><b>SoftwareDescriptionBuilder.java</b>      </li>
 
-    <li class="footer">Generated on Sat Feb 25 2012 22:45:47 for ARINC 838 by
+    <li class="footer">Generated on Sat Mar 3 2012 13:00:59 for ARINC 838 by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.0 </li>
    </ul>

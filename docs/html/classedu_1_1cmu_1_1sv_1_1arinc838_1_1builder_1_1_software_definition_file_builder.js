@@ -1,13 +1,25 @@
 var classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder =
 [
-    [ "SoftwareDefinitionFileBuilder", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#a6d4ea30f6bb861dcc766d714f837e587", null ],
     [ "SoftwareDefinitionFileBuilder", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#aa0e9c34b4e1e9c71ba2716324f702418", null ],
+    [ "SoftwareDefinitionFileBuilder", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#a6d4ea30f6bb861dcc766d714f837e587", null ],
+    [ "SoftwareDefinitionFileBuilder", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#a23eac2a3704e2f9d8175b2a0f5ff1d21", null ],
     [ "buildBinary", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#a672f6614ec3b908b2369b30484bc7c4d", null ],
     [ "buildXml", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#acd752c423dc7974e0aab85c164c2ac6c", null ],
-    [ "getFileFormatVersion", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#a2d864c1eca522aae89b88811d8f068c5", null ],
-    [ "getSoftwareDefinitionSections", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#a267a617dbc3e50ffa0461aed822c3e2c", null ],
+    [ "equals", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#a77e33606c693a9955901c30dde145d16", null ],
+    [ "equals", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#a3383231426a58be89815313b7cc500d6", null ],
+    [ "getBinaryFileName", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#a3ae60e6c6914b8fc8b0eabddcd933c93", null ],
+    [ "getFileDefinitions", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#a8dc3d65d0e1682e16e156f8eeb71b3e4", null ],
+    [ "getFileFormatVersion", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#a5e332316b16280a662415ad79ceafed0", null ],
+    [ "getLspIntegrityDefinition", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#a417b3ae8a2aaf3ce4ca0c95303478689", null ],
+    [ "getSdfIntegrityDefinition", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#a1e3d8ae60fe8eaaffc4a36bfab614d2c", null ],
+    [ "getSoftwareDescription", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#a7bc3354421390cf9f3d2c06cecc09b5b", null ],
+    [ "getTargetHardwareDefinitions", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#a1842b80f354a88f2fbdd5d6523a02fde", null ],
+    [ "getXmlFileName", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#a90eff80367f2717170d018c291a11ee5", null ],
+    [ "hashCode", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#acb440ef258ceaa7195d0c4822fe2799b", null ],
     [ "initialize", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#a511a463853f913468b453e7eccef0bb5", null ],
-    [ "setFileFormatVersion", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#afc4493244f87afff78ee615df51179c3", null ],
-    [ "setSoftwareDefinitionSections", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#ae6de91a76e0d7a588ab54393d7692d31", null ],
-    [ "DEFAULT_FILE_FORMAT_VERSION", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#ac68a2359571de96170152dd69a3d6ce1", null ]
+    [ "initialize", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#a4b43fdc14a7248496296aafd76966438", null ],
+    [ "setLspIntegrityDefinition", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#a9339cc0772426a8d09807a5f131a00f7", null ],
+    [ "setSdfIntegrityDefinition", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#ab79fa33baea5f23a96ca0262a70a06f2", null ],
+    [ "setSoftwareDescription", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#a358a20b27a068a90b491dca095832e56", null ],
+    [ "DEFAULT_FILE_FORMAT_VERSION", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#adac30b6abad2ea38a95ceda3ec630e2e", null ]
 ];

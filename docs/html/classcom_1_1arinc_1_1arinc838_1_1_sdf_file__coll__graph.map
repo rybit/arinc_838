@@ -1,5 +1,4 @@
 <map id="G" name="G">
-<area shape="rect" id="node2" href="$classcom_1_1arinc_1_1arinc838_1_1_sdf_sections.html" title="com.arinc.arinc838.SdfSections" alt="" coords="440,87,651,115"/>
-<area shape="rect" id="node6" href="$classcom_1_1arinc_1_1arinc838_1_1_software_description.html" title="com.arinc.arinc838.SoftwareDescription" alt="" coords="7,55,265,83"/>
-<area shape="rect" id="node8" href="$classcom_1_1arinc_1_1arinc838_1_1_integrity_definition.html" title="com.arinc.arinc838.IntegrityDefinition" alt="" coords="16,118,256,146"/>
+<area shape="rect" id="node4" href="$classcom_1_1arinc_1_1arinc838_1_1_software_description.html" title="com.arinc.arinc838.SoftwareDescription" alt="" coords="7,55,265,83"/>
+<area shape="rect" id="node6" href="$classcom_1_1arinc_1_1arinc838_1_1_integrity_definition.html" title="com.arinc.arinc838.IntegrityDefinition" alt="" coords="16,118,256,146"/>
 </map>
