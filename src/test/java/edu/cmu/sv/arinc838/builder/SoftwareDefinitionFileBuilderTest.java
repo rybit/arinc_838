@@ -464,4 +464,44 @@ public class SoftwareDefinitionFileBuilderTest {
 		
 		assertEquals(builder.hashCode(), 0);
 	}
+	
+	@Test
+	public void testInitializeBinaryClearsFileDefinitions() throws IOException{
+		SoftwareDefinitionFileBuilder builder = new SoftwareDefinitionFileBuilder();
+		builder.getFileDefinitions().add(new FileDefinitionBuilder());
+		
+		builder.initialize(binaryFile);
+		
+		assertEquals(builder.getFileDefinitions().size(), swDefFile.getFileDefinitions().size());
+	}
+	
+	@Test
+	public void testInitializeBinaryClearsTargetHardwareDefinitions() throws IOException{
+		SoftwareDefinitionFileBuilder builder = new SoftwareDefinitionFileBuilder();
+		builder.getTargetHardwareDefinitions().add(new TargetHardwareDefinitionBuilder());
+		
+		builder.initialize(binaryFile);
+		
+		assertEquals(builder.getTargetHardwareDefinitions().size(), swDefFile.getThwDefinitions().size());		
+	}
+	
+	@Test
+	public void testInitializeXmlClearsFileDefinitions(){
+		SoftwareDefinitionFileBuilder builder = new SoftwareDefinitionFileBuilder();
+		builder.getFileDefinitions().add(new FileDefinitionBuilder());
+		
+		builder.initialize(swDefFile);
+		
+		assertEquals(builder.getFileDefinitions().size(), swDefFile.getFileDefinitions().size());
+	}
+	
+	@Test
+	public void testInitializeXmlClearsTargetHardwareDefinitions(){
+		SoftwareDefinitionFileBuilder builder = new SoftwareDefinitionFileBuilder();
+		builder.getTargetHardwareDefinitions().add(new TargetHardwareDefinitionBuilder());
+		
+		builder.initialize(swDefFile);
+		
+		assertEquals(builder.getTargetHardwareDefinitions().size(), swDefFile.getThwDefinitions().size());		
+	}
 }
