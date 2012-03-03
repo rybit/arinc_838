@@ -12,13 +12,11 @@ package edu.cmu.sv.arinc838.builder;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import com.arinc.arinc838.FileDefinition;
 import com.arinc.arinc838.SdfFile;
 import com.arinc.arinc838.ThwDefinition;
-import com.beust.jcommander.internal.Lists;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.util.Converter;
