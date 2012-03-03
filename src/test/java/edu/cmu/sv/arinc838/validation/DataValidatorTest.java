@@ -146,7 +146,7 @@ public class DataValidatorTest {
 		assertEquals(
 				SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION,
 				DataValidator
-						.validateFileFormatVersion(SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION));
+						.validateFileFormatVersion(SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION.clone()));
 	}
 
 	@Test(expectedExceptions = IllegalArgumentException.class)
