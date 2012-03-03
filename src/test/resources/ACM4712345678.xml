@@ -4,7 +4,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.arinc.com ">
 
-	<sdf:file-format-version>528384</sdf:file-format-version>
+	<sdf:file-format-version>8100</sdf:file-format-version>
 	<sdf:software-description>
 		<sdf:software-partnumber>ACM-47-1234-5678</sdf:software-partnumber>
 		<sdf:software-type-description>STD</sdf:software-type-description>
