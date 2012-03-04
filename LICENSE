@@ -7,3 +7,5 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 This software uses JAXB (http://jaxb.java.net/) under the CDDL v1.1 license (http://glassfish.java.net/public/CDDL+GPL_1_1.html).
+
+Documentation is produced using Doxygen (http://www.stack.nl/~dimitri/doxygen) under the GNU General Public License, Version 2 (http://www.gnu.org/licenses/old-licenses/gpl-2.0.html).
