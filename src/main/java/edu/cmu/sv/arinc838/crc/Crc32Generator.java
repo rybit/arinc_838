@@ -56,6 +56,23 @@ public class Crc32Generator {
 		0xA6322BDF, 0xA2F33668, 0xBCB4666D, 0xB8757BDA, 0xB5365D03,
 		0xB1F740B4 };
 	
+	// Generates CRC lookup table above. Ported from C code in spec.
+//	static {
+//		long generator = 0x04C11DB7;
+//		for(int i=0; i < 256; i++) {
+//			int shift_reg = i << 24;
+//			for(int k=7; k>=0; k--) {
+//				long leading_bit = shift_reg & 0x80000000;
+//				shift_reg <<= 1;
+//				if (leading_bit != 0) {
+//				    shift_reg ^= generator;
+//				}
+//			}
+//			table[i] = shift_reg;
+//		}
+//	}
+	
+	
 	public static long calculateCrc(byte[] bytes) {
 		int crc = 0xffffffff; 
 		int k;
