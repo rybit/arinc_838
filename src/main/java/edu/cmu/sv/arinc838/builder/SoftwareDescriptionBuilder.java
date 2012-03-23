@@ -26,7 +26,7 @@ public class SoftwareDescriptionBuilder implements Builder<SoftwareDescription> 
 	private byte[] softwareTypeId;
 
 	public SoftwareDescriptionBuilder(SoftwareDescription softwareDescription) {
-		setSoftwarePartNumber(softwareDescription.getSoftwarePartnumber());
+		setSoftwarePartnumber(softwareDescription.getSoftwarePartnumber());
 		setSoftwareTypeDescription(softwareDescription
 				.getSoftwareTypeDescription());
 		setSoftwareTypeId(softwareDescription.getSoftwareTypeId());
@@ -36,16 +36,16 @@ public class SoftwareDescriptionBuilder implements Builder<SoftwareDescription> 
 	}
 
 	public SoftwareDescriptionBuilder(BdfFile file) throws IOException {
-		setSoftwarePartNumber(file.readStr64k());
+		setSoftwarePartnumber(file.readStr64k());
 		setSoftwareTypeDescription(file.readStr64k());
 		setSoftwareTypeId(file.readHexbin32());
 	}
 
-	public String getSoftwarePartNumber() {
+	public String getSoftwarePartnumber() {
 		return this.softwarePartNumber;
 	}
 
-	public void setSoftwarePartNumber(String value) {
+	public void setSoftwarePartnumber(String value) {
 		this.softwarePartNumber = DataValidator
 				.validateSoftwarePartNumber(value);
 	}
@@ -70,7 +70,7 @@ public class SoftwareDescriptionBuilder implements Builder<SoftwareDescription> 
 	public SoftwareDescription buildXml() {
 		SoftwareDescription desc = new SoftwareDescription();
 
-		desc.setSoftwarePartnumber(this.getSoftwarePartNumber());
+		desc.setSoftwarePartnumber(this.getSoftwarePartnumber());
 		desc.setSoftwareTypeDescription(this.getSoftwareTypeDescription());
 		desc.setSoftwareTypeId(this.getSoftwareTypeId());
 
@@ -82,7 +82,7 @@ public class SoftwareDescriptionBuilder implements Builder<SoftwareDescription> 
 		int initialPosition = (int) file.getFilePointer();
 
 		file.writeSoftwareDescriptionPointer();
-		file.writeStr64k(this.getSoftwarePartNumber());
+		file.writeStr64k(this.getSoftwarePartnumber());
 		file.writeStr64k(this.getSoftwareTypeDescription());
 		file.writeHexbin32(this.getSoftwareTypeId());
 
@@ -100,15 +100,15 @@ public class SoftwareDescriptionBuilder implements Builder<SoftwareDescription> 
 	public boolean equals(SoftwareDescriptionBuilder obj){
 		return obj != null &&
 				this == obj ||
-				(this.getSoftwarePartNumber().equals(obj.getSoftwarePartNumber()) &&
+				(this.getSoftwarePartnumber().equals(obj.getSoftwarePartnumber()) &&
 				this.getSoftwareTypeDescription().equals(obj.getSoftwareTypeDescription()) &&
 				Arrays.equals(this.getSoftwareTypeId(), obj.getSoftwareTypeId()));
 	}
 	
 	@Override
 	public int hashCode() {
-		if (this.getSoftwarePartNumber() != null) {
-			return this.getSoftwarePartNumber().hashCode();
+		if (this.getSoftwarePartnumber() != null) {
+			return this.getSoftwarePartnumber().hashCode();
 		}
 		return 0;
 	}

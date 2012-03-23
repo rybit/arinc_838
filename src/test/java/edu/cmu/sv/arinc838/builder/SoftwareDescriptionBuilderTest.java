@@ -35,12 +35,12 @@ public class SoftwareDescriptionBuilderTest {
 	@BeforeMethod
 	public void setup() {
 		first = new SoftwareDescriptionBuilder();
-		first.setSoftwarePartNumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
+		first.setSoftwarePartnumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
 		first.setSoftwareTypeDescription("description");
 		first.setSoftwareTypeId(Converter.hexToBytes("0000000A"));
 
 		second = new SoftwareDescriptionBuilder();
-		second.setSoftwarePartNumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
+		second.setSoftwarePartnumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
 		second.setSoftwareTypeDescription("description");
 		second.setSoftwareTypeId(Converter.hexToBytes("0000000A"));
 	}
@@ -55,7 +55,7 @@ public class SoftwareDescriptionBuilderTest {
 				jaxbDesc);
 
 		assertEquals(jaxbDesc.getSoftwarePartnumber(),
-				xmlDesc.getSoftwarePartNumber());
+				xmlDesc.getSoftwarePartnumber());
 	}
 
 	@Test
@@ -96,9 +96,9 @@ public class SoftwareDescriptionBuilderTest {
 		String value = DataValidator
 				.generateSoftwarePartNumber("8GC??-0987-PLMT");
 
-		xmlDesc.setSoftwarePartNumber(value);
+		xmlDesc.setSoftwarePartnumber(value);
 
-		assertEquals(value, xmlDesc.getSoftwarePartNumber());
+		assertEquals(value, xmlDesc.getSoftwarePartnumber());
 	}
 
 	@Test
@@ -141,7 +141,7 @@ public class SoftwareDescriptionBuilderTest {
 		assertEquals(desc.getSoftwareTypeDescription(),
 				first.getSoftwareTypeDescription());
 		assertEquals(desc.getSoftwarePartnumber(),
-				first.getSoftwarePartNumber());
+				first.getSoftwarePartnumber());
 	}
 	
 	@Test
@@ -154,7 +154,7 @@ public class SoftwareDescriptionBuilderTest {
 		// 17 + 13 + 4
 		assertEquals(bytesWritten, 34);
 		file.seek(0);
-		assertEquals(file.readStr64k(), first.getSoftwarePartNumber());
+		assertEquals(file.readStr64k(), first.getSoftwarePartnumber());
 		assertEquals(file.readStr64k(), first.getSoftwareTypeDescription());
 		byte[] typeId = new byte[4];
 		file.read(typeId);
@@ -172,7 +172,7 @@ public class SoftwareDescriptionBuilderTest {
 		first.buildBinary(file);
 
 		order.verify(file).writeSoftwareDescriptionPointer();
-		order.verify(file).writeStr64k(first.getSoftwarePartNumber());
+		order.verify(file).writeStr64k(first.getSoftwarePartnumber());
 		order.verify(file).writeStr64k(first.getSoftwareTypeDescription());
 		order.verify(file).writeHexbin32(first.getSoftwareTypeId());
 		order.verify(file).getFilePointer();
@@ -194,14 +194,14 @@ public class SoftwareDescriptionBuilderTest {
 		
 		SoftwareDescriptionBuilder desc = new SoftwareDescriptionBuilder(file);
 
-		assertEquals(desc.getSoftwarePartNumber(), partNumber);
+		assertEquals(desc.getSoftwarePartnumber(), partNumber);
 		assertEquals(desc.getSoftwareTypeDescription(), description);
 		assertEquals(desc.getSoftwareTypeId(), typeId);				
 	}
 	
 	@Test
 	public void testhashcode(){
-		assertEquals(first.hashCode(), first.getSoftwarePartNumber().hashCode());
+		assertEquals(first.hashCode(), first.getSoftwarePartnumber().hashCode());
 	}
 	
 	@Test

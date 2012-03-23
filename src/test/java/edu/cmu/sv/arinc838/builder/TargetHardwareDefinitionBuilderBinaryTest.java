@@ -18,7 +18,7 @@ public class TargetHardwareDefinitionBuilderBinaryTest {
 	@BeforeMethod
 	public void setup() {
 		thwDefBuilder = new TargetHardwareDefinitionBuilder();
-		thwDefBuilder.setId("ID3");
+		thwDefBuilder.setThwId("ID3");
 		thwDefBuilder.getPositions().add("R");
 		thwDefBuilder.getPositions().add("L");
 	}
@@ -71,7 +71,7 @@ public class TargetHardwareDefinitionBuilderBinaryTest {
 		bdfFile.readUint32(); //parent object reads the pointers
 		
 		TargetHardwareDefinitionBuilder thwDefBuilder2 = new TargetHardwareDefinitionBuilder(bdfFile);
-		assertEquals(thwDefBuilder2.getId(), thwDefBuilder.getId());
+		assertEquals(thwDefBuilder2.getThwId(), thwDefBuilder.getThwId());
 		assertEquals(thwDefBuilder2.getPositions().size(), thwDefBuilder.getPositions().size());
 		for(int i=0; i<thwDefBuilder2.getPositions().size(); i++) {
 			assertEquals(thwDefBuilder2.getPositions().get(i), thwDefBuilder.getPositions().get(i));

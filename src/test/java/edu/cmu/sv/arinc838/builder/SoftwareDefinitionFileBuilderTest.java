@@ -101,7 +101,7 @@ public class SoftwareDefinitionFileBuilderTest {
 	@Test
 	public void getSoftwareDefinitionSections() {
 		assertEquals(swDefFileBuilder.getSoftwareDescription()
-				.getSoftwarePartNumber(), swDefFile.getSoftwareDescription()
+				.getSoftwarePartnumber(), swDefFile.getSoftwareDescription()
 				.getSoftwarePartnumber());
 	}
 
@@ -219,7 +219,7 @@ public class SoftwareDefinitionFileBuilderTest {
 	@Test
 	public void getSoftwareDescription() {
 		assertEquals(swDefFileBuilder.getSoftwareDescription()
-				.getSoftwarePartNumber(), description.getSoftwarePartnumber());
+				.getSoftwarePartnumber(), description.getSoftwarePartnumber());
 		assertEquals(swDefFileBuilder.getSoftwareDescription()
 				.getSoftwareTypeDescription(),
 				description.getSoftwareTypeDescription());
@@ -230,7 +230,7 @@ public class SoftwareDefinitionFileBuilderTest {
 	@Test
 	public void setSoftwareDescription() {
 		SoftwareDescriptionBuilder newDesc = new SoftwareDescriptionBuilder();
-		newDesc.setSoftwarePartNumber(DataValidator
+		newDesc.setSoftwarePartnumber(DataValidator
 				.generateSoftwarePartNumber("YZT??-ABCD-EFGH"));
 
 		newDesc.setSoftwareTypeDescription("new desc");
@@ -239,7 +239,7 @@ public class SoftwareDefinitionFileBuilderTest {
 		swDefFileBuilder.setSoftwareDescription(newDesc);
 
 		assertEquals(swDefFileBuilder.getSoftwareDescription()
-				.getSoftwarePartNumber(), newDesc.getSoftwarePartNumber());
+				.getSoftwarePartnumber(), newDesc.getSoftwarePartnumber());
 		assertEquals(swDefFileBuilder.getSoftwareDescription()
 				.getSoftwareTypeDescription(),
 				newDesc.getSoftwareTypeDescription());
@@ -253,9 +253,9 @@ public class SoftwareDefinitionFileBuilderTest {
 		assertEquals(swDefFileBuilder.getTargetHardwareDefinitions().size(), 2);
 
 		assertEquals(swDefFileBuilder.getTargetHardwareDefinitions().get(0)
-				.getId(), "hardware");
+				.getThwId(), "hardware");
 		assertEquals(swDefFileBuilder.getTargetHardwareDefinitions().get(1)
-				.getId(), "hardware");
+				.getThwId(), "hardware");
 	}
 
 	@Test
@@ -368,7 +368,7 @@ public class SoftwareDefinitionFileBuilderTest {
 	public void testHasBinaryFileName() {
 		assertEquals(swDefFileBuilder.getBinaryFileName(),
 				swDefFileBuilder.getSoftwareDescription()
-						.getSoftwarePartNumber().replace("-", "")
+						.getSoftwarePartnumber().replace("-", "")
 						+ ".BDF");
 	}
 
@@ -376,7 +376,7 @@ public class SoftwareDefinitionFileBuilderTest {
 	public void testHasXmlFileName() {
 		assertEquals(swDefFileBuilder.getXmlFileName(),
 				swDefFileBuilder.getSoftwareDescription()
-						.getSoftwarePartNumber().replace("-", "")
+						.getSoftwarePartnumber().replace("-", "")
 						+ ".XDF");
 	}
 

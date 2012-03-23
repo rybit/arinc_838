@@ -232,12 +232,12 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 	}
 
 	public String getBinaryFileName() {
-		return getSoftwareDescription().getSoftwarePartNumber()
+		return getSoftwareDescription().getSoftwarePartnumber()
 				.replace("-", "") + ".BDF";
 	}
 
 	public String getXmlFileName() {
-		return getSoftwareDescription().getSoftwarePartNumber()
+		return getSoftwareDescription().getSoftwarePartnumber()
 				.replace("-", "") + ".XDF";
 	}
 
@@ -263,7 +263,7 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 	@Override
 	public int hashCode() {
 		if (this.getSoftwareDescription() != null
-				&& this.getSoftwareDescription().getSoftwarePartNumber() != null) {
+				&& this.getSoftwareDescription().getSoftwarePartnumber() != null) {
 			return this.getXmlFileName().hashCode();
 		}
 		return 0;

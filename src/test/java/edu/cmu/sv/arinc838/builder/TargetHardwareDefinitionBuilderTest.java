@@ -25,12 +25,12 @@ public class TargetHardwareDefinitionBuilderTest {
 	@BeforeMethod
 	public void setup() {
 		first = new TargetHardwareDefinitionBuilder();
-		first.setId("first");
+		first.setThwId("first");
 		first.getPositions().add("one");
 		first.getPositions().add("two");
 		
 		second = new TargetHardwareDefinitionBuilder();
-		second.setId("first");
+		second.setThwId("first");
 		second.getPositions().add("one");
 		second.getPositions().add("two");		
 	}
@@ -42,7 +42,7 @@ public class TargetHardwareDefinitionBuilderTest {
 		TargetHardwareDefinitionBuilder xmlDef = new TargetHardwareDefinitionBuilder(
 				jaxbDef);
 
-		assertEquals(xmlDef.getId(), jaxbDef.getThwId());
+		assertEquals(xmlDef.getThwId(), jaxbDef.getThwId());
 	}
 
 	@Test
@@ -54,16 +54,16 @@ public class TargetHardwareDefinitionBuilderTest {
 
 		String value = "new test";
 
-		xmlDef.setId(value);
+		xmlDef.setThwId(value);
 
-		assertEquals(xmlDef.getId(), value);
+		assertEquals(xmlDef.getThwId(), value);
 	}
 	
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void testSetIdInvalid()
 	{
 		// invalid str64k
-		first.setId("1 > 2");
+		first.setThwId("1 > 2");
 	}
 
 	@Test
@@ -104,7 +104,7 @@ public class TargetHardwareDefinitionBuilderTest {
 	public void testBuildReturnsProperJaxbObject() {
 		ThwDefinition def = first.buildXml();
 		
-		assertEquals(def.getThwId(), first.getId());
+		assertEquals(def.getThwId(), first.getThwId());
 		
 		for(int i = 0; i < def.getThwPosition().size(); i++){
 			assertEquals(def.getThwPosition().get(i), first.getPositions().get(i));
@@ -113,7 +113,7 @@ public class TargetHardwareDefinitionBuilderTest {
 	
 	@Test
 	public void testHashCode(){
-		assertEquals(first.hashCode(), first.getId().hashCode());
+		assertEquals(first.hashCode(), first.getThwId().hashCode());
 	}
 	
 	@Test 

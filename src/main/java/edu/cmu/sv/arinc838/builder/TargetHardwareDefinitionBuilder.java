@@ -25,7 +25,7 @@ public class TargetHardwareDefinitionBuilder implements Builder<ThwDefinition> {
 	private boolean isLast;
 
 	public TargetHardwareDefinitionBuilder(ThwDefinition jaxbDef) {
-		setId(jaxbDef.getThwId());
+		setThwId(jaxbDef.getThwId());
 
 		for (String position : jaxbDef.getThwPosition()) {
 			positions.add(position);
@@ -36,7 +36,7 @@ public class TargetHardwareDefinitionBuilder implements Builder<ThwDefinition> {
 	}
 
 	public TargetHardwareDefinitionBuilder(BdfFile bdfFile) throws IOException {		
-		setId(bdfFile.readStr64k());
+		setThwId(bdfFile.readStr64k());
 		long positionsLength = bdfFile.readUint32();
 		for(int i=0; i<positionsLength; i++) {
 			bdfFile.readUint32(); // Read out the pointer to the next thw-position. We don't use it.
@@ -44,11 +44,11 @@ public class TargetHardwareDefinitionBuilder implements Builder<ThwDefinition> {
 		}
 	}
 
-	public String getId() {
+	public String getThwId() {
 		return id;
 	}
 
-	public void setId(String value) {
+	public void setThwId(String value) {
 		this.id = DataValidator.validateStr64kXml(value);
 	}
 
@@ -60,7 +60,7 @@ public class TargetHardwareDefinitionBuilder implements Builder<ThwDefinition> {
 	public ThwDefinition buildXml() {
 		ThwDefinition def = new ThwDefinition();
 
-		def.setThwId(this.getId());
+		def.setThwId(this.getThwId());
 		for (String position : this.getPositions()) {
 			def.getThwPosition().add(position);
 		}
@@ -73,7 +73,7 @@ public class TargetHardwareDefinitionBuilder implements Builder<ThwDefinition> {
 		int initialPosition = (int) bdfFile.getFilePointer();
 
 		bdfFile.writePlaceholder();
-		bdfFile.writeStr64k(getId());
+		bdfFile.writeStr64k(getThwId());
 		bdfFile.writeUint32(getPositions().size());
 		for (int i = 0; i < getPositions().size(); i++) {
 			String position = getPositions().get(i);
@@ -111,8 +111,8 @@ public class TargetHardwareDefinitionBuilder implements Builder<ThwDefinition> {
 	
 	@Override
 	public int hashCode() {
-		if(this.getId() != null){
-			return this.getId().hashCode();
+		if(this.getThwId() != null){
+			return this.getThwId().hashCode();
 		}
 		
 		return 0;
@@ -129,7 +129,7 @@ public class TargetHardwareDefinitionBuilder implements Builder<ThwDefinition> {
 	public boolean equals(TargetHardwareDefinitionBuilder obj){
 		return obj != null &&
 				this == obj ||
-				(this.getId().equals(obj.getId()) &&
+				(this.getThwId().equals(obj.getThwId()) &&
 				this.getPositions().equals(obj.getPositions()));
 	}
 }
