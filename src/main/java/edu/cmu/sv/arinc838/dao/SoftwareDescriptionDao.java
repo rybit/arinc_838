@@ -7,7 +7,7 @@
  * 
  * Created on Feb 7, 2012
  */
-package edu.cmu.sv.arinc838.builder;
+package edu.cmu.sv.arinc838.dao;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -17,7 +17,7 @@ import com.arinc.arinc838.SoftwareDescription;
 import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.validation.DataValidator;
 
-public class SoftwareDescriptionBuilder implements Builder<SoftwareDescription> {
+public class SoftwareDescriptionDao {
 
 	public static final String SOFTWARE_PART_NUMBER_FORMAT = "MMMCC-SSSS-SSSS";
 
@@ -25,17 +25,17 @@ public class SoftwareDescriptionBuilder implements Builder<SoftwareDescription> 
 	private String softwareTypeDescription;
 	private byte[] softwareTypeId;
 
-	public SoftwareDescriptionBuilder(SoftwareDescription softwareDescription) {
+	public SoftwareDescriptionDao(SoftwareDescription softwareDescription) {
 		setSoftwarePartnumber(softwareDescription.getSoftwarePartnumber());
 		setSoftwareTypeDescription(softwareDescription
 				.getSoftwareTypeDescription());
 		setSoftwareTypeId(softwareDescription.getSoftwareTypeId());
 	}
 
-	public SoftwareDescriptionBuilder() {
+	public SoftwareDescriptionDao() {
 	}
 
-	public SoftwareDescriptionBuilder(BdfFile file) throws IOException {
+	public SoftwareDescriptionDao(BdfFile file) throws IOException {
 		setSoftwarePartnumber(file.readStr64k());
 		setSoftwareTypeDescription(file.readStr64k());
 		setSoftwareTypeId(file.readHexbin32());
@@ -65,39 +65,39 @@ public class SoftwareDescriptionBuilder implements Builder<SoftwareDescription> 
 	public void setSoftwareTypeId(byte[] value) {
 		this.softwareTypeId = DataValidator.validateHexbin32(value);
 	}
-
-	@Override
-	public SoftwareDescription buildXml() {
-		SoftwareDescription desc = new SoftwareDescription();
-
-		desc.setSoftwarePartnumber(this.getSoftwarePartnumber());
-		desc.setSoftwareTypeDescription(this.getSoftwareTypeDescription());
-		desc.setSoftwareTypeId(this.getSoftwareTypeId());
-
-		return desc;
-	}
-
-	@Override
-	public int buildBinary(BdfFile file) throws IOException {
-		int initialPosition = (int) file.getFilePointer();
-
-		file.writeSoftwareDescriptionPointer();
-		file.writeStr64k(this.getSoftwarePartnumber());
-		file.writeStr64k(this.getSoftwareTypeDescription());
-		file.writeHexbin32(this.getSoftwareTypeId());
-
-		return (int) (file.getFilePointer() - initialPosition);
-	}
+//
+//	@Override
+//	public SoftwareDescription buildXml() {
+//		SoftwareDescription desc = new SoftwareDescription();
+//
+//		desc.setSoftwarePartnumber(this.getSoftwarePartnumber());
+//		desc.setSoftwareTypeDescription(this.getSoftwareTypeDescription());
+//		desc.setSoftwareTypeId(this.getSoftwareTypeId());
+//
+//		return desc;
+//	}
+//
+//	@Override
+//	public int buildBinary(BdfFile file) throws IOException {
+//		int initialPosition = (int) file.getFilePointer();
+//
+//		file.writeSoftwareDescriptionPointer();
+//		file.writeStr64k(this.getSoftwarePartnumber());
+//		file.writeStr64k(this.getSoftwareTypeDescription());
+//		file.writeHexbin32(this.getSoftwareTypeId());
+//
+//		return (int) (file.getFilePointer() - initialPosition);
+//	}
 
 	@Override
 	public boolean equals(Object obj) {
 		return obj != null &&
 				this == obj ||
-				(obj instanceof SoftwareDescriptionBuilder &&
-				equals((SoftwareDescriptionBuilder)obj));
+				(obj instanceof SoftwareDescriptionDao &&
+				equals((SoftwareDescriptionDao)obj));
 	}
 	
-	public boolean equals(SoftwareDescriptionBuilder obj){
+	public boolean equals(SoftwareDescriptionDao obj){
 		return obj != null &&
 				this == obj ||
 				(this.getSoftwarePartnumber().equals(obj.getSoftwarePartnumber()) &&

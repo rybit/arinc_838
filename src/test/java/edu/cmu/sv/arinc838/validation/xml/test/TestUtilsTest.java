@@ -11,11 +11,11 @@ import com.arinc.arinc838.IntegrityDefinition;
 import com.arinc.arinc838.SoftwareDescription;
 import com.arinc.arinc838.ThwDefinition;
 
-import edu.cmu.sv.arinc838.builder.FileDefinitionBuilder;
-import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder;
-import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder.IntegrityType;
-import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
-import edu.cmu.sv.arinc838.builder.SoftwareDescriptionBuilder;
+import edu.cmu.sv.arinc838.builder.FileDefinitionDao;
+import edu.cmu.sv.arinc838.builder.IntegrityDefinitionDao;
+import edu.cmu.sv.arinc838.builder.IntegrityDefinitionDao.IntegrityType;
+import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileDao;
+import edu.cmu.sv.arinc838.builder.SoftwareDescriptionDao;
 import edu.cmu.sv.arinc838.builder.TargetHardwareDefinitionBuilder;
 import edu.cmu.sv.arinc838.validation.ReferenceData;
 
@@ -29,7 +29,7 @@ public class TestUtilsTest {
 
 		List<Exception> exceptionList = new ArrayList<Exception>();
 
-		TestUtils.checkPrimitives(def, FileDefinitionBuilder.class,
+		TestUtils.checkPrimitives(def, FileDefinitionDao.class,
 				exceptionList);
 
 		assertTrue(exceptionList.isEmpty());
@@ -43,7 +43,7 @@ public class TestUtilsTest {
 
 		List<Exception> exceptionList = new ArrayList<Exception>();
 
-		TestUtils.checkPrimitives(def, FileDefinitionBuilder.class,
+		TestUtils.checkPrimitives(def, FileDefinitionDao.class,
 				exceptionList);
 
 		assertEquals(exceptionList.size(), 2);
@@ -82,7 +82,7 @@ public class TestUtilsTest {
 
 		List<Exception> exceptionList = new ArrayList<Exception>();
 
-		TestUtils.checkPrimitives(def, IntegrityDefinitionBuilder.class,
+		TestUtils.checkPrimitives(def, IntegrityDefinitionDao.class,
 				exceptionList);
 
 		assertTrue(exceptionList.isEmpty());
@@ -95,7 +95,7 @@ public class TestUtilsTest {
 
 		List<Exception> exceptionList = new ArrayList<Exception>();
 
-		TestUtils.checkPrimitives(def, IntegrityDefinitionBuilder.class,
+		TestUtils.checkPrimitives(def, IntegrityDefinitionDao.class,
 				exceptionList);
 
 		assertEquals(exceptionList.size(), 1);
@@ -109,7 +109,7 @@ public class TestUtilsTest {
 
 		List<Exception> exceptionList = new ArrayList<Exception>();
 
-		TestUtils.checkPrimitives(desc, SoftwareDescriptionBuilder.class,
+		TestUtils.checkPrimitives(desc, SoftwareDescriptionDao.class,
 				exceptionList);
 
 		assertTrue(exceptionList.isEmpty());
@@ -123,7 +123,7 @@ public class TestUtilsTest {
 
 		List<Exception> exceptionList = new ArrayList<Exception>();
 
-		TestUtils.checkPrimitives(desc, SoftwareDescriptionBuilder.class,
+		TestUtils.checkPrimitives(desc, SoftwareDescriptionDao.class,
 				exceptionList);
 
 		assertEquals(exceptionList.size(), 2);

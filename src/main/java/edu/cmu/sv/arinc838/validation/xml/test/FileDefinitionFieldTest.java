@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.arinc.arinc838.FileDefinition;
 
-import edu.cmu.sv.arinc838.builder.FileDefinitionBuilder;
+import edu.cmu.sv.arinc838.builder.FileDefinitionDao;
 import edu.cmu.sv.arinc838.validation.VerficationTest;
 
 public class FileDefinitionFieldTest implements VerficationTest<List<FileDefinition>> {
@@ -17,7 +17,7 @@ public class FileDefinitionFieldTest implements VerficationTest<List<FileDefinit
 			retExceptions.add(new IllegalArgumentException("There are no File Definitions defined"));
 		} else {
 			for (FileDefinition def : defs) {
-				TestUtils.checkPrimitives (def, FileDefinitionBuilder.class, retExceptions);
+				TestUtils.checkPrimitives (def, FileDefinitionDao.class, retExceptions);
 			}
 		}
 		

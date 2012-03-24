@@ -7,7 +7,7 @@
  * 
  * Created on Feb 7, 2012
  */
-package edu.cmu.sv.arinc838.builder;
+package edu.cmu.sv.arinc838.dao;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -17,7 +17,7 @@ import com.arinc.arinc838.IntegrityDefinition;
 import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.validation.DataValidator;
 
-public class IntegrityDefinitionBuilder implements Builder<IntegrityDefinition> {
+public class IntegrityDefinitionDao {
 
 	public static enum IntegrityType {
 		CRC16(2), CRC32(3), CRC64(6);
@@ -56,15 +56,15 @@ public class IntegrityDefinitionBuilder implements Builder<IntegrityDefinition> 
 	private long integType;
 	private byte[] integValue;
 
-	public IntegrityDefinitionBuilder() {
+	public IntegrityDefinitionDao() {
 	}
 
-	public IntegrityDefinitionBuilder(IntegrityDefinition integDef) {
+	public IntegrityDefinitionDao(IntegrityDefinition integDef) {
 		setIntegrityType(integDef.getIntegrityType());
 		setIntegrityValue(integDef.getIntegrityValue());
 	}
 
-	public IntegrityDefinitionBuilder(BdfFile bdfFile) throws IOException {
+	public IntegrityDefinitionDao(BdfFile bdfFile) throws IOException {
 		setIntegrityType(bdfFile.readUint32());
 		setIntegrityValue(bdfFile.readHexbin64k());
 	}
@@ -85,27 +85,27 @@ public class IntegrityDefinitionBuilder implements Builder<IntegrityDefinition> 
 		return integValue;
 	}
 
-	@Override
-	public IntegrityDefinition buildXml() {
-		IntegrityDefinition retDef = new IntegrityDefinition();
-
-		retDef.setIntegrityType(integType);
-		retDef.setIntegrityValue(integValue);
-
-		return retDef;
-	}
-
-	@Override
-	public int buildBinary(BdfFile bdfFile) throws IOException {
-		int initialPosition = (int) bdfFile.getFilePointer();
-
-		bdfFile.writeUint32(getIntegrityType());
-		bdfFile.writeHexbin64k(getIntegrityValue());
-
-		int finalPosition = (int) bdfFile.getFilePointer();
-
-		return (int) (finalPosition - initialPosition);
-	}
+//	@Override
+//	public IntegrityDefinition buildXml() {
+//		IntegrityDefinition retDef = new IntegrityDefinition();
+//
+//		retDef.setIntegrityType(integType);
+//		retDef.setIntegrityValue(integValue);
+//
+//		return retDef;
+//	}
+//
+//	@Override
+//	public int buildBinary(BdfFile bdfFile) throws IOException {
+//		int initialPosition = (int) bdfFile.getFilePointer();
+//
+//		bdfFile.writeUint32(getIntegrityType());
+//		bdfFile.writeHexbin64k(getIntegrityValue());
+//
+//		int finalPosition = (int) bdfFile.getFilePointer();
+//
+//		return (int) (finalPosition - initialPosition);
+//	}
 
 	@Override
 	public int hashCode() {
@@ -120,10 +120,10 @@ public class IntegrityDefinitionBuilder implements Builder<IntegrityDefinition> 
 	public boolean equals(Object obj) {
 		return obj != null
 				&& this == obj
-				|| (obj instanceof IntegrityDefinitionBuilder && equals((IntegrityDefinitionBuilder) obj));
+				|| (obj instanceof IntegrityDefinitionDao && equals((IntegrityDefinitionDao) obj));
 	}
 
-	public boolean equals(IntegrityDefinitionBuilder obj) {
+	public boolean equals(IntegrityDefinitionDao obj) {
 		return obj != null
 				&& this == obj
 				|| (Arrays.equals(this.getIntegrityValue(),

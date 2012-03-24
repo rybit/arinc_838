@@ -7,7 +7,7 @@
  * 
  * Created on Feb 7, 2012
  */
-package edu.cmu.sv.arinc838.builder;
+package edu.cmu.sv.arinc838.dao;
 
 import java.io.IOException;
 
@@ -48,38 +48,37 @@ import edu.cmu.sv.arinc838.validation.DataValidator;
  * @author ryan
  * 
  */
-public class FileDefinitionBuilder implements Builder<FileDefinition>{
-	private IntegrityDefinitionBuilder integDefBuilder;
+public class FileDefinitionDao {
+	private IntegrityDefinitionDao integDefBuilder;
 	private boolean loadable;
 	private String fileName;
 	private long fileSize;
 	private boolean isLast;
 
-	public FileDefinitionBuilder() {
+	public FileDefinitionDao() {
 		;
 	}
 
-	public FileDefinitionBuilder(FileDefinition fileDef) {
-		integDefBuilder = new IntegrityDefinitionBuilder(fileDef.getFileIntegrityDefinition());
-		loadable = fileDef.isFileLoadable();
-		fileName = fileDef.getFileName();
-		fileSize = fileDef.getFileSize();
-		
-		integDefBuilder = new IntegrityDefinitionBuilder(fileDef.getFileIntegrityDefinition());
+	public FileDefinitionDao(FileDefinition fileDef) {
+		setFileLoadable (fileDef.isFileLoadable());
+		setFileName(fileDef.getFileName());
+		setFileSize (fileDef.getFileSize());
+
+		setFileIntegrityDefinition (new IntegrityDefinitionDao(fileDef.getFileIntegrityDefinition()));
 	}
 
-	public FileDefinitionBuilder(BdfFile bdfFile) throws IOException {
+	public FileDefinitionDao(BdfFile bdfFile) throws IOException {
 		setFileLoadable(bdfFile.readBoolean());
 		setFileName(bdfFile.readStr64k());
 		setFileSize(bdfFile.readUint32());
-		setFileIntegrityDefinition(new IntegrityDefinitionBuilder(bdfFile));
+		setFileIntegrityDefinition(new IntegrityDefinitionDao(bdfFile));
 	}
 
-	public IntegrityDefinitionBuilder getFileIntegrityDefinition() {
+	public IntegrityDefinitionDao getFileIntegrityDefinition() {
 		return integDefBuilder;
 	}
 
-	public void setFileIntegrityDefinition(IntegrityDefinitionBuilder value) {
+	public void setFileIntegrityDefinition(IntegrityDefinitionDao value) {
 		this.integDefBuilder = value;
 	}
 
@@ -107,40 +106,40 @@ public class FileDefinitionBuilder implements Builder<FileDefinition>{
 		this.fileSize = DataValidator.validateUint32(fileSize);
 	}
 
-	@Override
-	public FileDefinition buildXml() {
-		FileDefinition retDef = new FileDefinition();
-
-		retDef.setFileLoadable(loadable);
-		retDef.setFileName(fileName);
-		retDef.setFileSize(fileSize);
-
-		retDef.setFileIntegrityDefinition(integDefBuilder.buildXml());
-
-		return retDef;
-	}
-	
-	@Override
-	public int buildBinary(BdfFile bdfFile) throws IOException {
-		int initialPosition = (int) bdfFile.getFilePointer();
-		
-		bdfFile.writeUint32(0); //Place holder for APTPTR to the next file definition
-		bdfFile.writeBoolean(isFileLoadable());
-		bdfFile.writeStr64k(getFileName());
-		bdfFile.writeUint32(getFileSize());
-		getFileIntegrityDefinition().buildBinary(bdfFile);
-
-		int finalPosition = (int) bdfFile.getFilePointer();
-		
-		//If not last file def then fill in the pointer to the next file def
-		if (!isLast()) {
-			bdfFile.seek(initialPosition);
-			bdfFile.writeUint32(finalPosition);
-			bdfFile.seek(finalPosition);
-		}
-
-		return (int) (finalPosition - initialPosition);
-	}
+//	@Override
+//	public FileDefinition buildXml() {
+//		FileDefinition retDef = new FileDefinition();
+//
+//		retDef.setFileLoadable(loadable);
+//		retDef.setFileName(fileName);
+//		retDef.setFileSize(fileSize);
+//
+//		retDef.setFileIntegrityDefinition(integDefBuilder.buildXml());
+//
+//		return retDef;
+//	}
+//	
+//	@Override
+//	public int buildBinary(BdfFile bdfFile) throws IOException {
+//		int initialPosition = (int) bdfFile.getFilePointer();
+//		
+//		bdfFile.writeUint32(0); //Place holder for APTPTR to the next file definition
+//		bdfFile.writeBoolean(isFileLoadable());
+//		bdfFile.writeStr64k(getFileName());
+//		bdfFile.writeUint32(getFileSize());
+//		getFileIntegrityDefinition().buildBinary(bdfFile);
+//
+//		int finalPosition = (int) bdfFile.getFilePointer();
+//		
+//		//If not last file def then fill in the pointer to the next file def
+//		if (!isLast()) {
+//			bdfFile.seek(initialPosition);
+//			bdfFile.writeUint32(finalPosition);
+//			bdfFile.seek(finalPosition);
+//		}
+//
+//		return (int) (finalPosition - initialPosition);
+//	}
 
 	public boolean isLast() {
 		return isLast;
@@ -163,11 +162,11 @@ public class FileDefinitionBuilder implements Builder<FileDefinition>{
 	public boolean equals(Object obj) {
 		return obj !=  null &&
 				this == obj ||
-				(obj instanceof FileDefinitionBuilder &&
-				equals((FileDefinitionBuilder)obj));		
+				(obj instanceof FileDefinitionDao &&
+				equals((FileDefinitionDao)obj));		
 	}
 	
-	public boolean equals(FileDefinitionBuilder obj){
+	public boolean equals(FileDefinitionDao obj){
 		return obj != null &&
 				this == obj ||
 				(this.getFileIntegrityDefinition().equals(obj.getFileIntegrityDefinition()) &&

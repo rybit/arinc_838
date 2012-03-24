@@ -13,12 +13,12 @@ import java.io.File;
 import java.io.IOException;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
-import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
+import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileDao;
 
 public class BdfWriter implements SdfWriter {
 
 	@Override
-	public String write(String path, SoftwareDefinitionFileBuilder builder)
+	public String write(String path, SoftwareDefinitionFileDao builder)
 			throws Exception {		
 		
 		File fileOnDisk =new File(path+builder.getBinaryFileName());
@@ -30,7 +30,7 @@ public class BdfWriter implements SdfWriter {
 		return fileOnDisk.getAbsolutePath();
 	}
 	
-	public void write(BdfFile file, SoftwareDefinitionFileBuilder builder) throws IOException{
+	public void write(BdfFile file, SoftwareDefinitionFileDao builder) throws IOException{
 		builder.buildBinary(file);
 		file.close();
 	}

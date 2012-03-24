@@ -17,18 +17,18 @@ import org.testng.annotations.Test;
 
 import com.arinc.arinc838.FileDefinition;
 
-import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder.IntegrityType;
+import edu.cmu.sv.arinc838.builder.IntegrityDefinitionDao.IntegrityType;
 import edu.cmu.sv.arinc838.util.Converter;
 
 public class FileDefinitionBuilderTest {
 	FileDefinition xmlFileDef;
 
 	// Our builder
-	private FileDefinitionBuilder fileBuilder;
+	private FileDefinitionDao fileBuilder;
 
 	@BeforeMethod
 	public void setUp() {
-		IntegrityDefinitionBuilder integBuilder = new IntegrityDefinitionBuilder();
+		IntegrityDefinitionDao integBuilder = new IntegrityDefinitionDao();
 		integBuilder.setIntegrityType(IntegrityType.CRC16.getType());
 		integBuilder.setIntegrityValue(Converter.hexToBytes("0000000A"));
 
@@ -38,7 +38,7 @@ public class FileDefinitionBuilderTest {
 		xmlFileDef.setFileSize(1234);
 		xmlFileDef.setFileIntegrityDefinition(integBuilder.buildXml());
 
-		fileBuilder = new FileDefinitionBuilder();
+		fileBuilder = new FileDefinitionDao();
 		fileBuilder.setFileLoadable(xmlFileDef.isFileLoadable());
 		fileBuilder.setFileName(xmlFileDef.getFileName());
 		fileBuilder.setFileSize(xmlFileDef.getFileSize());		
@@ -51,7 +51,7 @@ public class FileDefinitionBuilderTest {
 	 */
 	@Test
 	public void testXmlConstructor() {
-		FileDefinitionBuilder tmpBuilder = new FileDefinitionBuilder(xmlFileDef);
+		FileDefinitionDao tmpBuilder = new FileDefinitionDao(xmlFileDef);
 		// check that the fields stuck
 		
 		assertEquals(xmlFileDef.getFileName(), tmpBuilder.getFileName());
@@ -66,7 +66,7 @@ public class FileDefinitionBuilderTest {
 
 	@Test
 	public void testFileIntegrityDefinitionAccessors() {
-		IntegrityDefinitionBuilder integDef = new IntegrityDefinitionBuilder();
+		IntegrityDefinitionDao integDef = new IntegrityDefinitionDao();
 
 		assertNotEquals(integDef, fileBuilder.getFileIntegrityDefinition());
 
@@ -117,7 +117,7 @@ public class FileDefinitionBuilderTest {
 
 	@Test
 	public void testBuilder() {
-		FileDefinitionBuilder newBuilder = new FileDefinitionBuilder(xmlFileDef);
+		FileDefinitionDao newBuilder = new FileDefinitionDao(xmlFileDef);
 
 		FileDefinition built = newBuilder.buildXml();
 		assertNotEquals(null, built);
@@ -141,12 +141,12 @@ public class FileDefinitionBuilderTest {
 	
 	@Test 
 	public void testHashCodeWithNoIntegrity(){
-		assertEquals(new FileDefinitionBuilder().hashCode(), 0);
+		assertEquals(new FileDefinitionDao().hashCode(), 0);
 	}
 	
 	@Test
 	public void testEquals(){
-		FileDefinitionBuilder second = new FileDefinitionBuilder(xmlFileDef);
+		FileDefinitionDao second = new FileDefinitionDao(xmlFileDef);
 		
 		assertEquals(fileBuilder, second);	
 	}

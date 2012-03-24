@@ -15,14 +15,14 @@ import org.testng.annotations.*;
 
 import com.arinc.arinc838.IntegrityDefinition;
 
-import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder;
-import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder.IntegrityType;
+import edu.cmu.sv.arinc838.builder.IntegrityDefinitionDao;
+import edu.cmu.sv.arinc838.builder.IntegrityDefinitionDao.IntegrityType;
 import edu.cmu.sv.arinc838.util.Converter;
 
 public class IntegrityDefinitionBuilderTest {
 
 	private IntegrityDefinition integDef;
-	private IntegrityDefinitionBuilder builder;
+	private IntegrityDefinitionDao builder;
 
 	@BeforeMethod
 	public void setup() {
@@ -30,7 +30,7 @@ public class IntegrityDefinitionBuilderTest {
 		integDef.setIntegrityType(IntegrityType.CRC16.getType());
 		integDef.setIntegrityValue(Converter.hexToBytes("DEADBEEF"));
 
-		builder = new IntegrityDefinitionBuilder(integDef);
+		builder = new IntegrityDefinitionDao(integDef);
 	}
 
 	@Test
@@ -83,18 +83,18 @@ public class IntegrityDefinitionBuilderTest {
 	@Test
 	public void testIntegrityTypeEnum()
 	{
-		assertEquals(2, IntegrityDefinitionBuilder.IntegrityType.CRC16.getType());
-		assertEquals(3, IntegrityDefinitionBuilder.IntegrityType.CRC32.getType());
-		assertEquals(6, IntegrityDefinitionBuilder.IntegrityType.CRC64.getType());		
+		assertEquals(2, IntegrityDefinitionDao.IntegrityType.CRC16.getType());
+		assertEquals(3, IntegrityDefinitionDao.IntegrityType.CRC32.getType());
+		assertEquals(6, IntegrityDefinitionDao.IntegrityType.CRC64.getType());		
 	}
 	
 	@Test
 	public void testIntegrityTypeEnumFromLong()
 	{
-		assertEquals(IntegrityDefinitionBuilder.IntegrityType.CRC16, IntegrityDefinitionBuilder.IntegrityType.fromLong(2));
-		assertEquals(IntegrityDefinitionBuilder.IntegrityType.CRC32, IntegrityDefinitionBuilder.IntegrityType.fromLong(3));
-		assertEquals(IntegrityDefinitionBuilder.IntegrityType.CRC64, IntegrityDefinitionBuilder.IntegrityType.fromLong(6));
-		assertNull(IntegrityDefinitionBuilder.IntegrityType.fromLong(-1));
+		assertEquals(IntegrityDefinitionDao.IntegrityType.CRC16, IntegrityDefinitionDao.IntegrityType.fromLong(2));
+		assertEquals(IntegrityDefinitionDao.IntegrityType.CRC32, IntegrityDefinitionDao.IntegrityType.fromLong(3));
+		assertEquals(IntegrityDefinitionDao.IntegrityType.CRC64, IntegrityDefinitionDao.IntegrityType.fromLong(6));
+		assertNull(IntegrityDefinitionDao.IntegrityType.fromLong(-1));
 	}
 	
 	@Test
@@ -104,12 +104,12 @@ public class IntegrityDefinitionBuilderTest {
 	
 	@Test 
 	public void testHashCodeWithNoIntegrity(){
-		assertEquals(new IntegrityDefinitionBuilder().hashCode(), 0);
+		assertEquals(new IntegrityDefinitionDao().hashCode(), 0);
 	}
 	
 	@Test
 	public void testEquals(){
-		IntegrityDefinitionBuilder second = new IntegrityDefinitionBuilder(integDef);
+		IntegrityDefinitionDao second = new IntegrityDefinitionDao(integDef);
 		
 		assertEquals(builder, second);	
 	}

@@ -12,9 +12,9 @@ package edu.cmu.sv.arinc838.validation;
 import java.util.Arrays;
 import java.util.List;
 
-import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder.IntegrityType;
-import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
-import edu.cmu.sv.arinc838.builder.SoftwareDescriptionBuilder;
+import edu.cmu.sv.arinc838.builder.IntegrityDefinitionDao.IntegrityType;
+import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileDao;
+import edu.cmu.sv.arinc838.builder.SoftwareDescriptionDao;
 
 /**
  * <p>
@@ -180,7 +180,7 @@ public class DataValidator {
 	/**
 	 * Validates the file format version value. Must be a byte[4], and have the
 	 * value of
-	 * {@link SoftwareDefinitionFileBuilder#DEFAULT_FILE_FORMAT_VERSION}
+	 * {@link SoftwareDefinitionFileDao#DEFAULT_FILE_FORMAT_VERSION}
 	 * 
 	 * @param value
 	 *            The input value
@@ -189,12 +189,12 @@ public class DataValidator {
 	 *             if the input value does not validate.
 	 */
 	public static byte[] validateFileFormatVersion(byte[] version) {
-		if (!Arrays.equals(version, SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION)) {
+		if (!Arrays.equals(version, SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION)) {
 			throw new IllegalArgumentException(
 					"File format version was set to "
 							+ version
 							+ ", expected "
-							+ SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION);
+							+ SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION);
 		}
 		return version;
 	}
@@ -273,7 +273,7 @@ public class DataValidator {
 					"Software part number format was invalid. Got "
 							+ value
 							+ ", expected format to be "
-							+ SoftwareDescriptionBuilder.SOFTWARE_PART_NUMBER_FORMAT);
+							+ SoftwareDescriptionDao.SOFTWARE_PART_NUMBER_FORMAT);
 		}
 
 		checkForIllegalCharsInPartNumber(value);

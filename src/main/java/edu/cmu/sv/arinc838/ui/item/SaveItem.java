@@ -9,7 +9,7 @@
  */
 package edu.cmu.sv.arinc838.ui.item;
 
-import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
+import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileDao;
 import edu.cmu.sv.arinc838.writer.SdfWriter;
 
 public class SaveItem extends AbstractMenuItem {
@@ -21,7 +21,7 @@ public class SaveItem extends AbstractMenuItem {
 	}
 
 	@Override
-	public MenuItem[] execute(SoftwareDefinitionFileBuilder builder)
+	public MenuItem[] execute(SoftwareDefinitionFileDao builder)
 			throws Exception {
 
 		String path = promptForResponse("Save where? (path only, filename will be appended)");

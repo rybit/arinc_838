@@ -26,7 +26,7 @@ import com.arinc.arinc838.SdfFile;
 import com.arinc.arinc838.SoftwareDescription;
 import com.arinc.arinc838.ThwDefinition;
 
-import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
+import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileDao;
 import edu.cmu.sv.arinc838.util.Converter;
 import edu.cmu.sv.arinc838.validation.ReferenceData;
 
@@ -50,7 +50,7 @@ public class XdfWriterTest {
 	@Test
 	public void testWriteReturnsFileName() throws Exception {
 		SdfFile file = getTestFile();
-		SoftwareDefinitionFileBuilder builder = new SoftwareDefinitionFileBuilder(
+		SoftwareDefinitionFileDao builder = new SoftwareDefinitionFileDao(
 				file);
 		XdfWriter writer = new XdfWriter();
 
@@ -137,13 +137,13 @@ public class XdfWriterTest {
 		swDefFile.getFileDefinitions().add(file);
 
 		swDefFile
-				.setFileFormatVersion(SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION);
+				.setFileFormatVersion(SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION);
 		return swDefFile;
 	}
 
 	@Test
 	public void testBuildsCorrectFileName() throws Exception {
-		SoftwareDefinitionFileBuilder builder = new SoftwareDefinitionFileBuilder(
+		SoftwareDefinitionFileDao builder = new SoftwareDefinitionFileDao(
 				getTestFile());
 
 		XdfWriter writer = new XdfWriter();

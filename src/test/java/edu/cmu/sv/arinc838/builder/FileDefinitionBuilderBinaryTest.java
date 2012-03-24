@@ -10,20 +10,20 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
-import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder.IntegrityType;
+import edu.cmu.sv.arinc838.builder.IntegrityDefinitionDao.IntegrityType;
 import edu.cmu.sv.arinc838.util.Converter;
 
 public class FileDefinitionBuilderBinaryTest {
 	
-	private FileDefinitionBuilder fileDefBuilder;
+	private FileDefinitionDao fileDefBuilder;
 	
 	@BeforeMethod
 	public void setup() {
-		fileDefBuilder = new FileDefinitionBuilder();
+		fileDefBuilder = new FileDefinitionDao();
 		fileDefBuilder.setFileLoadable(true);
 		fileDefBuilder.setFileName("someFile.bin");
 		fileDefBuilder.setFileSize(123456);
-		IntegrityDefinitionBuilder integ = new IntegrityDefinitionBuilder();
+		IntegrityDefinitionDao integ = new IntegrityDefinitionDao();
 		integ.setIntegrityType(IntegrityType.CRC32.getType());
 		integ.setIntegrityValue(Converter.hexToBytes("DEADBEEF"));
 		fileDefBuilder.setFileIntegrityDefinition(integ);
@@ -77,7 +77,7 @@ public class FileDefinitionBuilderBinaryTest {
 		bdfFile.seek(0); //return to start of file
 		bdfFile.readUint32(); //parent object reads the pointers
 		
-		FileDefinitionBuilder fileDefBuilder2 = new FileDefinitionBuilder(bdfFile);
+		FileDefinitionDao fileDefBuilder2 = new FileDefinitionDao(bdfFile);
 		assertEquals(fileDefBuilder2.isFileLoadable(), fileDefBuilder.isFileLoadable());
 		assertEquals(fileDefBuilder2.getFileName(), fileDefBuilder.getFileName());
 		assertEquals(fileDefBuilder2.getFileSize(), fileDefBuilder.getFileSize());

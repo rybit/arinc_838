@@ -12,18 +12,18 @@ package edu.cmu.sv.arinc838.ui;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
+import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileDao;
 import edu.cmu.sv.arinc838.ui.item.MenuItem;
 
 public class MenuRunner {
 	private static final String DASHED_LINE = "-------------------";
 
-	private SoftwareDefinitionFileBuilder builder;
+	private SoftwareDefinitionFileDao builder;
 	private final BufferedReader br;
 	
 	private MenuRunner() {
 		br = new BufferedReader(new InputStreamReader(System.in));
-		builder = new SoftwareDefinitionFileBuilder();
+		builder = new SoftwareDefinitionFileDao();
 	}
 
 	private void runMenu(MenuItem[] menuItems, String header) {

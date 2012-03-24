@@ -9,7 +9,7 @@
  */
 package edu.cmu.sv.arinc838.ui.item;
 
-import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
+import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileDao;
 
 public class ExitItem extends AbstractMenuItem {
 
@@ -18,7 +18,7 @@ public class ExitItem extends AbstractMenuItem {
 	}
 
 	@Override
-	public MenuItem[] execute(SoftwareDefinitionFileBuilder builder) throws Exception {
+	public MenuItem[] execute(SoftwareDefinitionFileDao builder) throws Exception {
 		return null;
 	}
 }

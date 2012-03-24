@@ -21,7 +21,7 @@ import org.testng.annotations.Test;
 import com.arinc.arinc838.SoftwareDescription;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
-import edu.cmu.sv.arinc838.builder.SoftwareDescriptionBuilder;
+import edu.cmu.sv.arinc838.builder.SoftwareDescriptionDao;
 import edu.cmu.sv.arinc838.util.Converter;
 import edu.cmu.sv.arinc838.validation.DataValidator;
 import edu.cmu.sv.arinc838.validation.ReferenceData;
@@ -29,17 +29,17 @@ import static org.testng.Assert.*;
 
 public class SoftwareDescriptionBuilderTest {
 
-	private SoftwareDescriptionBuilder first;
-	private SoftwareDescriptionBuilder second;
+	private SoftwareDescriptionDao first;
+	private SoftwareDescriptionDao second;
 
 	@BeforeMethod
 	public void setup() {
-		first = new SoftwareDescriptionBuilder();
+		first = new SoftwareDescriptionDao();
 		first.setSoftwarePartnumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
 		first.setSoftwareTypeDescription("description");
 		first.setSoftwareTypeId(Converter.hexToBytes("0000000A"));
 
-		second = new SoftwareDescriptionBuilder();
+		second = new SoftwareDescriptionDao();
 		second.setSoftwarePartnumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
 		second.setSoftwareTypeDescription("description");
 		second.setSoftwareTypeId(Converter.hexToBytes("0000000A"));
@@ -51,7 +51,7 @@ public class SoftwareDescriptionBuilderTest {
 		jaxbDesc.setSoftwarePartnumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
 		jaxbDesc.setSoftwareTypeDescription("test");
 		jaxbDesc.setSoftwareTypeId(new byte[] {1,2,3,4});
-		SoftwareDescriptionBuilder xmlDesc = new SoftwareDescriptionBuilder(
+		SoftwareDescriptionDao xmlDesc = new SoftwareDescriptionDao(
 				jaxbDesc);
 
 		assertEquals(jaxbDesc.getSoftwarePartnumber(),
@@ -64,7 +64,7 @@ public class SoftwareDescriptionBuilderTest {
 		jaxbDesc.setSoftwarePartnumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
 		jaxbDesc.setSoftwareTypeDescription("test");
 		jaxbDesc.setSoftwareTypeId(new byte[] {1,2,3,4});
-		SoftwareDescriptionBuilder xmlDesc = new SoftwareDescriptionBuilder(
+		SoftwareDescriptionDao xmlDesc = new SoftwareDescriptionDao(
 				jaxbDesc);
 
 		assertEquals(jaxbDesc.getSoftwareTypeDescription(),
@@ -78,7 +78,7 @@ public class SoftwareDescriptionBuilderTest {
 		jaxbDesc.setSoftwarePartnumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
 		jaxbDesc.setSoftwareTypeDescription("test");
 		jaxbDesc.setSoftwareTypeId(new byte[] {1,2,3,4});
-		SoftwareDescriptionBuilder xmlDesc = new SoftwareDescriptionBuilder(
+		SoftwareDescriptionDao xmlDesc = new SoftwareDescriptionDao(
 				jaxbDesc);
 
 		assertEquals(jaxbDesc.getSoftwareTypeId(), xmlDesc.getSoftwareTypeId());
@@ -90,7 +90,7 @@ public class SoftwareDescriptionBuilderTest {
 		jaxbDesc.setSoftwarePartnumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
 		jaxbDesc.setSoftwareTypeDescription("test");
 		jaxbDesc.setSoftwareTypeId(new byte[] {1,2,3,4});
-		SoftwareDescriptionBuilder xmlDesc = new SoftwareDescriptionBuilder(
+		SoftwareDescriptionDao xmlDesc = new SoftwareDescriptionDao(
 				jaxbDesc);
 
 		String value = DataValidator
@@ -107,7 +107,7 @@ public class SoftwareDescriptionBuilderTest {
 		jaxbDesc.setSoftwarePartnumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
 		jaxbDesc.setSoftwareTypeDescription("test");
 		jaxbDesc.setSoftwareTypeId(new byte[] {1,2,3,4});
-		SoftwareDescriptionBuilder xmlDesc = new SoftwareDescriptionBuilder(
+		SoftwareDescriptionDao xmlDesc = new SoftwareDescriptionDao(
 				jaxbDesc);
 
 		String value = "set test";
@@ -123,7 +123,7 @@ public class SoftwareDescriptionBuilderTest {
 		jaxbDesc.setSoftwarePartnumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
 		jaxbDesc.setSoftwareTypeDescription("test");
 		jaxbDesc.setSoftwareTypeId(Converter.hexToBytes("00000007"));
-		SoftwareDescriptionBuilder xmlDesc = new SoftwareDescriptionBuilder(
+		SoftwareDescriptionDao xmlDesc = new SoftwareDescriptionDao(
 				jaxbDesc);
 
 		byte[] value = new byte[] { 1, 2, 3, 4 };
@@ -192,7 +192,7 @@ public class SoftwareDescriptionBuilderTest {
 		file.writeHexbin32(typeId);	
 		file.seek(0);
 		
-		SoftwareDescriptionBuilder desc = new SoftwareDescriptionBuilder(file);
+		SoftwareDescriptionDao desc = new SoftwareDescriptionDao(file);
 
 		assertEquals(desc.getSoftwarePartnumber(), partNumber);
 		assertEquals(desc.getSoftwareTypeDescription(), description);
@@ -206,7 +206,7 @@ public class SoftwareDescriptionBuilderTest {
 	
 	@Test
 	public void testhashcodeWithNoPartNumber(){
-		SoftwareDescriptionBuilder desc = new SoftwareDescriptionBuilder();
+		SoftwareDescriptionDao desc = new SoftwareDescriptionDao();
 		
 		assertEquals(desc.hashCode(), 0);	
 	}

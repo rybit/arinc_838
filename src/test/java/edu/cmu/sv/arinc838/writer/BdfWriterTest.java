@@ -11,14 +11,14 @@ import org.mockito.InOrder;
 import org.testng.annotations.Test;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
-import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
+import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileDao;
 
 public class BdfWriterTest {
 
 	@Test
 	public void xdfWriteTest() throws Exception {
 		BdfFile writtenFile = mock(BdfFile.class);
-		SoftwareDefinitionFileBuilder expected = mock(SoftwareDefinitionFileBuilder.class);
+		SoftwareDefinitionFileDao expected = mock(SoftwareDefinitionFileDao.class);
 
 		BdfWriter writer = new BdfWriter();
 
@@ -32,7 +32,7 @@ public class BdfWriterTest {
 
 	@Test
 	public void testWriteReturnsFileName() throws Exception {
-		SoftwareDefinitionFileBuilder builder = mock(SoftwareDefinitionFileBuilder.class);
+		SoftwareDefinitionFileDao builder = mock(SoftwareDefinitionFileDao.class);
 		when(builder.getBinaryFileName()).thenReturn("binary file");
 
 		String tempPath = System.getProperty("java.io.tmpdir");

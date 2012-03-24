@@ -19,8 +19,8 @@ import java.util.List;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder.IntegrityType;
-import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
+import edu.cmu.sv.arinc838.builder.IntegrityDefinitionDao.IntegrityType;
+import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileDao;
 import edu.cmu.sv.arinc838.util.Converter;
 
 public class DataValidatorTest {
@@ -144,9 +144,9 @@ public class DataValidatorTest {
 	@Test
 	public void testValidateFileFormatVersion() {
 		assertEquals(
-				SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION,
+				SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION,
 				DataValidator
-						.validateFileFormatVersion(SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION.clone()));
+						.validateFileFormatVersion(SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION.clone()));
 	}
 
 	@Test(expectedExceptions = IllegalArgumentException.class)

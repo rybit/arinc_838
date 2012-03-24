@@ -17,11 +17,11 @@ import javax.xml.bind.Marshaller;
 import com.arinc.arinc838.SdfFile;
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 
-import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
+import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileDao;
 
 public class XdfWriter implements SdfWriter {
 	@Override
-	public String write(String path, SoftwareDefinitionFileBuilder builder)
+	public String write(String path, SoftwareDefinitionFileDao builder)
 			throws Exception {
 		File file = new File(path + builder.getXmlFileName());
 		SdfFile sdfFile = builder.buildXml();

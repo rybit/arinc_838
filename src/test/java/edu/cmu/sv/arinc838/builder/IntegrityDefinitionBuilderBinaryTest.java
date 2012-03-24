@@ -8,7 +8,7 @@ import java.io.IOException;
 import org.testng.annotations.Test;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
-import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder.IntegrityType;
+import edu.cmu.sv.arinc838.builder.IntegrityDefinitionDao.IntegrityType;
 import edu.cmu.sv.arinc838.util.Converter;
 
 public class IntegrityDefinitionBuilderBinaryTest {
@@ -17,7 +17,7 @@ public class IntegrityDefinitionBuilderBinaryTest {
 	public void buildBinaryCRC16() throws FileNotFoundException, IOException {
 		BdfFile bdfFile = new BdfFile(File.createTempFile("tmpFile", ".bdf"));
 
-		IntegrityDefinitionBuilder integ = new IntegrityDefinitionBuilder();
+		IntegrityDefinitionDao integ = new IntegrityDefinitionDao();
 		integ.setIntegrityType(IntegrityType.CRC16.getType());
 		integ.setIntegrityValue(Converter.hexToBytes("ABCD"));
 
@@ -41,7 +41,7 @@ public class IntegrityDefinitionBuilderBinaryTest {
 	public void buildBinaryCRC32() throws FileNotFoundException, IOException {
 		BdfFile bdfFile = new BdfFile(File.createTempFile("tmpFile", ".bdf"));
 
-		IntegrityDefinitionBuilder integ = new IntegrityDefinitionBuilder();
+		IntegrityDefinitionDao integ = new IntegrityDefinitionDao();
 		integ.setIntegrityType(IntegrityType.CRC32.getType());
 		integ.setIntegrityValue(Converter.hexToBytes("DEADBEEF"));
 
@@ -65,7 +65,7 @@ public class IntegrityDefinitionBuilderBinaryTest {
 	public void buildBinaryCRC64() throws FileNotFoundException, IOException {
 		BdfFile bdfFile = new BdfFile(File.createTempFile("tmpFile", ".bdf"));
 
-		IntegrityDefinitionBuilder integ = new IntegrityDefinitionBuilder();
+		IntegrityDefinitionDao integ = new IntegrityDefinitionDao();
 		integ.setIntegrityType(IntegrityType.CRC64.getType());
 		integ.setIntegrityValue(Converter.hexToBytes("DEADBEEFDEADBEEF"));
 
@@ -88,14 +88,14 @@ public class IntegrityDefinitionBuilderBinaryTest {
 	@Test
 	public void integrityDefinitionBuilderBdfFile() throws IOException {
 		BdfFile bdfFile = new BdfFile(File.createTempFile("tmpFile", ".bdf"));
-		IntegrityDefinitionBuilder integDefBuilder = new IntegrityDefinitionBuilder();
+		IntegrityDefinitionDao integDefBuilder = new IntegrityDefinitionDao();
 		integDefBuilder.setIntegrityType(IntegrityType.CRC64.getType());
 		integDefBuilder.setIntegrityValue(Converter.hexToBytes("DEADBEEFDEADBEEF"));
 		integDefBuilder.buildBinary(bdfFile);
 		
 		bdfFile.seek(0);
 		
-		IntegrityDefinitionBuilder integDefBuilder2 = new IntegrityDefinitionBuilder(bdfFile);
+		IntegrityDefinitionDao integDefBuilder2 = new IntegrityDefinitionDao(bdfFile);
 		assertEquals(integDefBuilder2.getIntegrityType(), integDefBuilder.getIntegrityType()); 
 		assertEquals(integDefBuilder2.getIntegrityValue(), integDefBuilder.getIntegrityValue()); 
 	}
