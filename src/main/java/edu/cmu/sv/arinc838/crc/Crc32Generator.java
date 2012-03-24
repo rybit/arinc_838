@@ -55,7 +55,7 @@ public class Crc32Generator {
 		0x9E7D9662, 0x933EB0BB, 0x97FFAD0C, 0xAFB010B1, 0xAB710D06,
 		0xA6322BDF, 0xA2F33668, 0xBCB4666D, 0xB8757BDA, 0xB5365D03,
 		0xB1F740B4 };
-	
+
 	// Generates CRC lookup table above. Ported from C code in spec.
 //	static {
 //		long generator = 0x04C11DB7;

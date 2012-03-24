@@ -2,7 +2,9 @@ package edu.cmu.sv.arinc838.crc;
 
 public class Crc64Generator {
 
-	public static int[] tableHigh = { 0x00000000, 0x42F0E1EB, 0x85E1C3D7,
+	
+	
+	static int[] tableHigh = { 0x00000000, 0x42F0E1EB, 0x85E1C3D7,
 			0xC711223C, 0x49336645, 0x0BC387AE, 0xCCD2A592, 0x8E224479,
 			0x9266CC8A, 0xD0962D61, 0x17870F5D, 0x5577EEB6, 0xDB55AACF,
 			0x99A54B24, 0x5EB46918, 0x1C4488F3, 0x663D78FF, 0x24CD9914,
@@ -54,6 +56,7 @@ public class Crc64Generator {
 			0x41A94CE9, 0xCF8B0890, 0x8D7BE97B, 0x4A6ACB47, 0x089A2AAC,
 			0x14DEA25F, 0x562E43B4, 0x913F6188, 0xD3CF8063, 0x5DEDC41A,
 			0x1F1D25F1, 0xD80C07CD, 0x9AFCE626 };
+			
 	public static int[] tableLow = { 0x00000000, 0xA9EA3693, 0x53D46D26,
 			0xFA3E5BB5, 0x0E42ECDF, 0xA7A8DA4C, 0x5D9681F9, 0xF47CB76A,
 			0x1C85D9BE, 0xB56FEF2D, 0x4F51B498, 0xE6BB820B, 0x12C73561,
@@ -106,7 +109,7 @@ public class Crc64Generator {
 			0xDC428066, 0x283E370C, 0x81D4019F, 0x7BEA5A2A, 0xD2006CB9,
 			0x3AF9026D, 0x931334FE, 0x692D6F4B, 0xC0C759D8, 0x34BBEEB2,
 			0x9D51D821, 0x676F8394, 0xCE85B507 };
-
+	
 	public static long calculateCrc(byte[] buffer) {
 		long low = 0xFFFFFFFFl, high = 0xFFFFFFFFl;
 		int index; // Index into table
@@ -130,5 +133,63 @@ public class Crc64Generator {
 		low ^= 0xFFFFFFFFl;
 		return low | (high << 32);
 	}
+
+	/*
+	 * Generates CRC lookup table above. Ported from C code in spec.
+	
+	
+	static int[] tableHigh = new int[256];
+	static int[] tableLow = new int[256];
+	static int regHigh;
+    static int regLow;
+	static {
+
+	  // Loop for each possible byte value
+	     for (int iByteVal=0; iByteVal < 256; iByteVal++) {
+	       // Make the Table entry for the current byte value
+	          MakeTableEntry(iByteVal);
+	          tableHigh[iByteVal] = regHigh;
+	          tableLow[iByteVal] = regLow;
+	     }
+	     // PrintTable();    // Comment out if desired
+	}
+	
+	
+	
+	static void MakeTableEntry(int byteVal)
+	{
+	    int generatorLow  = 0xA9EA3693;
+	    int generatorHigh = 0x42F0E1EB;
+	    regHigh = byteVal << 24;
+	    regLow = 0x00000000;
+	    
+		
+		
+	     int msb;        // Most significant bit of reg (before shift)
+
+	  // Loop for each bit in high byte of reg
+	     for (int i=0; i < 8; i++) {
+	       // Save the most significant bit for later
+	          msb = regHigh & 0x80000000;
+
+	       // Shift reg left one bit
+	          regHigh <<= 1;
+	          
+	          if ((regLow & 0x80000000) != 0) {
+	               regHigh |= 0x00000001;
+	          }
+	          regLow <<= 1;
+
+	       // If most significant bit was 1 (before the shift)
+	          if (msb != 0) {
+	            // XOR the generator into reg
+	               regHigh ^= generatorHigh;
+	               regLow  ^= generatorLow;
+	          }
+	     }
+	}
+*/
+
+	
 
 }
