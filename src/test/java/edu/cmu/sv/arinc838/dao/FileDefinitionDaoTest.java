@@ -7,7 +7,7 @@
  * 
  * Created on Feb 7, 2012
  */
-package edu.cmu.sv.arinc838.builder;
+package edu.cmu.sv.arinc838.dao;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
@@ -17,12 +17,13 @@ import org.testng.annotations.Test;
 
 import com.arinc.arinc838.FileDefinition;
 
+import edu.cmu.sv.arinc838.builder.IntegrityDefinitionBuilder;
 import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao.IntegrityType;
 import edu.cmu.sv.arinc838.util.Converter;
 
-public class FileDefinitionBuilderTest {
+public class FileDefinitionDaoTest {
 	FileDefinition xmlFileDef;
 
 	// Our builder
@@ -30,10 +31,12 @@ public class FileDefinitionBuilderTest {
 
 	@BeforeMethod
 	public void setUp() {
-		IntegrityDefinitionDao integBuilder = new IntegrityDefinitionDao();
-		integBuilder.setIntegrityType(IntegrityType.CRC16.getType());
-		integBuilder.setIntegrityValue(Converter.hexToBytes("0000000A"));
+		IntegrityDefinitionDao integDao = new IntegrityDefinitionDao();
+		integDao.setIntegrityType(IntegrityType.CRC16.getType());
+		integDao.setIntegrityValue(Converter.hexToBytes("0000000A"));
 
+		IntegrityDefinitionBuilder integBuilder = new IntegrityDefinitionBuilder (integDao);
+		
 		xmlFileDef = new FileDefinition();
 		xmlFileDef.setFileLoadable(false);
 		xmlFileDef.setFileName("testFile");
@@ -44,7 +47,7 @@ public class FileDefinitionBuilderTest {
 		fileBuilder.setFileLoadable(xmlFileDef.isFileLoadable());
 		fileBuilder.setFileName(xmlFileDef.getFileName());
 		fileBuilder.setFileSize(xmlFileDef.getFileSize());		
-		fileBuilder.setFileIntegrityDefinition(integBuilder);
+		fileBuilder.setFileIntegrityDefinition(integDao);
 	}
 
 	/**
@@ -87,11 +90,6 @@ public class FileDefinitionBuilderTest {
 		assertNotEquals(fileName, fileBuilder.getFileName());
 	}
 
-	@Test(expectedExceptions = IllegalArgumentException.class)
-	public void testSetFileNameInvalid() {
-		fileBuilder.setFileName("<hello there & stuff>");
-	}
-
 	@Test
 	public void testFileSizeAccessors() {
 		int fSize = 234;
@@ -102,11 +100,6 @@ public class FileDefinitionBuilderTest {
 		assertNotEquals(fSize, fileBuilder);
 	}
 	
-	@Test(expectedExceptions = IllegalArgumentException.class)
-	public void testSetFileSizeInvalid() {
-		fileBuilder.setFileSize(-1);
-	}
-
 	@Test
 	public void testLoadableAccessors() {
 		boolean loadable = false;
@@ -117,25 +110,6 @@ public class FileDefinitionBuilderTest {
 		assertNotEquals(loadable, fileBuilder.isFileLoadable());
 	}
 
-	@Test
-	public void testBuilder() {
-		FileDefinitionDao newBuilder = new FileDefinitionDao(xmlFileDef);
-
-		FileDefinition built = newBuilder.buildXml();
-		assertNotEquals(null, built);
-		assertNotEquals(built, xmlFileDef,
-				"Should be different, a NEW instance should be built");
-
-		assertNotEquals(null, built.getFileIntegrityDefinition());
-		assertNotEquals(built.getFileIntegrityDefinition(),
-				xmlFileDef.getFileIntegrityDefinition(),
-				"Should have built a new integrity definition");
-
-		assertEquals(built.getFileName(), xmlFileDef.getFileName());
-		assertEquals(built.getFileSize(), xmlFileDef.getFileSize());
-		assertEquals(built.isFileLoadable(), xmlFileDef.isFileLoadable());
-	}
-	
 	@Test
 	public void testHashCode(){
 		assertEquals(fileBuilder.hashCode(), fileBuilder.getFileIntegrityDefinition().hashCode());

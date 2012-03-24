@@ -12,9 +12,9 @@ package edu.cmu.sv.arinc838.validation;
 import java.util.Arrays;
 import java.util.List;
 
-import edu.cmu.sv.arinc838.builder.IntegrityDefinitionDao.IntegrityType;
-import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileDao;
-import edu.cmu.sv.arinc838.builder.SoftwareDescriptionDao;
+import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao.IntegrityType;
+import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
+import edu.cmu.sv.arinc838.dao.SoftwareDescriptionDao;
 
 /**
  * <p>
