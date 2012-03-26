@@ -13,14 +13,14 @@ import java.io.IOException;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
 
-public interface Builder<T> {
+public interface Builder<DaoType, JaxbType> {
 
 	/**
 	 * Builds and returns a JAXB object based on the builder's current values.
 	 * 
 	 * @return A JAXB object that reflects the builder's current state.
 	 */
-	public T buildXml();
+	public JaxbType buildXml(DaoType dao);
 
 	/**
 	 * Writes all the binary data represented by the builder to the
@@ -31,5 +31,5 @@ public interface Builder<T> {
 	 * @return The number of bytes written to the file
 	 * @throws IOException
 	 */
-	public int buildBinary(BdfFile bdfFile) throws IOException;
+	public int buildBinary(DaoType dao, BdfFile bdfFile) throws IOException;
 }

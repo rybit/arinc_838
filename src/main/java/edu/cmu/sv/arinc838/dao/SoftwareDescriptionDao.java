@@ -65,29 +65,6 @@ public class SoftwareDescriptionDao {
 	public void setSoftwareTypeId(byte[] value) {
 		this.softwareTypeId = DataValidator.validateHexbin32(value);
 	}
-//
-//	@Override
-//	public SoftwareDescription buildXml() {
-//		SoftwareDescription desc = new SoftwareDescription();
-//
-//		desc.setSoftwarePartnumber(this.getSoftwarePartnumber());
-//		desc.setSoftwareTypeDescription(this.getSoftwareTypeDescription());
-//		desc.setSoftwareTypeId(this.getSoftwareTypeId());
-//
-//		return desc;
-//	}
-//
-//	@Override
-//	public int buildBinary(BdfFile file) throws IOException {
-//		int initialPosition = (int) file.getFilePointer();
-//
-//		file.writeSoftwareDescriptionPointer();
-//		file.writeStr64k(this.getSoftwarePartnumber());
-//		file.writeStr64k(this.getSoftwareTypeDescription());
-//		file.writeHexbin32(this.getSoftwareTypeId());
-//
-//		return (int) (file.getFilePointer() - initialPosition);
-//	}
 
 	@Override
 	public boolean equals(Object obj) {

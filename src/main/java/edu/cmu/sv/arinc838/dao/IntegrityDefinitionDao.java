@@ -85,28 +85,6 @@ public class IntegrityDefinitionDao {
 		return integValue;
 	}
 
-//	@Override
-//	public IntegrityDefinition buildXml() {
-//		IntegrityDefinition retDef = new IntegrityDefinition();
-//
-//		retDef.setIntegrityType(integType);
-//		retDef.setIntegrityValue(integValue);
-//
-//		return retDef;
-//	}
-//
-//	@Override
-//	public int buildBinary(BdfFile bdfFile) throws IOException {
-//		int initialPosition = (int) bdfFile.getFilePointer();
-//
-//		bdfFile.writeUint32(getIntegrityType());
-//		bdfFile.writeHexbin64k(getIntegrityValue());
-//
-//		int finalPosition = (int) bdfFile.getFilePointer();
-//
-//		return (int) (finalPosition - initialPosition);
-//	}
-
 	@Override
 	public int hashCode() {
 		if (this.getIntegrityValue() != null) {

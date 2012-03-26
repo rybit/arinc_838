@@ -106,41 +106,6 @@ public class FileDefinitionDao {
 		this.fileSize = DataValidator.validateUint32(fileSize);
 	}
 
-//	@Override
-//	public FileDefinition buildXml() {
-//		FileDefinition retDef = new FileDefinition();
-//
-//		retDef.setFileLoadable(loadable);
-//		retDef.setFileName(fileName);
-//		retDef.setFileSize(fileSize);
-//
-//		retDef.setFileIntegrityDefinition(integDefBuilder.buildXml());
-//
-//		return retDef;
-//	}
-//	
-//	@Override
-//	public int buildBinary(BdfFile bdfFile) throws IOException {
-//		int initialPosition = (int) bdfFile.getFilePointer();
-//		
-//		bdfFile.writeUint32(0); //Place holder for APTPTR to the next file definition
-//		bdfFile.writeBoolean(isFileLoadable());
-//		bdfFile.writeStr64k(getFileName());
-//		bdfFile.writeUint32(getFileSize());
-//		getFileIntegrityDefinition().buildBinary(bdfFile);
-//
-//		int finalPosition = (int) bdfFile.getFilePointer();
-//		
-//		//If not last file def then fill in the pointer to the next file def
-//		if (!isLast()) {
-//			bdfFile.seek(initialPosition);
-//			bdfFile.writeUint32(finalPosition);
-//			bdfFile.seek(finalPosition);
-//		}
-//
-//		return (int) (finalPosition - initialPosition);
-//	}
-
 	public boolean isLast() {
 		return isLast;
 	}

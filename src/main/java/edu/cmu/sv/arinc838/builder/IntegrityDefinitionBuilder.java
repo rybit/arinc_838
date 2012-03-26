@@ -7,21 +7,27 @@ import com.arinc.arinc838.IntegrityDefinition;
 import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
 
-public class IntegrityDefinitionBuilder implements Builder<IntegrityDefinition> {
+public class IntegrityDefinitionBuilder implements Builder<IntegrityDefinitionDao, IntegrityDefinition> {
 
-	public IntegrityDefinitionBuilder(IntegrityDefinitionDao integDao) {
-		// TODO Auto-generated constructor stub
+	@Override
+	public IntegrityDefinition buildXml(IntegrityDefinitionDao integDao) {
+		IntegrityDefinition retDef = new IntegrityDefinition();
+
+		retDef.setIntegrityType(integDao.getIntegrityType());
+		retDef.setIntegrityValue(integDao.getIntegrityValue());
+
+		return retDef;
 	}
 
 	@Override
-	public IntegrityDefinition buildXml() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public int buildBinary(IntegrityDefinitionDao integDao, BdfFile bdfFile) throws IOException {
+		int initialPosition = (int) bdfFile.getFilePointer();
 
-	@Override
-	public int buildBinary(BdfFile bdfFile) throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
+		bdfFile.writeUint32(integDao.getIntegrityType());
+		bdfFile.writeHexbin64k(integDao.getIntegrityValue());
+
+		int finalPosition = (int) bdfFile.getFilePointer();
+
+		return (int) (finalPosition - initialPosition);
 	}
 }

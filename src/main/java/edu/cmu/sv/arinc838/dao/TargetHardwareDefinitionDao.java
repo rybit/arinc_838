@@ -56,51 +56,6 @@ public class TargetHardwareDefinitionDao {
 		return positions;
 	}
 
-//	@Override
-//	public ThwDefinition buildXml() {
-//		ThwDefinition def = new ThwDefinition();
-//
-//		def.setThwId(this.getThwId());
-//		for (String position : this.getPositions()) {
-//			def.getThwPosition().add(position);
-//		}
-//
-//		return def;
-//	}
-//
-//	@Override
-//	public int buildBinary(BdfFile bdfFile) throws IOException {
-//		int initialPosition = (int) bdfFile.getFilePointer();
-//
-//		bdfFile.writePlaceholder();
-//		bdfFile.writeStr64k(getThwId());
-//		bdfFile.writeUint32(getPositions().size());
-//		for (int i = 0; i < getPositions().size(); i++) {
-//			String position = getPositions().get(i);
-//			// next pointer is current position + 4 pointer to next thw-position
-//			// + 2 position string length + position length
-//			long nextThwPositionPointer = bdfFile.getFilePointer() + 4 + 2
-//					+ position.length();
-//
-//			if (i == getPositions().size() - 1) {
-//				bdfFile.writeUint32(0);
-//			} else {
-//				bdfFile.writeUint32(nextThwPositionPointer);
-//			}
-//
-//			bdfFile.writeStr64k(position);
-//		}
-//
-//		int finalPosition = (int) bdfFile.getFilePointer();
-//		if (!isLast()) {
-//			bdfFile.seek(initialPosition);
-//			bdfFile.writeUint32(finalPosition);
-//			bdfFile.seek(finalPosition);
-//		}
-//
-//		return (int) (finalPosition - initialPosition);
-//	}
-
 	public boolean isLast() {
 		return isLast;
 	}
