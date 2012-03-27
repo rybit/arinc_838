@@ -34,14 +34,12 @@ public class FileDefinitionDaoTest {
 		IntegrityDefinitionDao integDao = new IntegrityDefinitionDao();
 		integDao.setIntegrityType(IntegrityType.CRC16.getType());
 		integDao.setIntegrityValue(Converter.hexToBytes("0000000A"));
-
-		IntegrityDefinitionBuilder integBuilder = new IntegrityDefinitionBuilder (integDao);
 		
 		xmlFileDef = new FileDefinition();
 		xmlFileDef.setFileLoadable(false);
 		xmlFileDef.setFileName("testFile");
 		xmlFileDef.setFileSize(1234);
-		xmlFileDef.setFileIntegrityDefinition(integBuilder.buildXml());
+		xmlFileDef.setFileIntegrityDefinition( new IntegrityDefinitionBuilder ().buildXml(integDao));
 
 		fileBuilder = new FileDefinitionDao();
 		fileBuilder.setFileLoadable(xmlFileDef.isFileLoadable());

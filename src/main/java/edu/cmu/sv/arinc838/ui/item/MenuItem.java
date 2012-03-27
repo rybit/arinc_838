@@ -9,7 +9,7 @@
  */
 package edu.cmu.sv.arinc838.ui.item;
 
-import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileDao;
+import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 
 /**
  * Use the list to indicate the three possible options:
@@ -18,7 +18,7 @@ import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileDao;
  *   3. pop up a level (exit)
  */
 public interface MenuItem {
-	public MenuItem[] execute (SoftwareDefinitionFileDao builder) throws Exception;
+	public MenuItem[] execute (SoftwareDefinitionFileDao sdfDao) throws Exception;
 	public String getPrompt ();
 	public String getHeader();
 }

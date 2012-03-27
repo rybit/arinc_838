@@ -9,7 +9,7 @@
  */
 package edu.cmu.sv.arinc838.ui.item;
 
-import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileDao;
+import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 
 public class ExitItem extends AbstractMenuItem {
 
