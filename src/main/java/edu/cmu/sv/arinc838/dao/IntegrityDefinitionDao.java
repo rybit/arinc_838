@@ -15,7 +15,6 @@ import java.util.Arrays;
 import com.arinc.arinc838.IntegrityDefinition;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
-import edu.cmu.sv.arinc838.validation.DataValidator;
 
 public class IntegrityDefinitionDao {
 
@@ -70,7 +69,7 @@ public class IntegrityDefinitionDao {
 	}
 
 	public void setIntegrityType(long value) {
-		integType = DataValidator.validateIntegrityType(value);
+		integType = value;
 	}
 
 	public long getIntegrityType() {
@@ -78,7 +77,7 @@ public class IntegrityDefinitionDao {
 	}
 
 	public void setIntegrityValue(byte[] value) {
-		integValue = DataValidator.validateIntegrityValue(value);
+		integValue = value;
 	}
 
 	public byte[] getIntegrityValue() {

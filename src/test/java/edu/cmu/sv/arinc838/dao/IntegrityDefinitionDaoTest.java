@@ -90,6 +90,7 @@ public class IntegrityDefinitionDaoTest {
 	
 	@Test
 	public void testHashCode(){
+		IntegrityDefinitionDao integDao = new IntegrityDefinitionDao(integDef);
 		assertEquals(integDao.hashCode(), integDao.getIntegrityValue().hashCode());
 	}
 	
@@ -100,8 +101,12 @@ public class IntegrityDefinitionDaoTest {
 	
 	@Test
 	public void testEquals(){
+		IntegrityDefinitionDao first = new IntegrityDefinitionDao(integDef);
 		IntegrityDefinitionDao second = new IntegrityDefinitionDao(integDef);
 		
-		assertEquals(integDao, second);	
+		assertEquals(first, second);
+		assertEquals(second, first);
+		assertNotEquals("null", first);
+		
 	}
 }
