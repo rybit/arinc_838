@@ -9,39 +9,31 @@
  */
 package edu.cmu.sv.arinc838.builder;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.arinc.arinc838.ThwDefinition;
 
-import edu.cmu.sv.arinc838.builder.TargetHardwareDefinitionBuilder;
+import edu.cmu.sv.arinc838.dao.TargetHardwareDefinitionDao;
 
 public class TargetHardwareDefinitionBuilderTest {
-	private TargetHardwareDefinitionBuilder first;
-	private TargetHardwareDefinitionBuilder second;
+	private TargetHardwareDefinitionDao first;
 
 	@BeforeMethod
 	public void setup() {
-		first = new TargetHardwareDefinitionBuilder();
+		first = new TargetHardwareDefinitionDao();
 		first.setThwId("first");
 		first.getPositions().add("one");
 		first.getPositions().add("two");
-		
-		second = new TargetHardwareDefinitionBuilder();
-		second.setThwId("first");
-		second.getPositions().add("one");
-		second.getPositions().add("two");		
 	}
 
 	@Test
 	public void testBuildReturnsProperJaxbObject() {
-		ThwDefinition def = first.buildXml();
-		
-		assertEquals(def.getThwId(), first.getThwId());
-		
-		for(int i = 0; i < def.getThwPosition().size(); i++){
+		ThwDefinition def = new TargetHardwareDefinitionBuilder().buildXml(first);
+
+		for (int i = 0; i < def.getThwPosition().size(); i++) {
 			assertEquals(def.getThwPosition().get(i), first.getPositions().get(i));
 		}
 	}
