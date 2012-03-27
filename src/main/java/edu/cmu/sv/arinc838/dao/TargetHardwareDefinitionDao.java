@@ -16,7 +16,6 @@ import java.util.List;
 import com.arinc.arinc838.ThwDefinition;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
-import edu.cmu.sv.arinc838.validation.DataValidator;
 
 public class TargetHardwareDefinitionDao {
 
@@ -35,11 +34,12 @@ public class TargetHardwareDefinitionDao {
 	public TargetHardwareDefinitionDao() {
 	}
 
-	public TargetHardwareDefinitionDao(BdfFile bdfFile) throws IOException {		
+	public TargetHardwareDefinitionDao(BdfFile bdfFile) throws IOException {
 		setThwId(bdfFile.readStr64k());
 		long positionsLength = bdfFile.readUint32();
-		for(int i=0; i<positionsLength; i++) {
-			bdfFile.readUint32(); // Read out the pointer to the next thw-position. We don't use it.
+		for (int i = 0; i < positionsLength; i++) {
+			bdfFile.readUint32(); // Read out the pointer to the next
+									// thw-position. We don't use it.
 			getPositions().add(bdfFile.readStr64k());
 		}
 	}
@@ -49,11 +49,18 @@ public class TargetHardwareDefinitionDao {
 	}
 
 	public void setThwId(String value) {
-		this.id = DataValidator.validateStr64kXml(value);
+		this.id = value;
 	}
 
 	public List<String> getPositions() {
 		return positions;
+	}
+
+	public void addPosition(String position) {
+		if (positions == null) { 
+			positions = new ArrayList<String> ();
+		}
+		positions.add(position);
 	}
 
 	public boolean isLast() {
@@ -63,28 +70,27 @@ public class TargetHardwareDefinitionDao {
 	public void setIsLast(boolean value) {
 		isLast = value;
 	}
-	
+
 	@Override
 	public int hashCode() {
-		if(this.getThwId() != null){
+		if (this.getThwId() != null) {
 			return this.getThwId().hashCode();
 		}
-		
+
 		return 0;
 	}
-	
-//	@Override
-//	public boolean equals(Object obj) {
-//		return obj !=  null &&
-//				this == obj ||
-//				(obj instancTargetHardwareDefinitionBuildernDao &&
-//				equaTargetHardwareDefinitionBuildernDao)obj));		
-//	}
-//	
-//	public boolean equTargetHardwareDefinitionBuildernDao obj){
-//		return obj != null &&
-//				this == obj ||
-//				(this.getThwId().equals(obj.getThwId()) &&
-//				this.getPositions().equals(obj.getPositions()));
-//	}
+
+	 @Override
+	 public boolean equals(Object obj) {
+		 if (obj == null || !(obj instanceof TargetHardwareDefinitionDao))
+			 return false;
+		 
+		 TargetHardwareDefinitionDao other = (TargetHardwareDefinitionDao) obj;
+
+		 boolean ret = (this.getThwId() == null ? other.getThwId() == null : this.getThwId().equals(other.getThwId()));
+		 if (!ret) return false;
+		 
+		 ret = this.getPositions() == null ? other.getPositions() == null : getPositions().equals (other.getPositions());
+		 return ret;
+	 }		 
 }
