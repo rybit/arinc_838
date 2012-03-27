@@ -1,39 +1,41 @@
 package edu.cmu.sv.arinc838.builder;
 
+import static org.testng.Assert.assertEquals;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
-import static org.testng.Assert.*;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
-import edu.cmu.sv.arinc838.builder.IntegrityDefinitionDao.IntegrityType;
+import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
+import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
+import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao.IntegrityType;
 import edu.cmu.sv.arinc838.util.Converter;
 
 public class FileDefinitionBuilderBinaryTest {
 	
-	private FileDefinitionDao fileDefBuilder;
+	private FileDefinitionDao fileDefDao;
 	
 	@BeforeMethod
 	public void setup() {
-		fileDefBuilder = new FileDefinitionDao();
-		fileDefBuilder.setFileLoadable(true);
-		fileDefBuilder.setFileName("someFile.bin");
-		fileDefBuilder.setFileSize(123456);
+		fileDefDao = new FileDefinitionDao();
+		fileDefDao.setFileLoadable(true);
+		fileDefDao.setFileName("someFile.bin");
+		fileDefDao.setFileSize(123456);
+
 		IntegrityDefinitionDao integ = new IntegrityDefinitionDao();
 		integ.setIntegrityType(IntegrityType.CRC32.getType());
 		integ.setIntegrityValue(Converter.hexToBytes("DEADBEEF"));
-		fileDefBuilder.setFileIntegrityDefinition(integ);
-		
+		fileDefDao.setFileIntegrityDefinition(integ);
 	}
 	
 	@Test
 	public void buildBinary() throws FileNotFoundException, IOException {
 		BdfFile bdfFile = new BdfFile(File.createTempFile("tmpFile", ".bdf"));
-		int bytesWritten = fileDefBuilder.buildBinary(bdfFile);
+		int bytesWritten = new FileDefinitionBuilder().buildBinary(fileDefDao, bdfFile);
 
 		// 4 ptr to next + 1 is loadable + 14 file name + 4 file size + 10 CRC32 integrity
 		// 4 + 1 + 14 + 4 + 14 = 37
@@ -55,9 +57,9 @@ public class FileDefinitionBuilderBinaryTest {
 
 	@Test
 	public void buildBinaryIsLast() throws FileNotFoundException, IOException {
-		fileDefBuilder.setIsLast(true);
+		fileDefDao.setIsLast(true);
 		BdfFile bdfFile = new BdfFile(File.createTempFile("tmpFile", ".bdf"));
-		int bytesWritten = fileDefBuilder.buildBinary(bdfFile);
+		int bytesWritten = new FileDefinitionBuilder().buildBinary(fileDefDao, bdfFile);
 
 		// 4 ptr to next + 1 is loadable + 14 file name + 4 file size + 10 CRC32 integrity
 		// 4 + 1 + 14 + 4 + 14 = 37
@@ -72,16 +74,16 @@ public class FileDefinitionBuilderBinaryTest {
 	@Test
 	public void fileDefinitionBuilderBdfFile() throws FileNotFoundException, IOException {
 		BdfFile bdfFile = new BdfFile(File.createTempFile("tmpFile", ".bdf"));
-		fileDefBuilder.buildBinary(bdfFile);
+		new FileDefinitionBuilder().buildBinary(fileDefDao, bdfFile);
 
 		bdfFile.seek(0); //return to start of file
 		bdfFile.readUint32(); //parent object reads the pointers
 		
 		FileDefinitionDao fileDefBuilder2 = new FileDefinitionDao(bdfFile);
-		assertEquals(fileDefBuilder2.isFileLoadable(), fileDefBuilder.isFileLoadable());
-		assertEquals(fileDefBuilder2.getFileName(), fileDefBuilder.getFileName());
-		assertEquals(fileDefBuilder2.getFileSize(), fileDefBuilder.getFileSize());
-		assertEquals(fileDefBuilder2.getFileIntegrityDefinition().getIntegrityType(), fileDefBuilder.getFileIntegrityDefinition().getIntegrityType());
-		assertEquals(fileDefBuilder2.getFileIntegrityDefinition().getIntegrityValue(), fileDefBuilder.getFileIntegrityDefinition().getIntegrityValue());
+		assertEquals(fileDefBuilder2.isFileLoadable(), fileDefDao.isFileLoadable());
+		assertEquals(fileDefBuilder2.getFileName(), fileDefDao.getFileName());
+		assertEquals(fileDefBuilder2.getFileSize(), fileDefDao.getFileSize());
+		assertEquals(fileDefBuilder2.getFileIntegrityDefinition().getIntegrityType(), fileDefDao.getFileIntegrityDefinition().getIntegrityType());
+		assertEquals(fileDefBuilder2.getFileIntegrityDefinition().getIntegrityValue(), fileDefDao.getFileIntegrityDefinition().getIntegrityValue());
 	}
 }
