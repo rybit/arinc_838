@@ -10,28 +10,28 @@
 package edu.cmu.sv.arinc838.writer;
 
 import java.io.File;
-import java.io.IOException;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
-import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileDao;
+import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
+import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 
 public class BdfWriter implements SdfWriter {
-
 	@Override
-	public String write(String path, SoftwareDefinitionFileDao builder)
-			throws Exception {		
-		
-		File fileOnDisk =new File(path+builder.getBinaryFileName());
-		
+	public void write(String path, SoftwareDefinitionFileDao sdfDao) throws Exception {
+		File fileOnDisk = new File(path + sdfDao.getBinaryFileName());
 		BdfFile file = new BdfFile(fileOnDisk);
 		
-		write(file, builder);
-		
-		return fileOnDisk.getAbsolutePath();
+		SoftwareDefinitionFileBuilder builder = new SoftwareDefinitionFileBuilder();
+		write (file, builder, sdfDao);
 	}
-	
-	public void write(BdfFile file, SoftwareDefinitionFileDao builder) throws IOException{
-		builder.buildBinary(file);
-		file.close();
+
+	public void write (BdfFile file, SoftwareDefinitionFileBuilder builder, SoftwareDefinitionFileDao sdfDao) throws Exception {
+		builder.buildBinary(sdfDao, file);
+		file.close ();
+	}
+
+	@Override
+	public String getFilename(SoftwareDefinitionFileDao sdfDao) {
+		return sdfDao.getBinaryFileName();
 	}
 }

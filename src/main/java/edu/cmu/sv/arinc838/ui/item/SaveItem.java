@@ -9,7 +9,7 @@
  */
 package edu.cmu.sv.arinc838.ui.item;
 
-import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileDao;
+import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 import edu.cmu.sv.arinc838.writer.SdfWriter;
 
 public class SaveItem extends AbstractMenuItem {
@@ -21,13 +21,13 @@ public class SaveItem extends AbstractMenuItem {
 	}
 
 	@Override
-	public MenuItem[] execute(SoftwareDefinitionFileDao builder)
-			throws Exception {
-
+	public MenuItem[] execute(SoftwareDefinitionFileDao sdfDao) throws Exception {
 		String path = promptForResponse("Save where? (path only, filename will be appended)");
-		String fileName = this.writer.write(path, builder);
 
-		System.out.println("File saved to " + fileName);
+		String filename = this.writer.getFilename(sdfDao);
+		this.writer.write(path, sdfDao);
+
+		System.out.println("Wrote file to " + filename);
 
 		return super.getEmptyItems();
 	}

@@ -16,7 +16,7 @@ import javax.xml.bind.Unmarshaller;
 
 import com.arinc.arinc838.SdfFile;
 
-import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileDao;
+import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 
 public class XmlReadItem  extends AbstractMenuItem {	
 	public XmlReadItem(String prompt) {
@@ -24,7 +24,7 @@ public class XmlReadItem  extends AbstractMenuItem {
 	}
 	
 	@Override
-	public MenuItem[] execute(SoftwareDefinitionFileDao builder) throws Exception {		
+	public MenuItem[] execute(SoftwareDefinitionFileDao sdfDao) throws Exception {		
 		String filename = promptForResponse("Which file?");
 				
 		File file = new File(filename);
@@ -34,7 +34,7 @@ public class XmlReadItem  extends AbstractMenuItem {
 		
 		SdfFile jaxbFile = (SdfFile) jaxbMarshaller.unmarshal(file);
 				
-		builder.initialize(jaxbFile);
+		sdfDao.initialize(jaxbFile);
 		
 		System.out.println ("Successfully read in " + file);
 		

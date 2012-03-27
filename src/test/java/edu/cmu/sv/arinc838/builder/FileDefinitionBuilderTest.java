@@ -30,98 +30,28 @@ public class FileDefinitionBuilderTest {
 
 	@BeforeMethod
 	public void setUp() {
-		IntegrityDefinitionDao integBuilder = new IntegrityDefinitionDao();
-		integBuilder.setIntegrityType(IntegrityType.CRC16.getType());
-		integBuilder.setIntegrityValue(Converter.hexToBytes("0000000A"));
-
+		IntegrityDefinitionDao integDao = new IntegrityDefinitionDao();
+		integDao.setIntegrityType(IntegrityType.CRC16.getType());
+		integDao.setIntegrityValue(Converter.hexToBytes("0000000A"));
+		
 		xmlFileDef = new FileDefinition();
 		xmlFileDef.setFileLoadable(false);
 		xmlFileDef.setFileName("testFile");
 		xmlFileDef.setFileSize(1234);
-		xmlFileDef.setFileIntegrityDefinition(integBuilder.buildXml());
+		xmlFileDef.setFileIntegrityDefinition( new IntegrityDefinitionBuilder ().buildXml(integDao));
 
 		fileBuilder = new FileDefinitionDao();
 		fileBuilder.setFileLoadable(xmlFileDef.isFileLoadable());
 		fileBuilder.setFileName(xmlFileDef.getFileName());
 		fileBuilder.setFileSize(xmlFileDef.getFileSize());		
-		fileBuilder.setFileIntegrityDefinition(integBuilder);
-	}
-
-	/**
-	 * Check that the file definition builder can be built from the XML (read:
-	 * JAXB) and that all the fields are properly set
-	 */
-	@Test
-	public void testXmlConstructor() {
-		FileDefinitionDao tmpBuilder = new FileDefinitionDao(xmlFileDef);
-		// check that the fields stuck
-		
-		assertEquals(xmlFileDef.getFileName(), tmpBuilder.getFileName());
-		assertEquals(xmlFileDef.getFileSize(), tmpBuilder.getFileSize());
-		assertEquals(xmlFileDef.isFileLoadable(), tmpBuilder.isFileLoadable());
-
-		assertEquals(xmlFileDef.getFileIntegrityDefinition().getIntegrityType(),
-				tmpBuilder.getFileIntegrityDefinition().getIntegrityType());
-		assertEquals(xmlFileDef.getFileIntegrityDefinition().getIntegrityValue(),
-				tmpBuilder.getFileIntegrityDefinition().getIntegrityValue());
-	}
-
-	@Test
-	public void testFileIntegrityDefinitionAccessors() {
-		IntegrityDefinitionDao integDef = new IntegrityDefinitionDao();
-
-		assertNotEquals(integDef, fileBuilder.getFileIntegrityDefinition());
-
-		fileBuilder.setFileIntegrityDefinition(integDef);
-		assertEquals(integDef, fileBuilder.getFileIntegrityDefinition(),
-				"Should be the same, the set keeps a reference");
-	}
-
-	@Test
-	public void testFileNameAccessors() {
-		String fileName = "TEST";
-
-		fileBuilder.setFileName(fileName);
-		assertEquals(fileName, fileBuilder.getFileName());
-		fileName += "JUNK";
-		assertNotEquals(fileName, fileBuilder.getFileName());
-	}
-
-	@Test(expectedExceptions = IllegalArgumentException.class)
-	public void testSetFileNameInvalid() {
-		fileBuilder.setFileName("<hello there & stuff>");
-	}
-
-	@Test
-	public void testFileSizeAccessors() {
-		int fSize = 234;
-
-		fileBuilder.setFileSize(fSize);
-		assertEquals(fSize, fileBuilder.getFileSize());
-		fSize += 234;
-		assertNotEquals(fSize, fileBuilder);
-	}
-	
-	@Test(expectedExceptions = IllegalArgumentException.class)
-	public void testSetFileSizeInvalid() {
-		fileBuilder.setFileSize(-1);
-	}
-
-	@Test
-	public void testLoadableAccessors() {
-		boolean loadable = false;
-
-		fileBuilder.setFileLoadable(loadable);
-		assertEquals(loadable, fileBuilder.isFileLoadable());
-		loadable = !loadable;
-		assertNotEquals(loadable, fileBuilder.isFileLoadable());
+		fileBuilder.setFileIntegrityDefinition(integDao);
 	}
 
 	@Test
 	public void testBuilder() {
-		FileDefinitionDao newBuilder = new FileDefinitionDao(xmlFileDef);
+		FileDefinitionDao fdDao = new FileDefinitionDao(xmlFileDef);
+		FileDefinition built = new FileDefinitionBuilder().buildXml(fdDao);
 
-		FileDefinition built = newBuilder.buildXml();
 		assertNotEquals(null, built);
 		assertNotEquals(built, xmlFileDef,
 				"Should be different, a NEW instance should be built");
@@ -134,22 +64,5 @@ public class FileDefinitionBuilderTest {
 		assertEquals(built.getFileName(), xmlFileDef.getFileName());
 		assertEquals(built.getFileSize(), xmlFileDef.getFileSize());
 		assertEquals(built.isFileLoadable(), xmlFileDef.isFileLoadable());
-	}
-	
-	@Test
-	public void testHashCode(){
-		assertEquals(fileBuilder.hashCode(), fileBuilder.getFileIntegrityDefinition().hashCode());
-	}
-	
-	@Test 
-	public void testHashCodeWithNoIntegrity(){
-		assertEquals(new FileDefinitionDao().hashCode(), 0);
-	}
-	
-	@Test
-	public void testEquals(){
-		FileDefinitionDao second = new FileDefinitionDao(xmlFileDef);
-		
-		assertEquals(fileBuilder, second);	
 	}
 }
