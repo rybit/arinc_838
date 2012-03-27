@@ -59,8 +59,7 @@ public class DataValidator {
 	 * The maximum length of a STR64k. Value is {@value}
 	 */
 	public static final int STR64K_MAX_LENGTH = 65535;
-	
-	
+
 	/**
 	 * The maximum length (in bytes) of a HEXBIN64k. Value is {@value}
 	 */
@@ -75,7 +74,7 @@ public class DataValidator {
 	 * @throws IllegalArgumentException
 	 *             if the input value does not validate.
 	 */
-	public static long validateUint32(long value) {
+	public long validateUint32(long value) {
 		if ((value >= 0) && (value <= (long) Math.pow(2, 32))) {
 			return value;
 		} else {
@@ -96,7 +95,7 @@ public class DataValidator {
 	 * @throws IllegalArgumentException
 	 *             if the input value does not validate.
 	 */
-	public static String validateStr64kBinary(String value) {
+	public String validateStr64kBinary(String value) {
 		if (value == null) {
 			throw new IllegalArgumentException("The input value cannot be null");
 		}
@@ -129,7 +128,7 @@ public class DataValidator {
 	 *             if the input value does not validate.
 	 * 
 	 */
-	public static String validateStr64kXml(String value) {
+	public String validateStr64kXml(String value) {
 		return checkForEscapedXMLChars(validateStr64kBinary(value));
 	}
 
@@ -142,7 +141,7 @@ public class DataValidator {
 	 * @throws IllegalArgumentException
 	 *             if the input value does not validate.
 	 */
-	public static List<?> validateList1(List<?> value) {
+	public List<?> validateList1(List<?> value) {
 
 		if (value == null) {
 			throw new IllegalArgumentException("A LIST1 cannot be null");
@@ -155,7 +154,7 @@ public class DataValidator {
 		return value;
 	}
 
-	public static String checkForEscapedXMLChars(String value) {
+	public String checkForEscapedXMLChars(String value) {
 		int idx = value.indexOf('<');
 		if (idx != -1) {
 			throw new IllegalArgumentException(
@@ -179,8 +178,7 @@ public class DataValidator {
 
 	/**
 	 * Validates the file format version value. Must be a byte[4], and have the
-	 * value of
-	 * {@link SoftwareDefinitionFileDao#DEFAULT_FILE_FORMAT_VERSION}
+	 * value of {@link SoftwareDefinitionFileDao#DEFAULT_FILE_FORMAT_VERSION}
 	 * 
 	 * @param value
 	 *            The input value
@@ -188,8 +186,9 @@ public class DataValidator {
 	 * @throws IllegalArgumentException
 	 *             if the input value does not validate.
 	 */
-	public static byte[] validateFileFormatVersion(byte[] version) {
-		if (!Arrays.equals(version, SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION)) {
+	public byte[] validateFileFormatVersion(byte[] version) {
+		if (!Arrays.equals(version,
+				SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION)) {
 			throw new IllegalArgumentException(
 					"File format version was set to "
 							+ version
@@ -208,7 +207,7 @@ public class DataValidator {
 	 * @throws IllegalArgumentException
 	 *             if the input value does not validate.
 	 */
-	public static long validateIntegrityType(long type) {
+	public long validateIntegrityType(long type) {
 		if (IntegrityType.fromLong(type) == null) {
 			throw new IllegalArgumentException(
 					"Integrity type was invalid. Got " + type + ", expected "
@@ -218,8 +217,8 @@ public class DataValidator {
 	}
 
 	/**
-	 * Validates that the integrity value is a valid byte array that is
-	 * either 2, 4, or 8 bytes long
+	 * Validates that the integrity value is a valid byte array that is either
+	 * 2, 4, or 8 bytes long
 	 * 
 	 * @param value
 	 *            The input value
@@ -227,7 +226,7 @@ public class DataValidator {
 	 * @throws IllegalArgumentException
 	 *             if the input value does not validate.
 	 */
-	public static byte[] validateIntegrityValue(byte[] value) {
+	public byte[] validateIntegrityValue(byte[] value) {
 		if (value == null) {
 			throw new IllegalArgumentException("Integrity value cannot be null");
 		}
@@ -261,7 +260,7 @@ public class DataValidator {
 	 * @throws IllegalArgumentException
 	 *             if the input value does not validate.
 	 */
-	public static String validateSoftwarePartNumber(String value) {
+	public String validateSoftwarePartNumber(String value) {
 		if (value == null) {
 			throw new IllegalArgumentException(
 					"Software part number cannot be null");
@@ -301,7 +300,7 @@ public class DataValidator {
 	 * @throws IllegalArgumentException
 	 *             if the input value does not validate.
 	 */
-	public static String generateSoftwarePartNumber(String value) {
+	public String generateSoftwarePartNumber(String value) {
 		if (value == null) {
 			throw new IllegalArgumentException(
 					"Software part number cannot be null");
@@ -315,7 +314,7 @@ public class DataValidator {
 		return validateSoftwarePartNumber(fullPart);
 	}
 
-	private static String checkForIllegalCharsInPartNumber(String value) {
+	private String checkForIllegalCharsInPartNumber(String value) {
 		// check for illegal characters in the SSSS-SSSS (part number) section
 		if (value.matches("\\w{5}-.*[iIoOqQzZ].*")) {
 			throw new IllegalArgumentException(
@@ -326,7 +325,7 @@ public class DataValidator {
 		return value;
 	}
 
-	private static String validateCheckCharacters(String partNumber) {
+	private String validateCheckCharacters(String partNumber) {
 		String check = partNumber.substring(3, 5);
 
 		String checked = generateCheckCharacters(partNumber);
@@ -353,7 +352,7 @@ public class DataValidator {
 	 * </pre>
 	 * 
 	 */
-	private static String generateCheckCharacters(String partNumber) {
+	private String generateCheckCharacters(String partNumber) {
 		String data = partNumber.substring(0, 3) + partNumber.substring(6, 10)
 				+ partNumber.substring(11);
 
@@ -365,20 +364,21 @@ public class DataValidator {
 		return Integer.toHexString(result).toUpperCase();
 	}
 
-	public static byte[] validateHexbin32(byte[] value) {
-		if(value == null) {
+	public byte[] validateHexbin32(byte[] value) {
+		if (value == null) {
 			throw new IllegalArgumentException("Hexbin 32 type cannot be null");
-		} else if(value.length != 4) {
-			throw new IllegalArgumentException("Hexbin 32 type must be 4 bytes");			
+		} else if (value.length != 4) {
+			throw new IllegalArgumentException("Hexbin 32 type must be 4 bytes");
 		}
 		return value;
 	}
 
-	public static byte[] validateHexbin64k(byte[] value) {
-		if(value == null) {
+	public byte[] validateHexbin64k(byte[] value) {
+		if (value == null) {
 			throw new IllegalArgumentException("Hexbin 64k type cannot be null");
-		} else if(value.length > HEXBIN64K_MAX_LENGTH) {
-			throw new IllegalArgumentException("Hexbin 64k type must be =< " + HEXBIN64K_MAX_LENGTH + " bytes");			
+		} else if (value.length > HEXBIN64K_MAX_LENGTH) {
+			throw new IllegalArgumentException("Hexbin 64k type must be =< "
+					+ HEXBIN64K_MAX_LENGTH + " bytes");
 		}
 		return value;
 	}
