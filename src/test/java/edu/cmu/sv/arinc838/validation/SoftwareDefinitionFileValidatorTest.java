@@ -9,10 +9,10 @@
  */
 package edu.cmu.sv.arinc838.validation;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.testng.Assert.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.testng.annotations.BeforeMethod;
@@ -34,10 +34,21 @@ public class SoftwareDefinitionFileValidatorTest {
 		dataVal = mock(DataValidator.class);
 	}
 
+	private List<Exception> errorList(String message) {
+		List<Exception> errors = new ArrayList<Exception>();
+		errors.add(new Exception(message));
+		return errors;
+	}
+	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testValidateSdfFile() {
 
 		SoftwareDefinitionFileDao sdfDao = mock(SoftwareDefinitionFileDao.class);
+		
+		when(dataVal.validateFileFormatVersion(any(byte[].class))).thenThrow(new IllegalArgumentException("0"));
+		
+		when(sdfDao.getFileFormatVersion()).thenReturn(SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION);
 		when(sdfDao.getSoftwareDescription()).thenReturn(
 				mock(SoftwareDescriptionDao.class));
 		when(sdfDao.getTargetHardwareDefinitions()).thenReturn(mock(List.class));
@@ -51,44 +62,49 @@ public class SoftwareDefinitionFileValidatorTest {
 			public List<Exception> validateSoftwareDescription(
 					SoftwareDescriptionDao softwareDesc) {
 				softwareDesc.getSoftwarePartnumber();
-				return null;
+				return errorList("1");
 			}
 
 			@Override
 			public List<Exception> validateTargetHardwareDefinitions(
 					List<TargetHardwareDefinitionDao> thwDefs) {
 				thwDefs.isEmpty();
-				return null;
+				return errorList("2");
 			}
 			
 			@Override
 			public List<Exception> validateFileDefinitions(List<FileDefinitionDao> fileDefs)
 			{
 				fileDefs.isEmpty();
-				return null;
+				return errorList("3");
 			}
 			
 			@Override
 			public List<Exception> validateSdfIntegrityDefinition(IntegrityDefinitionDao sdfInteg)
 			{
 				sdfInteg.getIntegrityType();
-				return null;
+				return errorList("4");
 			}
 			
 			@Override
 			public List<Exception> validateLspIntegrityDefinition(IntegrityDefinitionDao lspInteg)
 			{
 				lspInteg.getIntegrityType();
-				return null;
+				return errorList("5");
 			}
 		};
 
-		sdfVal.validateSdfFile(sdfDao);
+		List<Exception> errors = sdfVal.validateSdfFile(sdfDao);
+		assertEquals(errors.size(), 6);
+		for(int i=0; i<errors.size(); i++) {
+			assertEquals(errors.get(i).getMessage(), i+"");
+		}
 
 		verify(sdfDao.getSoftwareDescription()).getSoftwarePartnumber();
 		verify(sdfDao.getTargetHardwareDefinitions()).isEmpty();
 		verify(sdfDao.getFileDefinitions()).isEmpty();
 		verify(sdfDao.getSdfIntegrityDefinition()).getIntegrityType();
 		verify(sdfDao.getLspIntegrityDefinition()).getIntegrityType();
+		verify(dataVal).validateFileFormatVersion(sdfDao.getFileFormatVersion());
 	}
 }

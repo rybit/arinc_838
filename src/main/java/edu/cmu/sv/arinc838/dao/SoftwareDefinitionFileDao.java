@@ -49,7 +49,6 @@ public class SoftwareDefinitionFileDao {
 
 	@SuppressWarnings("unchecked")
 	public void initialize(SdfFile swDefFile) {
-		DataValidator.validateFileFormatVersion(swDefFile.getFileFormatVersion());
 		List<FileDefinition> fileDefs = (List<FileDefinition>) DataValidator.validateList1(swDefFile
 				.getFileDefinitions());
 

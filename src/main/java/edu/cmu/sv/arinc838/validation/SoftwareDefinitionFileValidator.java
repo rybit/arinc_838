@@ -9,9 +9,8 @@
  */
 package edu.cmu.sv.arinc838.validation;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import com.arinc.arinc838.ThwDefinition;
 
 import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
@@ -21,21 +20,36 @@ import edu.cmu.sv.arinc838.dao.TargetHardwareDefinitionDao;
 
 public class SoftwareDefinitionFileValidator {
 
+	private DataValidator dataVal;
+
 	public SoftwareDefinitionFileValidator(DataValidator dataVal) {
-		// TODO Auto-generated constructor stub
+		this.dataVal = dataVal;
 	}
 
-	public void validateSdfFile(SoftwareDefinitionFileDao sdfDao) {
-		validateSoftwareDescription(sdfDao.getSoftwareDescription());
-		validateTargetHardwareDefinitions(sdfDao.getTargetHardwareDefinitions());
-		validateFileDefinitions(sdfDao.getFileDefinitions());
-		validateSdfIntegrityDefinition(sdfDao.getSdfIntegrityDefinition());
-		validateLspIntegrityDefinition(sdfDao.getLspIntegrityDefinition());
+	public List<Exception> validateSdfFile(SoftwareDefinitionFileDao sdfDao) {
+		List<Exception> errors = new ArrayList<Exception>();
+
+		try {
+			dataVal.validateFileFormatVersion(sdfDao.getFileFormatVersion());
+		} catch (IllegalArgumentException e) {
+			errors.add(e);
+		}
+
+		errors.addAll(validateSoftwareDescription(sdfDao
+				.getSoftwareDescription()));
+		errors.addAll(validateTargetHardwareDefinitions(sdfDao
+				.getTargetHardwareDefinitions()));
+		errors.addAll(validateFileDefinitions(sdfDao.getFileDefinitions()));
+		errors.addAll(validateSdfIntegrityDefinition(sdfDao
+				.getSdfIntegrityDefinition()));
+		errors.addAll(validateLspIntegrityDefinition(sdfDao
+				.getLspIntegrityDefinition()));
+
+		return errors;
 	}
-	
-	
-	public List<Exception> validateSoftwareDescription(SoftwareDescriptionDao softwareDesc)
-	{
+
+	public List<Exception> validateSoftwareDescription(
+			SoftwareDescriptionDao softwareDesc) {
 		return null;
 	}
 
