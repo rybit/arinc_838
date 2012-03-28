@@ -10,10 +10,8 @@ import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
 import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 import edu.cmu.sv.arinc838.dao.TargetHardwareDefinitionDao;
 import edu.cmu.sv.arinc838.util.Converter;
-import edu.cmu.sv.arinc838.validation.DataValidator;
 
 public class SoftwareDefinitionFileBuilder implements Builder<SoftwareDefinitionFileDao, SdfFile> {
-	@SuppressWarnings("unchecked")
 	@Override
 	public SdfFile buildXml(SoftwareDefinitionFileDao softwareDefinitionFileDao) {
 		SdfFile file = new SdfFile();
@@ -21,8 +19,7 @@ public class SoftwareDefinitionFileBuilder implements Builder<SoftwareDefinition
 
 		// we have to re-validate this as a LIST1 since it can be modified
 		// without a set method to verify its validity prior to building
-		List<FileDefinitionDao> fileDefsValidated = (List<FileDefinitionDao>) DataValidator
-				.validateList1(softwareDefinitionFileDao.getFileDefinitions());
+		List<FileDefinitionDao> fileDefsValidated = softwareDefinitionFileDao.getFileDefinitions();
 		FileDefinitionBuilder fileDefBuilder = new FileDefinitionBuilder();
 		for (FileDefinitionDao fileDef : fileDefsValidated) {
 			file.getFileDefinitions().add(fileDefBuilder.buildXml(fileDef));
@@ -63,7 +60,8 @@ public class SoftwareDefinitionFileBuilder implements Builder<SoftwareDefinition
 		if (size > 0) {
 			softwareDefinitionFileDao.getTargetHardwareDefinitions().get(size - 1).setIsLast(true);
 			for (int i = 0; i < size; i++) {
-				targetHardwareDefinitionBuilder.buildBinary(softwareDefinitionFileDao.getTargetHardwareDefinitions().get(i), file);
+				targetHardwareDefinitionBuilder.buildBinary(softwareDefinitionFileDao.getTargetHardwareDefinitions()
+						.get(i), file);
 			}
 		}
 
@@ -77,18 +75,16 @@ public class SoftwareDefinitionFileBuilder implements Builder<SoftwareDefinition
 			fileDefBuilder.buildBinary(softwareDefinitionFileDao.getFileDefinitions().get(i), file);
 		}
 
-		IntegrityDefinitionBuilder integDefBuilder = new IntegrityDefinitionBuilder(); 
+		IntegrityDefinitionBuilder integDefBuilder = new IntegrityDefinitionBuilder();
 
 		// write the SDF integrity def
 		file.writeSdfIntegrityDefinitionPointer();
-		softwareDefinitionFileDao.getSdfIntegrityDefinition().setIntegrityValue(
-				Converter.hexToBytes("0000000A"));
+		softwareDefinitionFileDao.getSdfIntegrityDefinition().setIntegrityValue(Converter.hexToBytes("0000000A"));
 		integDefBuilder.buildBinary(softwareDefinitionFileDao.getSdfIntegrityDefinition(), file);
 
 		// write the LSP integrity def
 		file.writeLspIntegrityDefinitionPointer();
-		softwareDefinitionFileDao.getLspIntegrityDefinition().setIntegrityValue(
-				Converter.hexToBytes("0000000A"));
+		softwareDefinitionFileDao.getLspIntegrityDefinition().setIntegrityValue(Converter.hexToBytes("0000000A"));
 		integDefBuilder.buildBinary(softwareDefinitionFileDao.getLspIntegrityDefinition(), file);
 
 		// write the file size
