@@ -50,19 +50,63 @@ public class SoftwareDefinitionFileValidator {
 
 	public List<Exception> validateSoftwareDescription(
 			SoftwareDescriptionDao softwareDesc) {
-		return null;
+		List<Exception> errors = new ArrayList<Exception>();
+
+		try {
+			dataVal.validateSoftwarePartNumber(softwareDesc
+					.getSoftwarePartnumber());
+		} catch (IllegalArgumentException e) {
+			errors.add(e);
+		}
+		try {
+			dataVal.validateStr64kXml(softwareDesc.getSoftwareTypeDescription());
+		} catch (IllegalArgumentException e) {
+			errors.add(e);
+		}
+		try {
+			dataVal.validateHexbin32(softwareDesc.getSoftwareTypeId());
+		} catch (IllegalArgumentException e) {
+			errors.add(e);
+		}
+
+		return errors;
 	}
 
 	public List<Exception> validateTargetHardwareDefinitions(
 			List<TargetHardwareDefinitionDao> thwDefs) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Exception> errors = new ArrayList<Exception>();
+
+		for (TargetHardwareDefinitionDao thwDef : thwDefs) {
+			if (thwDef.getPositions() == null) {
+				continue;
+			}
+			for (String position : thwDef.getPositions()) {
+				try {
+					dataVal.validateStr64kXml(position);
+				} catch (IllegalArgumentException e) {
+					errors.add(e);
+				}
+			}
+		}
+
+		return errors;
 	}
 
 	public List<Exception> validateFileDefinitions(
 			List<FileDefinitionDao> fileDefs) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Exception> errors = new ArrayList<Exception>();
+
+		try {
+			dataVal.validateList1(fileDefs);
+		} catch (IllegalArgumentException e) {
+			errors.add(e);
+		}
+
+		for (FileDefinitionDao fileDef : fileDefs) {
+			errors.addAll(validateFileDefinition(fileDef));
+		}
+
+		return errors;
 	}
 
 	public List<Exception> validateSdfIntegrityDefinition(
@@ -75,6 +119,17 @@ public class SoftwareDefinitionFileValidator {
 			IntegrityDefinitionDao lspInteg) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public List<Exception> validateFileDefinition(FileDefinitionDao fileDef) {
+		List<Exception> errors = new ArrayList<Exception>();
+
+		try {
+			dataVal.validateStr64kXml(fileDef.getFileName());
+		} catch (IllegalArgumentException e) {
+			errors.add(e);
+		}
+		return errors;
 	}
 
 }
