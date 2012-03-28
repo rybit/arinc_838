@@ -15,7 +15,6 @@ import java.util.Arrays;
 import com.arinc.arinc838.SoftwareDescription;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
-import edu.cmu.sv.arinc838.validation.DataValidator;
 
 public class SoftwareDescriptionDao {
 
@@ -46,8 +45,7 @@ public class SoftwareDescriptionDao {
 	}
 
 	public void setSoftwarePartnumber(String value) {
-		this.softwarePartNumber = DataValidator
-				.validateSoftwarePartNumber(value);
+		this.softwarePartNumber = value;
 	}
 
 	public String getSoftwareTypeDescription() {
@@ -55,7 +53,7 @@ public class SoftwareDescriptionDao {
 	}
 
 	public void setSoftwareTypeDescription(String value) {
-		this.softwareTypeDescription = DataValidator.validateStr64kXml(value);
+		this.softwareTypeDescription = value;
 	}
 
 	public byte[] getSoftwareTypeId() {
@@ -63,7 +61,7 @@ public class SoftwareDescriptionDao {
 	}
 
 	public void setSoftwareTypeId(byte[] value) {
-		this.softwareTypeId = DataValidator.validateHexbin32(value);
+		this.softwareTypeId = value;
 	}
 
 	@Override

@@ -20,7 +20,6 @@ import com.arinc.arinc838.ThwDefinition;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.util.Converter;
-import edu.cmu.sv.arinc838.validation.DataValidator;
 
 public class SoftwareDefinitionFileDao {
 
@@ -47,13 +46,9 @@ public class SoftwareDefinitionFileDao {
 		this.initialize(bdfFile);
 	}
 
-	@SuppressWarnings("unchecked")
 	public void initialize(SdfFile swDefFile) {
-		List<FileDefinition> fileDefs = (List<FileDefinition>) DataValidator.validateList1(swDefFile
-				.getFileDefinitions());
-
 		fileDefinitions.clear();
-		for (FileDefinition fileDef : fileDefs) {
+		for (FileDefinition fileDef : swDefFile.getFileDefinitions()) {
 			fileDefinitions.add(new FileDefinitionDao(fileDef));
 		}
 

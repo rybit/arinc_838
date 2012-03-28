@@ -95,7 +95,7 @@ public class FileDefinitionDao {
 	}
 
 	public void setFileName(String fileName) {
-		this.fileName = DataValidator.validateStr64kXml(fileName);
+		this.fileName = fileName;
 	}
 
 	public long getFileSize() {
@@ -103,7 +103,7 @@ public class FileDefinitionDao {
 	}
 
 	public void setFileSize(long fileSize) {
-		this.fileSize = DataValidator.validateUint32(fileSize);
+		this.fileSize = fileSize;
 	}
 
 	public boolean isLast() {
