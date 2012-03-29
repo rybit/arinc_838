@@ -3,7 +3,7 @@
  * Brandon Sutherlin, Scott Griffin
  * 
  * This software is released under the MIT license
- * (http://www.opensource.org/licenses/mit-license.php) 
+ * (http://www.opensource.org/licenses/mit-license.php)
  * 
  * Created on Mar 26, 2012
  */
@@ -22,8 +22,11 @@ import java.util.List;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import com.arinc.arinc838.IntegrityDefinition;
+
 import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
+import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao.IntegrityType;
 import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 import edu.cmu.sv.arinc838.dao.SoftwareDescriptionDao;
 import edu.cmu.sv.arinc838.dao.TargetHardwareDefinitionDao;
@@ -231,19 +234,137 @@ public class SoftwareDefinitionFileValidatorTest {
 		assertEquals(errors.get(1).getMessage(), fileDef1.getFileName());
 		assertEquals(errors.get(2).getMessage(), fileDef2.getFileName());
 	}
-	
+
 	@Test
 	public void testValidateFileDefinitionFileName() {
 		FileDefinitionDao fileDef = mock(FileDefinitionDao.class);
 		when(fileDef.getFileName()).thenReturn("123");
-		when(dataVal.validateStr64kXml(fileDef.getFileName()))
-				.thenThrow(new IllegalArgumentException("0"));
+		when(dataVal.validateStr64kXml(fileDef.getFileName())).thenThrow(
+				new IllegalArgumentException("0"));
 
 		SoftwareDefinitionFileValidator sdfVal = new SoftwareDefinitionFileValidator(
-				dataVal);
+				dataVal) {
+			@Override
+			public List<Exception> validateIntegrityDefinition(
+					IntegrityDefinitionDao integDef) {
+				return new ArrayList<Exception>();
+			}
+		};
 
 		List<Exception> errors = sdfVal.validateFileDefinition(fileDef);
 		assertEquals(errors.size(), 1);
 		assertEquals(errors.get(0).getMessage(), "0");
 	}
+
+	@Test
+	public void testValidateFileDefinitionFileSize() {
+		FileDefinitionDao fileDef = mock(FileDefinitionDao.class);
+		when(fileDef.getFileSize()).thenReturn(1234L);
+		when(dataVal.validateUint32(fileDef.getFileSize())).thenThrow(
+				new IllegalArgumentException("0"));
+
+		SoftwareDefinitionFileValidator sdfVal = new SoftwareDefinitionFileValidator(
+				dataVal) {
+			@Override
+			public List<Exception> validateIntegrityDefinition(
+					IntegrityDefinitionDao integDef) {
+				return new ArrayList<Exception>();
+			}
+		};
+
+		List<Exception> errors = sdfVal.validateFileDefinition(fileDef);
+		assertEquals(errors.size(), 1);
+		assertEquals(errors.get(0).getMessage(), "0");
+	}
+
+	@Test
+	public void testValidateFileDefinitionIntegrityDefinition() {
+		SoftwareDefinitionFileValidator sdfVal = new SoftwareDefinitionFileValidator(
+				dataVal) {
+
+			@Override
+			public List<Exception> validateIntegrityDefinition(
+					IntegrityDefinitionDao integDef) {
+				return errorList("0");
+			}
+		};
+
+		FileDefinitionDao fileDef = mock(FileDefinitionDao.class);
+		when(fileDef.getFileIntegrityDefinition()).thenReturn(
+				new IntegrityDefinitionDao());
+
+		List<Exception> errors = sdfVal.validateFileDefinition(fileDef);
+
+		assertEquals(errors.size(), 1);
+		assertEquals(errors.get(0).getMessage(), "0");
+	}
+
+	@Test
+	public void testValidateIntegrityDefinitionIntegrityType() {
+		IntegrityDefinitionDao integDef = mock(IntegrityDefinitionDao.class);
+		when(integDef.getIntegrityType()).thenReturn(IntegrityType.CRC16.getType());
+		when(dataVal.validateIntegrityType(integDef.getIntegrityType())).thenThrow(
+				new IllegalArgumentException("0"));
+
+		SoftwareDefinitionFileValidator sdfVal = new SoftwareDefinitionFileValidator(
+				dataVal);
+
+		List<Exception> errors = sdfVal.validateIntegrityDefinition(integDef);
+		assertEquals(errors.size(), 1);
+		assertEquals(errors.get(0).getMessage(), "0");
+	}
+	
+	@Test
+	public void testValidateIntegrityDefinitionIntegrityValue() {
+		IntegrityDefinitionDao integDef = mock(IntegrityDefinitionDao.class);
+		when(integDef.getIntegrityValue()).thenReturn(new byte[]{1,2,3,4});
+		when(dataVal.validateIntegrityValue(integDef.getIntegrityValue())).thenThrow(
+				new IllegalArgumentException("0"));
+
+		SoftwareDefinitionFileValidator sdfVal = new SoftwareDefinitionFileValidator(
+				dataVal);
+
+		List<Exception> errors = sdfVal.validateIntegrityDefinition(integDef);
+		assertEquals(errors.size(), 1);
+		assertEquals(errors.get(0).getMessage(), "0");
+	}
+	
+	@Test
+	public void testValidateSdfIntegrityDefinition() {
+		SoftwareDefinitionFileValidator sdfVal = new SoftwareDefinitionFileValidator(
+				dataVal) {
+
+			@Override
+			public List<Exception> validateIntegrityDefinition(
+					IntegrityDefinitionDao integDef) {
+				return errorList("0");
+			}
+			
+		};
+
+		List<Exception> errors = sdfVal.validateSdfIntegrityDefinition(new IntegrityDefinitionDao());
+
+		assertEquals(errors.size(), 1);
+		assertEquals(errors.get(0).getMessage(), "0");
+	}
+	
+	@Test
+	public void testValidateLspIntegrityDefinition() {
+		SoftwareDefinitionFileValidator sdfVal = new SoftwareDefinitionFileValidator(
+				dataVal) {
+
+			@Override
+			public List<Exception> validateIntegrityDefinition(
+					IntegrityDefinitionDao integDef) {
+				return errorList("0");
+			}
+			
+		};
+
+		List<Exception> errors = sdfVal.validateLspIntegrityDefinition(new IntegrityDefinitionDao());
+
+		assertEquals(errors.size(), 1);
+		assertEquals(errors.get(0).getMessage(), "0");
+	}
+
 }

@@ -49,7 +49,7 @@ import edu.cmu.sv.arinc838.validation.DataValidator;
  * 
  */
 public class FileDefinitionDao {
-	private IntegrityDefinitionDao integDefBuilder;
+	private IntegrityDefinitionDao integDef;
 	private boolean loadable;
 	private String fileName;
 	private long fileSize;
@@ -75,11 +75,11 @@ public class FileDefinitionDao {
 	}
 
 	public IntegrityDefinitionDao getFileIntegrityDefinition() {
-		return integDefBuilder;
+		return integDef;
 	}
 
 	public void setFileIntegrityDefinition(IntegrityDefinitionDao value) {
-		this.integDefBuilder = value;
+		this.integDef = value;
 	}
 
 	public boolean isFileLoadable() {

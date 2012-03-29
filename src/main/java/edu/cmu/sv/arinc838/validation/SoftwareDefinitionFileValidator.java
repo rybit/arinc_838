@@ -111,14 +111,12 @@ public class SoftwareDefinitionFileValidator {
 
 	public List<Exception> validateSdfIntegrityDefinition(
 			IntegrityDefinitionDao sdfInteg) {
-		// TODO Auto-generated method stub
-		return null;
+		return validateIntegrityDefinition(sdfInteg);
 	}
 
 	public List<Exception> validateLspIntegrityDefinition(
 			IntegrityDefinitionDao lspInteg) {
-		// TODO Auto-generated method stub
-		return null;
+		return validateIntegrityDefinition(lspInteg);
 	}
 
 	public List<Exception> validateFileDefinition(FileDefinitionDao fileDef) {
@@ -129,6 +127,34 @@ public class SoftwareDefinitionFileValidator {
 		} catch (IllegalArgumentException e) {
 			errors.add(e);
 		}
+		
+		try {
+			dataVal.validateUint32(fileDef.getFileSize());
+		} catch (IllegalArgumentException e) {
+			errors.add(e);
+		}
+		
+		errors.addAll(validateIntegrityDefinition(fileDef.getFileIntegrityDefinition()));
+		
+		return errors;
+	}
+
+	public List<Exception> validateIntegrityDefinition(
+			IntegrityDefinitionDao integDef) {
+		List<Exception> errors = new ArrayList<Exception>();
+
+		try {
+			dataVal.validateIntegrityType(integDef.getIntegrityType());
+		} catch (IllegalArgumentException e) {
+			errors.add(e);
+		}
+		
+		try {
+			dataVal.validateIntegrityValue(integDef.getIntegrityValue());
+		} catch (IllegalArgumentException e) {
+			errors.add(e);
+		}
+		
 		return errors;
 	}
 
