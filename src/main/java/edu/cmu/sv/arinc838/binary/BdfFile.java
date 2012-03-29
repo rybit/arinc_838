@@ -33,7 +33,7 @@ public class BdfFile extends RandomAccessFile {
 	}
 
 	public void writeUint32(long value) throws IOException {
-		super.writeInt((int) DataValidator.validateUint32(value));
+		super.writeInt((int)value);
 	}
 
 	public static long asUint32(int value) {
@@ -41,7 +41,7 @@ public class BdfFile extends RandomAccessFile {
 	}
 
 	public void writeStr64k(String value) throws IOException {
-		super.writeUTF(DataValidator.validateStr64kBinary(value));
+		super.writeUTF(value);
 	}
 	
 	/**
@@ -85,13 +85,13 @@ public class BdfFile extends RandomAccessFile {
 	}
 
 	public void writeHexbin32(byte[] hexBin) throws IOException {
-		byte[] hexBinToWrite = DataValidator.validateHexbin32(hexBin);
+		byte[] hexBinToWrite = hexBin;
 
 		write(hexBinToWrite);
 	}
 
 	public void writeHexbin64k(byte[] hexBin) throws IOException {
-		byte[] hexBinToWrite = DataValidator.validateHexbin64k(hexBin);
+		byte[] hexBinToWrite = hexBin;
 
 		writeShort(hexBinToWrite.length);
 		write(hexBinToWrite);
