@@ -56,14 +56,18 @@ public class DataValidatorTest {
 	@Test
 	public void testValidateStr64kBinary() {
 		String inputStr = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789 -_=+`~'\"[]{}\\|;:,./?!@#$%^*()";
-		assertEquals(inputStr, new DataValidator().validateStr64kBinary(inputStr));
-		assertEquals(str64kMax, new DataValidator().validateStr64kBinary(str64kMax));
+		assertEquals(inputStr,
+				new DataValidator().validateStr64kBinary(inputStr));
+		assertEquals(str64kMax,
+				new DataValidator().validateStr64kBinary(str64kMax));
 		assertEquals("", new DataValidator().validateStr64kBinary(""));
 
 		assertEquals("&lt", new DataValidator().validateStr64kBinary("&lt"));
-		assertEquals("hello&lt", new DataValidator().validateStr64kBinary("hello&lt"));
+		assertEquals("hello&lt",
+				new DataValidator().validateStr64kBinary("hello&lt"));
 		assertEquals("&gt", new DataValidator().validateStr64kBinary("&gt"));
-		assertEquals("&gtthere", new DataValidator().validateStr64kBinary("&gtthere"));
+		assertEquals("&gtthere",
+				new DataValidator().validateStr64kBinary("&gtthere"));
 		assertEquals("&amp", new DataValidator().validateStr64kBinary("&amp"));
 		assertEquals("hello&amp&ampthere",
 				new DataValidator().validateStr64kBinary("hello&amp&ampthere"));
@@ -87,13 +91,16 @@ public class DataValidatorTest {
 	public void testValidateStr64kXml() {
 		String inputStr = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789 -_=+`~'\"[]{}\\|;:,./?!@#$%^*()";
 		assertEquals(inputStr, new DataValidator().validateStr64kXml(inputStr));
-		assertEquals(str64kMax, new DataValidator().validateStr64kXml(str64kMax));
+		assertEquals(str64kMax,
+				new DataValidator().validateStr64kXml(str64kMax));
 		assertEquals("", new DataValidator().validateStr64kXml(""));
 
 		assertEquals("&lt", new DataValidator().validateStr64kXml("&lt"));
-		assertEquals("hello&lt", new DataValidator().validateStr64kXml("hello&lt"));
+		assertEquals("hello&lt",
+				new DataValidator().validateStr64kXml("hello&lt"));
 		assertEquals("&gt", new DataValidator().validateStr64kXml("&gt"));
-		assertEquals("&gtthere", new DataValidator().validateStr64kXml("&gtthere"));
+		assertEquals("&gtthere",
+				new DataValidator().validateStr64kXml("&gtthere"));
 		assertEquals("&amp", new DataValidator().validateStr64kXml("&amp"));
 		assertEquals("hello&amp&ampthere",
 				new DataValidator().validateStr64kXml("hello&amp&ampthere"));
@@ -146,12 +153,14 @@ public class DataValidatorTest {
 		assertEquals(
 				SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION,
 				new DataValidator()
-						.validateFileFormatVersion(SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION.clone()));
+						.validateFileFormatVersion(SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION
+								.clone()));
 	}
 
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void testValidateFileFormatVersionInvalid() {
-		new DataValidator().validateFileFormatVersion(new byte[] { 1, 2, 3, 4 });
+		new DataValidator()
+				.validateFileFormatVersion(new byte[] { 1, 2, 3, 4 });
 	}
 
 	@Test
@@ -220,7 +229,8 @@ public class DataValidatorTest {
 	@Test
 	public void testValidateSoftwarePartNumber() {
 		assertEquals("ACM47-1234-5678",
-				new DataValidator().validateSoftwarePartNumber("ACM47-1234-5678"));
+				new DataValidator()
+						.validateSoftwarePartNumber("ACM47-1234-5678"));
 	}
 
 	@Test(expectedExceptions = IllegalArgumentException.class)
@@ -288,7 +298,8 @@ public class DataValidatorTest {
 	@Test
 	public void generateSoftwarePartNumber() {
 		assertEquals("ACM47-1234-5678",
-				new DataValidator().generateSoftwarePartNumber("ACM??-1234-5678"));
+				new DataValidator()
+						.generateSoftwarePartNumber("ACM??-1234-5678"));
 	}
 
 	@Test(expectedExceptions = IllegalArgumentException.class)
@@ -332,7 +343,48 @@ public class DataValidatorTest {
 	public void testValidateHexbin64k() {
 		byte[] hexBin64k = new byte[DataValidator.HEXBIN64K_MAX_LENGTH];
 		Arrays.fill(hexBin64k, (byte) 0xAB);
-		assertEquals(hexBin64k, new DataValidator().validateHexbin64k(hexBin64k));
+		assertEquals(hexBin64k,
+				new DataValidator().validateHexbin64k(hexBin64k));
+	}
+
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testValidateDataFileNameNull() {
+		new DataValidator().validateDataFileName(null);
+	}
+
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testValidateDataFileNameTooLong() {
+		String longName = "";
+		for (int i = 0; i <= 255; i++) {
+			longName += "A";
+		}
+		new DataValidator().validateDataFileName(longName);
+	}
+
+	@Test
+	public void testValidateDataFileName() {
+		assertEquals("someFile.txt",
+				new DataValidator().validateDataFileName("someFile.txt"));
+	}
+
+	@Test
+	public void testValidateDataFileNameInvalidExtensions() {
+		DataValidator dataVal = new DataValidator();
+		for (String extension : DataValidator.INVALID_DATA_FILE_EXTENSIONS) {
+			try {
+				dataVal.validateDataFileName("bad_file." + extension.toLowerCase());
+				fail("Did not throw exception for invalid data file extension '"
+						+ extension.toLowerCase() + "'");
+			} catch (IllegalArgumentException e) {
+			}
+			
+			try {
+				dataVal.validateDataFileName("bad_file." + extension.toUpperCase());
+				fail("Did not throw exception for invalid data file extension '"
+						+ extension.toUpperCase() + "'");
+			} catch (IllegalArgumentException e) {
+			}
+		}
 	}
 
 }

@@ -12,6 +12,8 @@ package edu.cmu.sv.arinc838.validation;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao.IntegrityType;
 import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 import edu.cmu.sv.arinc838.dao.SoftwareDescriptionDao;
@@ -64,6 +66,11 @@ public class DataValidator {
 	 * The maximum length (in bytes) of a HEXBIN64k. Value is {@value}
 	 */
 	public static final int HEXBIN64K_MAX_LENGTH = 32768;
+
+	public static final String[] INVALID_DATA_FILE_EXTENSIONS = { "bdf", "crc",
+			"dir", "hdr", "ldr", "lci", "lcl", "lcs", "lna", "lnd", "lnl",
+			"lno", "lnr", "lns", "lub", "luh", "lui", "lum", "lur", "lus",
+			"xdf" };
 
 	/**
 	 * Validates that the given value is an unsigned 32-bit integer.
@@ -381,5 +388,26 @@ public class DataValidator {
 					+ HEXBIN64K_MAX_LENGTH + " bytes");
 		}
 		return value;
+	}
+
+	public String validateDataFileName(String fileName) {
+		if (fileName == null) {
+			throw new IllegalArgumentException("File name cannot be null");
+		} else if (fileName.length() > 255) {
+			throw new IllegalArgumentException(
+					"File name must be <= 255 characters. The length is "
+							+ fileName.length());
+		}
+
+		// check extension
+		String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+		if (Arrays.asList(INVALID_DATA_FILE_EXTENSIONS).contains(
+				extension.toLowerCase())) {
+			throw new IllegalArgumentException(
+					"File name contained an illegal extension '" + extension
+							+ "'");
+		}
+
+		return fileName;
 	}
 }
