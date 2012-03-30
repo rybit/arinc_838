@@ -12,6 +12,14 @@ import edu.cmu.sv.arinc838.dao.TargetHardwareDefinitionDao;
 import edu.cmu.sv.arinc838.util.Converter;
 
 public class SoftwareDefinitionFileBuilder implements Builder<SoftwareDefinitionFileDao, SdfFile> {
+	
+	private BuilderFactory builderFactory;
+
+	public SoftwareDefinitionFileBuilder (BuilderFactory builderFact){
+		this.builderFactory = builderFact;
+		
+	}
+	
 	@Override
 	public SdfFile buildXml(SoftwareDefinitionFileDao softwareDefinitionFileDao) {
 		SdfFile file = new SdfFile();

@@ -101,6 +101,7 @@ public class SoftwareDefinitionFileDao {
 		this.setLspIntegrityDefinition(new IntegrityDefinitionDao(file));
 	}
 
+	//TODO: This needs to be read from file and not hard coded
 	public byte[] getFileFormatVersion() {
 		return DEFAULT_FILE_FORMAT_VERSION;
 	}
