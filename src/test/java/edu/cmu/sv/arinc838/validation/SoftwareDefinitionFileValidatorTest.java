@@ -10,15 +10,14 @@
 package edu.cmu.sv.arinc838.validation;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.mockito.InOrder;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -221,14 +220,23 @@ public class SoftwareDefinitionFileValidatorTest {
 
 		FileDefinitionDao fileDef2 = mock(FileDefinitionDao.class);
 		when(fileDef2.getFileName()).thenReturn("b");
+		
+		FileDefinitionDao fileDef3 = mock(FileDefinitionDao.class);
+		when(fileDef3.getFileName()).thenReturn("b");
 
 		List<FileDefinitionDao> fileDefs = Arrays
 				.asList(new FileDefinitionDao[] { fileDef1, fileDef2 });
 
+		
+		InOrder order = inOrder(dataVal);
 		when(dataVal.validateList1(fileDefs)).thenThrow(
 				new IllegalArgumentException("0"));
 
 		List<Exception> errors = sdfVal.validateFileDefinitions(fileDefs);
+		
+		order.verify(dataVal).validateList1(fileDefs);
+		order.verify(dataVal).validateDataFileNamesAreUnique(fileDefs);
+		
 		assertEquals(errors.size(), 3);
 		assertEquals(errors.get(0).getMessage(), "0");
 		assertEquals(errors.get(1).getMessage(), fileDef1.getFileName());
@@ -239,7 +247,7 @@ public class SoftwareDefinitionFileValidatorTest {
 	public void testValidateFileDefinitionFileName() {
 		FileDefinitionDao fileDef = mock(FileDefinitionDao.class);
 		when(fileDef.getFileName()).thenReturn("123");
-		when(dataVal.validateStr64kXml(fileDef.getFileName())).thenThrow(
+		when(dataVal.validateDataFileName(fileDef.getFileName())).thenThrow(
 				new IllegalArgumentException("0"));
 
 		SoftwareDefinitionFileValidator sdfVal = new SoftwareDefinitionFileValidator(

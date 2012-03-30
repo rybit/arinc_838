@@ -9,16 +9,20 @@
  */
 package edu.cmu.sv.arinc838.validation;
 
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.fail;
+import static org.testng.AssertJUnit.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.xml.crypto.Data;
+
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
+import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao.IntegrityType;
 import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 import edu.cmu.sv.arinc838.util.Converter;
@@ -347,44 +351,112 @@ public class DataValidatorTest {
 				new DataValidator().validateHexbin64k(hexBin64k));
 	}
 
-	@Test(expectedExceptions = IllegalArgumentException.class)
+	@Test
 	public void testValidateDataFileNameNull() {
-		new DataValidator().validateDataFileName(null);
+		assertEquals(1, new DataValidator().validateDataFileName(null).size());
 	}
 
-	@Test(expectedExceptions = IllegalArgumentException.class)
+	@Test
 	public void testValidateDataFileNameTooLong() {
 		String longName = "";
 		for (int i = 0; i <= 255; i++) {
 			longName += "A";
 		}
-		new DataValidator().validateDataFileName(longName);
+		assertEquals(1, new DataValidator().validateDataFileName(longName)
+				.size());
 	}
 
 	@Test
 	public void testValidateDataFileName() {
-		assertEquals("someFile.txt",
-				new DataValidator().validateDataFileName("someFile.txt"));
+		assertTrue(new DataValidator().validateDataFileName("someFile.txt")
+				.isEmpty());
 	}
 
 	@Test
 	public void testValidateDataFileNameInvalidExtensions() {
 		DataValidator dataVal = new DataValidator();
 		for (String extension : DataValidator.INVALID_DATA_FILE_EXTENSIONS) {
-			try {
-				dataVal.validateDataFileName("bad_file." + extension.toLowerCase());
-				fail("Did not throw exception for invalid data file extension '"
-						+ extension.toLowerCase() + "'");
-			} catch (IllegalArgumentException e) {
-			}
-			
-			try {
-				dataVal.validateDataFileName("bad_file." + extension.toUpperCase());
-				fail("Did not throw exception for invalid data file extension '"
-						+ extension.toUpperCase() + "'");
-			} catch (IllegalArgumentException e) {
-			}
+			assertEquals(
+					"Did not throw exception for invalid data file extension '"
+							+ extension.toLowerCase() + "'",
+					1,
+					dataVal.validateDataFileName("bad_file."
+							+ extension.toLowerCase()));
+
+			assertEquals(
+					"Did not throw exception for invalid data file extension '"
+							+ extension.toUpperCase() + "'",
+					1,
+					dataVal.validateDataFileName(
+							"bad_file." + extension.toUpperCase()).size());
+
 		}
 	}
 
+	@Test
+	public void testValidateDataFileNameInvalidCharacters() {
+		DataValidator dataVal = new DataValidator();
+
+		// check invalid characters
+		for (char invalid : new char[] { '"', '\'', '`', '*', '<', '>', ':',
+				';', '#', '?', '/', '\\', '|', '~', '!', '@', '$', '%', '^',
+				'&', '+', '=', ',' }) {
+			assertEquals("Did not throw exception for invalid character ' "
+					+ invalid + " '", 1,
+					dataVal.validateDataFileName("bad" + invalid + "file.txt")
+							.size());
+
+		}
+
+		// check whitespace
+		assertEquals("Did not throw exception for whitespace character", 1,
+				dataVal.validateDataFileName("bad  file.txt").size());
+		assertEquals("Did not throw exception for whitespace character", 1,
+				dataVal.validateDataFileName("bad\tfile.txt").size());
+		assertEquals("Did not throw exception for whitespace character", 1,
+				dataVal.validateDataFileName("bad \nfile.txt").size());
+		assertEquals("Did not throw exception for whitespace character", 1,
+				dataVal.validateDataFileName("bad\rfile.txt").size());
+		assertEquals("Did not throw exception for whitespace character", 1,
+				dataVal.validateDataFileName("bad\ffile.txt").size());
+	}
+
+	@Test
+	public void testValidateDataFileNamesAreUniqueDuplicateNames() {
+		ArrayList<FileDefinitionDao> files = new ArrayList<FileDefinitionDao>();
+		FileDefinitionDao f1 = new FileDefinitionDao();
+		f1.setFileName("abc1.txt");
+		files.add(f1);
+
+		FileDefinitionDao f2 = new FileDefinitionDao();
+		f2.setFileName("abc2.txt");
+		files.add(f2);
+
+		FileDefinitionDao f3 = new FileDefinitionDao();
+		f3.setFileName("abc1.txt");
+		files.add(f3);
+		List<Exception> errors = new DataValidator()
+				.validateDataFileNamesAreUnique(files);
+		assertEquals(1, errors.size());
+	}
+
+	@Test
+	public void testValidateDataFileNamesAreUnique() {
+		ArrayList<FileDefinitionDao> files = new ArrayList<FileDefinitionDao>();
+		FileDefinitionDao f1 = new FileDefinitionDao();
+		f1.setFileName("abc1.txt");
+		files.add(f1);
+
+		FileDefinitionDao f2 = new FileDefinitionDao();
+		f2.setFileName("abc2.txt");
+		files.add(f2);
+
+		FileDefinitionDao f3 = new FileDefinitionDao();
+		f3.setFileName("abc3.txt");
+		files.add(f3);
+
+		List<Exception> errors = new DataValidator()
+				.validateDataFileNamesAreUnique(files);
+		assertTrue(errors.isEmpty());
+	}
 }

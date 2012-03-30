@@ -101,6 +101,8 @@ public class SoftwareDefinitionFileValidator {
 		} catch (IllegalArgumentException e) {
 			errors.add(e);
 		}
+		
+		errors.addAll(dataVal.validateDataFileNamesAreUnique(fileDefs));
 
 		for (FileDefinitionDao fileDef : fileDefs) {
 			errors.addAll(validateFileDefinition(fileDef));
@@ -123,7 +125,7 @@ public class SoftwareDefinitionFileValidator {
 		List<Exception> errors = new ArrayList<Exception>();
 
 		try {
-			dataVal.validateStr64kXml(fileDef.getFileName());
+			dataVal.validateDataFileName(fileDef.getFileName());
 		} catch (IllegalArgumentException e) {
 			errors.add(e);
 		}

@@ -9,11 +9,12 @@
  */
 package edu.cmu.sv.arinc838.validation;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.filechooser.FileNameExtensionFilter;
-
+import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao.IntegrityType;
 import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 import edu.cmu.sv.arinc838.dao.SoftwareDescriptionDao;
@@ -390,24 +391,54 @@ public class DataValidator {
 		return value;
 	}
 
-	public String validateDataFileName(String fileName) {
+	public List<Exception> validateDataFileName(String fileName) {
+		ArrayList<Exception> errors = new ArrayList<Exception>();
 		if (fileName == null) {
-			throw new IllegalArgumentException("File name cannot be null");
+			errors.add(new IllegalArgumentException("File name cannot be null"));
+			return errors;
 		} else if (fileName.length() > 255) {
-			throw new IllegalArgumentException(
+			errors.add(new IllegalArgumentException(
 					"File name must be <= 255 characters. The length is "
-							+ fileName.length());
+							+ fileName.length()));
 		}
 
 		// check extension
+		String name = fileName.substring(0, fileName.lastIndexOf("."));
 		String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
 		if (Arrays.asList(INVALID_DATA_FILE_EXTENSIONS).contains(
 				extension.toLowerCase())) {
-			throw new IllegalArgumentException(
+			errors.add(new IllegalArgumentException(
 					"File name contained an illegal extension '" + extension
-							+ "'");
+							+ "'"));
 		}
 
-		return fileName;
+		// check file names
+		if (name.matches(".*[\"'`*<>:;#?/\\\\|~!@$%^&+=,\\s]+.*")) {
+			errors.add(new IllegalArgumentException(
+					"File name contained an illegal character"));
+		}
+
+		return errors;
+	}
+
+	public List<Exception> validateDataFileNamesAreUnique(
+			List<FileDefinitionDao> fileDefs) {
+		ArrayList<Exception> errors = new ArrayList<Exception>();
+		ArrayList<String> fileNames = new ArrayList<String>();
+		for (FileDefinitionDao fileDef : fileDefs) {
+			fileNames.add(fileDef.getFileName());
+		}
+
+		Iterator<String> iter = fileNames.iterator();
+		while (iter.hasNext()) {
+			String name = iter.next();
+			iter.remove();
+			if (fileNames.contains(name)) {
+				errors.add(new IllegalArgumentException(
+						"Duplicate data file name '" + name + "'"));
+			}
+		}
+
+		return errors;
 	}
 }
