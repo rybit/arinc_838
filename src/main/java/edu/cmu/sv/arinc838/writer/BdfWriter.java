@@ -23,6 +23,7 @@ public class BdfWriter implements SdfWriter {
 		
 		SoftwareDefinitionFileBuilder builder = new SoftwareDefinitionFileBuilder();
 		write (file, builder, sdfDao);
+		
 	}
 
 	public void write (BdfFile file, SoftwareDefinitionFileBuilder builder, SoftwareDefinitionFileDao sdfDao) throws Exception {
