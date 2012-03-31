@@ -66,10 +66,7 @@ public class SoftwareDefinitionFileDao {
 
 		file.seek(BdfFile.FILE_FORMAT_VERSION_LOCATION);
 		byte[] fileFormatVersion = file.readHexbin32();
-		if (!Arrays.equals(fileFormatVersion, SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION)) {
-			throw new IllegalArgumentException("File format not recognized. Expected: "
-					+ SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION + " Got: " + fileFormatVersion);
-		}
+
 
 		file.seek(file.readSoftwareDescriptionPointer());
 		softwareDescription = new SoftwareDescriptionDao(file);

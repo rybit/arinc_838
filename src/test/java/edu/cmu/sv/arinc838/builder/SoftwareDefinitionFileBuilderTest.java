@@ -52,7 +52,7 @@ public class SoftwareDefinitionFileBuilderTest {
 	private com.arinc.arinc838.FileDefinition fileDef;
 	private com.arinc.arinc838.ThwDefinition hardwareDef;
 	private BdfFile binaryFile;
-	private SoftwareDefinitionFileDao readBinaryFile;
+	private SoftwareDefinitionFileDao sdfDao;
 	private BuilderFactory bFactory;
 	private TargetHardwareDefinitionBuilder thdBuilder;
 	private FileDefinitionBuilder fdBuilder; 
@@ -113,15 +113,15 @@ public class SoftwareDefinitionFileBuilderTest {
 
 		
 
-		binaryFile = new BdfFile(File.createTempFile("tmp", "bin"));
-		readBinaryFile = new SoftwareDefinitionFileDao(binaryFile);
-		swDefFileBuilder.buildBinary(readBinaryFile, binaryFile);
+		binaryFile = new BdfFile(new File("src/test/resources/ACM4712345678.BDF"));
+		sdfDao = new SoftwareDefinitionFileDao(swDefFile);
+		//swDefFileBuilder.buildBinary(readBinaryFile, binaryFile);
 	}
 
 
 	@Test
 	public void testBuildAddsFileFormatVersion() {
-		SdfFile file = swDefFileBuilder.buildXml(readBinaryFile);
+		SdfFile file = swDefFileBuilder.buildXml(sdfDao);
 
 		assertEquals(swDefFile.getFileFormatVersion(),
 				file.getFileFormatVersion());
@@ -143,7 +143,7 @@ public class SoftwareDefinitionFileBuilderTest {
 	public void testBuildBinaryWritesHeader() throws FileNotFoundException,
 			IOException {
 		BdfFile file = new BdfFile(File.createTempFile("tmp", "bin"));
-		int bytesWritten = swDefFileBuilder.buildBinary(readBinaryFile,file);
+		int bytesWritten = swDefFileBuilder.buildBinary(sdfDao,file);
 
 		assertEquals(bytesWritten, 169);
 
@@ -178,29 +178,29 @@ public class SoftwareDefinitionFileBuilderTest {
 		IntegrityDefinitionDao lspIntegDao = mock(IntegrityDefinitionDao.class);
 		
 
-		readBinaryFile.setSoftwareDescription(swDescription);
-		readBinaryFile.getTargetHardwareDefinitions().clear();
-		readBinaryFile.getTargetHardwareDefinitions().add(thdDao);
-		readBinaryFile.getTargetHardwareDefinitions().add(thdDAOLast);
-		readBinaryFile.getFileDefinitions().clear();
-		readBinaryFile.getFileDefinitions().add(fdDao);
-		readBinaryFile.getFileDefinitions().add(fdDao);
-		readBinaryFile.getFileDefinitions().add(fdDaoLast);
+		sdfDao.setSoftwareDescription(swDescription);
+		sdfDao.getTargetHardwareDefinitions().clear();
+		sdfDao.getTargetHardwareDefinitions().add(thdDao);
+		sdfDao.getTargetHardwareDefinitions().add(thdDAOLast);
+		sdfDao.getFileDefinitions().clear();
+		sdfDao.getFileDefinitions().add(fdDao);
+		sdfDao.getFileDefinitions().add(fdDao);
+		sdfDao.getFileDefinitions().add(fdDaoLast);
 
-		readBinaryFile.setSdfIntegrityDefinition(sdfIntegDao);
-		readBinaryFile.setLspIntegrityDefinition(lspIntegDao);
+		sdfDao.setSdfIntegrityDefinition(sdfIntegDao);
+		sdfDao.setLspIntegrityDefinition(lspIntegDao);
 
-		InOrder order = inOrder(file, swDescription, thdDao,
-				thdDAOLast, fdDao, fdDaoLast, sdfIntegDao, lspIntegDao);
+		InOrder order = inOrder(file, swDescBuilder, thdDao,integDefBuilder,
+				thdDAOLast,thdBuilder, fdBuilder, fdDao, fdDaoLast, sdfIntegDao, lspIntegDao);
 
 		when(file.length()).thenReturn(14L);
-		int bytesWritten = swDefFileBuilder.buildBinary(readBinaryFile,file);
+		int bytesWritten = swDefFileBuilder.buildBinary(sdfDao,file);
 		assertEquals(bytesWritten, 14L);
 
 		order.verify(file).seek(0);
 		order.verify(file).writePlaceholder();
 		order.verify(file).writeHexbin32(
-				readBinaryFile.getFileFormatVersion());
+				sdfDao.getFileFormatVersion());
 		order.verify(file, times(5)).writePlaceholder();
 
 		order.verify(swDescBuilder).buildBinary(swDescription, file);
@@ -237,7 +237,7 @@ public class SoftwareDefinitionFileBuilderTest {
 	@Test
 	public void testReadBinary() throws Exception {
 		SoftwareDefinitionFileDao actual = new SoftwareDefinitionFileDao(binaryFile);		
-		assertEquals(actual,  readBinaryFile);
+		assertEquals(actual,  sdfDao);
 	}
 	
 	@Test
@@ -246,9 +246,9 @@ public class SoftwareDefinitionFileBuilderTest {
 		
 		
 		String path = System.getProperty("java.io.tmpdir");
-		writer.write(path, readBinaryFile);
+		writer.write(path, sdfDao);
 
-		String firstFileName = path + readBinaryFile.getBinaryFileName();
+		String firstFileName = path + sdfDao.getBinaryFileName();
 		File firstOnDisk = new File(firstFileName);
 
 		BdfFile file = new BdfFile(firstOnDisk);
