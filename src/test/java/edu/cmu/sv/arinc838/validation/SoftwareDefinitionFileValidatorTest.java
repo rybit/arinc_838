@@ -21,8 +21,6 @@ import org.mockito.InOrder;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.arinc.arinc838.IntegrityDefinition;
-
 import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao.IntegrityType;
@@ -142,7 +140,7 @@ public class SoftwareDefinitionFileValidatorTest {
 		SoftwareDescriptionDao softDesc = mock(SoftwareDescriptionDao.class);
 		when(softDesc.getSoftwareTypeDescription()).thenReturn("123");
 		when(dataVal.validateStr64kXml(softDesc.getSoftwareTypeDescription()))
-				.thenThrow(new IllegalArgumentException("0"));
+				.thenReturn(errorList("0"));
 
 		SoftwareDefinitionFileValidator sdfVal = new SoftwareDefinitionFileValidator(
 				dataVal);
@@ -169,12 +167,12 @@ public class SoftwareDefinitionFileValidatorTest {
 
 	@Test
 	public void testValidateTargetHardwareDefinitions() {
-		when(dataVal.validateStr64kXml("0")).thenThrow(
-				new IllegalArgumentException("0"));
-		when(dataVal.validateStr64kXml("1")).thenThrow(
-				new IllegalArgumentException("1"));
-		when(dataVal.validateStr64kXml("2")).thenThrow(
-				new IllegalArgumentException("2"));
+		when(dataVal.validateStr64kXml("0")).thenReturn(
+				errorList("0"));
+		when(dataVal.validateStr64kXml("1")).thenReturn(
+				errorList("1"));
+		when(dataVal.validateStr64kXml("2")).thenReturn(
+				errorList("2"));
 
 		TargetHardwareDefinitionDao thwDef1 = mock(TargetHardwareDefinitionDao.class);
 		when(thwDef1.getPositions()).thenReturn(
@@ -247,8 +245,8 @@ public class SoftwareDefinitionFileValidatorTest {
 	public void testValidateFileDefinitionFileName() {
 		FileDefinitionDao fileDef = mock(FileDefinitionDao.class);
 		when(fileDef.getFileName()).thenReturn("123");
-		when(dataVal.validateDataFileName(fileDef.getFileName())).thenThrow(
-				new IllegalArgumentException("0"));
+		when(dataVal.validateDataFileName(fileDef.getFileName())).thenReturn(
+				errorList("0"));
 
 		SoftwareDefinitionFileValidator sdfVal = new SoftwareDefinitionFileValidator(
 				dataVal) {

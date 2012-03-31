@@ -11,13 +11,10 @@ package edu.cmu.sv.arinc838.validation;
 
 import static org.testng.AssertJUnit.*;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.xml.crypto.Data;
 
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -81,60 +78,54 @@ public class DataValidatorTest {
 	@Test
 	public void testValidateStr64kXmlMaxSizeWithEscapedChars() {
 		// this creates a max-sized string, with an escaped '&' as the last
-		// character.
-		// This will make the absolute length > than the max string length, but
-		// the
-		// true length will be = the max length, and should still be valid
+		// character.This will make the absolute length > than the max string
+		// length, but the true length will be = the max length, and should
+		// still be valid
 		String str64kMaxWithEscaped = str64kMax.substring(0,
 				str64kMax.length() - 1) + "&amp";
-		assertEquals(str64kMaxWithEscaped,
-				new DataValidator().validateStr64kXml(str64kMaxWithEscaped));
+		assertTrue(new DataValidator().validateStr64kXml(str64kMaxWithEscaped)
+				.isEmpty());
 	}
 
 	@Test
 	public void testValidateStr64kXml() {
 		String inputStr = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789 -_=+`~'\"[]{}\\|;:,./?!@#$%^*()";
-		assertEquals(inputStr, new DataValidator().validateStr64kXml(inputStr));
-		assertEquals(str64kMax,
-				new DataValidator().validateStr64kXml(str64kMax));
-		assertEquals("", new DataValidator().validateStr64kXml(""));
-
-		assertEquals("&lt", new DataValidator().validateStr64kXml("&lt"));
-		assertEquals("hello&lt",
-				new DataValidator().validateStr64kXml("hello&lt"));
-		assertEquals("&gt", new DataValidator().validateStr64kXml("&gt"));
-		assertEquals("&gtthere",
-				new DataValidator().validateStr64kXml("&gtthere"));
-		assertEquals("&amp", new DataValidator().validateStr64kXml("&amp"));
-		assertEquals("hello&amp&ampthere",
-				new DataValidator().validateStr64kXml("hello&amp&ampthere"));
+		assertTrue(new DataValidator().validateStr64kXml(inputStr).isEmpty());
+		assertTrue(new DataValidator().validateStr64kXml(str64kMax).isEmpty());
+		assertTrue(new DataValidator().validateStr64kXml("").isEmpty());
+		assertTrue(new DataValidator().validateStr64kXml("&lt").isEmpty());
+		assertTrue(new DataValidator().validateStr64kXml("hello&lt").isEmpty());
+		assertTrue(new DataValidator().validateStr64kXml("&gt").isEmpty());
+		assertTrue(new DataValidator().validateStr64kXml("&gtthere").isEmpty());
+		assertTrue(new DataValidator().validateStr64kXml("&amp").isEmpty());
+		assertTrue(new DataValidator().validateStr64kXml("hello&amp&ampthere")
+				.isEmpty());
 	}
 
 	@Test
 	public void testValidateStr64kXmlWithNonEscapedChars() {
-
-		try {
-			new DataValidator().validateStr64kXml("1 > 2");
-			fail("Did not throw IllegalArgumentException for non-escaped >");
-		} catch (IllegalArgumentException e) {
-		}
-
-		try {
-			new DataValidator().validateStr64kXml("1 < 2");
-			fail("Did not throw IllegalArgumentException for non-escaped <");
-		} catch (IllegalArgumentException e) {
-		}
-
-		try {
-			new DataValidator().validateStr64kXml("Mumford & Sons");
-			fail("Did not throw IllegalArgumentException for non-escaped &");
-		} catch (IllegalArgumentException e) {
-		}
+		assertEquals(
+				"Did not throw IllegalArgumentException for non-escaped >", 1,
+				new DataValidator().validateStr64kXml("1 > 2").size());
+		assertEquals(
+				"Did not throw IllegalArgumentException for non-escaped <", 1,
+				new DataValidator().validateStr64kXml("1 < 2").size());
+		assertEquals(
+				"Did not throw IllegalArgumentException for non-escaped &", 1,
+				new DataValidator().validateStr64kXml("Mumford & Sons").size());
 	}
 
-	@Test(expectedExceptions = IllegalArgumentException.class)
+	@Test
 	public void testValidateStr64kXmlTooLarge() {
-		new DataValidator().validateStr64kXml(str64kMax + "Y");
+		assertEquals(1, new DataValidator().validateStr64kXml(str64kMax + "Y")
+				.size());
+	}
+
+	@Test
+	public void testValidateStr64kXmlMultipleErrors() {
+		// too large, and unescaped XML
+		assertEquals(2, new DataValidator().validateStr64kXml(str64kMax + "&")
+				.size());
 	}
 
 	@Test(expectedExceptions = IllegalArgumentException.class)
@@ -142,9 +133,9 @@ public class DataValidatorTest {
 		new DataValidator().validateStr64kBinary(str64kMax + "Y");
 	}
 
-	@Test(expectedExceptions = IllegalArgumentException.class)
+	@Test
 	public void testValidateStr64kXmlNull() {
-		new DataValidator().validateStr64kXml(null);
+		assertEquals(1, new DataValidator().validateStr64kXml(null).size());
 	}
 
 	@Test(expectedExceptions = IllegalArgumentException.class)
@@ -359,9 +350,10 @@ public class DataValidatorTest {
 	@Test
 	public void testValidateDataFileNameTooLong() {
 		String longName = "";
-		for (int i = 0; i <= 255; i++) {
+		for (int i = 0; i <= 251; i++) {
 			longName += "A";
 		}
+		longName += ".bin";
 		assertEquals(1, new DataValidator().validateDataFileName(longName)
 				.size());
 	}
@@ -380,8 +372,8 @@ public class DataValidatorTest {
 					"Did not throw exception for invalid data file extension '"
 							+ extension.toLowerCase() + "'",
 					1,
-					dataVal.validateDataFileName("bad_file."
-							+ extension.toLowerCase()));
+					dataVal.validateDataFileName(
+							"bad_file." + extension.toLowerCase()).size());
 
 			assertEquals(
 					"Did not throw exception for invalid data file extension '"

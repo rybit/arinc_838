@@ -3,7 +3,7 @@
  * Brandon Sutherlin, Scott Griffin
  * 
  * This software is released under the MIT license
- * (http://www.opensource.org/licenses/mit-license.php) 
+ * (http://www.opensource.org/licenses/mit-license.php)
  * 
  * Created on Mar 26, 2012
  */
@@ -58,11 +58,7 @@ public class SoftwareDefinitionFileValidator {
 		} catch (IllegalArgumentException e) {
 			errors.add(e);
 		}
-		try {
-			dataVal.validateStr64kXml(softwareDesc.getSoftwareTypeDescription());
-		} catch (IllegalArgumentException e) {
-			errors.add(e);
-		}
+		errors.addAll(dataVal.validateStr64kXml(softwareDesc.getSoftwareTypeDescription()));
 		try {
 			dataVal.validateHexbin32(softwareDesc.getSoftwareTypeId());
 		} catch (IllegalArgumentException e) {
@@ -81,11 +77,7 @@ public class SoftwareDefinitionFileValidator {
 				continue;
 			}
 			for (String position : thwDef.getPositions()) {
-				try {
-					dataVal.validateStr64kXml(position);
-				} catch (IllegalArgumentException e) {
-					errors.add(e);
-				}
+				errors.addAll(dataVal.validateStr64kXml(position));
 			}
 		}
 
@@ -101,7 +93,7 @@ public class SoftwareDefinitionFileValidator {
 		} catch (IllegalArgumentException e) {
 			errors.add(e);
 		}
-		
+
 		errors.addAll(dataVal.validateDataFileNamesAreUnique(fileDefs));
 
 		for (FileDefinitionDao fileDef : fileDefs) {
@@ -124,20 +116,17 @@ public class SoftwareDefinitionFileValidator {
 	public List<Exception> validateFileDefinition(FileDefinitionDao fileDef) {
 		List<Exception> errors = new ArrayList<Exception>();
 
-		try {
-			dataVal.validateDataFileName(fileDef.getFileName());
-		} catch (IllegalArgumentException e) {
-			errors.add(e);
-		}
-		
+		errors.addAll(dataVal.validateDataFileName(fileDef.getFileName()));
+
 		try {
 			dataVal.validateUint32(fileDef.getFileSize());
 		} catch (IllegalArgumentException e) {
 			errors.add(e);
 		}
-		
-		errors.addAll(validateIntegrityDefinition(fileDef.getFileIntegrityDefinition()));
-		
+
+		errors.addAll(validateIntegrityDefinition(fileDef
+				.getFileIntegrityDefinition()));
+
 		return errors;
 	}
 
@@ -150,13 +139,13 @@ public class SoftwareDefinitionFileValidator {
 		} catch (IllegalArgumentException e) {
 			errors.add(e);
 		}
-		
+
 		try {
 			dataVal.validateIntegrityValue(integDef.getIntegrityValue());
 		} catch (IllegalArgumentException e) {
 			errors.add(e);
 		}
-		
+
 		return errors;
 	}
 
