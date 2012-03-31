@@ -27,7 +27,7 @@ public class XmlFormatter {
 		// if any chars are are already escaped, unescape them first
 		// this will handle strings that are partially escaped
 		try {
-			DataValidator.checkForEscapedXMLChars(value);
+			new DataValidator().checkForEscapedXMLChars(value);
 		} catch (IllegalArgumentException e) {
 			unescaped = unescapeXmlSpecialChars(value);
 		}
