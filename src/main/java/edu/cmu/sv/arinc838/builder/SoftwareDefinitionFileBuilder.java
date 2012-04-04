@@ -24,7 +24,6 @@ public class SoftwareDefinitionFileBuilder implements
 
 	public SoftwareDefinitionFileBuilder(BuilderFactory builderFact) {
 		this.builderFactory = builderFact;
-
 	}
 
 	@Override

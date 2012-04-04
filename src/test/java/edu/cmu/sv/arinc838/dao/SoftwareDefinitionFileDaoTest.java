@@ -10,7 +10,6 @@
 package edu.cmu.sv.arinc838.dao;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
 
@@ -31,10 +30,10 @@ import com.arinc.arinc838.SoftwareDescription;
 import com.arinc.arinc838.ThwDefinition;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
-import edu.cmu.sv.arinc838.builder.TargetHardwareDefinitionBuilder;
+import edu.cmu.sv.arinc838.builder.BuilderFactoryImpl;
+import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao.IntegrityType;
 import edu.cmu.sv.arinc838.util.Converter;
-import edu.cmu.sv.arinc838.validation.DataValidator;
 import edu.cmu.sv.arinc838.validation.ReferenceData;
 import edu.cmu.sv.arinc838.writer.BdfWriter;
 
@@ -47,6 +46,8 @@ public class SoftwareDefinitionFileDaoTest {
 	private ThwDefinition hardwareDef;
 
 	private SoftwareDefinitionFileDao swDefFileDao;
+	private SoftwareDefinitionFileDao readBinaryFile;
+	private BdfFile binaryFile;
 
 	@BeforeMethod
 	public void beforeMethod() throws Exception {
@@ -55,7 +56,8 @@ public class SoftwareDefinitionFileDaoTest {
 		integrity.setIntegrityValue(Converter.hexToBytes("0000000A"));
 
 		description = new SoftwareDescription();
-		description.setSoftwarePartnumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
+		description
+				.setSoftwarePartnumber(ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
 		description.setSoftwareTypeDescription("desc");
 		description.setSoftwareTypeId(Converter.hexToBytes("0000000A"));
 
@@ -72,7 +74,8 @@ public class SoftwareDefinitionFileDaoTest {
 
 		swDefFile = new SdfFile();
 
-		swDefFile.setFileFormatVersion(SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION);
+		swDefFile
+				.setFileFormatVersion(SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION);
 		swDefFile.setSdfIntegrityDefinition(integrity);
 		swDefFile.setLspIntegrityDefinition(integrity);
 		swDefFile.setSoftwareDescription(description);
@@ -83,7 +86,13 @@ public class SoftwareDefinitionFileDaoTest {
 		swDefFile.getThwDefinitions().add(hardwareDef);
 		swDefFile.getThwDefinitions().add(hardwareDef);
 
-		swDefFileDao = new SoftwareDefinitionFileDao();
+		swDefFileDao = new SoftwareDefinitionFileDao(
+				swDefFile);
+		binaryFile = new BdfFile(File.createTempFile("tmp", "bin"));
+		SoftwareDefinitionFileBuilder swDefFileBuilder = new SoftwareDefinitionFileBuilder(
+				new BuilderFactoryImpl());
+		swDefFileBuilder.buildBinary(swDefFileDao, binaryFile);
+		readBinaryFile = new SoftwareDefinitionFileDao(binaryFile);
 	}
 
 	@Test
@@ -92,11 +101,12 @@ public class SoftwareDefinitionFileDaoTest {
 		 * Only has one value currently - hard coded (no need for a setter
 		 * test...)
 		 */
-		assertEquals(swDefFileDao.getFileFormatVersion(), SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION);
+		assertEquals(swDefFileDao.getFileFormatVersion(),
+				SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION);
 	}
 
 	@Test
-	public void testSoftwareDefinitionSectionAccessor() {
+	public void testSoftwareDescriptionSectionAccessor() {
 		SoftwareDescriptionDao refVal = new SoftwareDescriptionDao();
 		refVal.setSoftwarePartnumber("SomeJunk");
 
@@ -132,30 +142,11 @@ public class SoftwareDefinitionFileDaoTest {
 	}
 
 	@Test
-	public void testDefaultConstructor() {
-		assertEquals(swDefFileDao.getFileFormatVersion(), SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION);
-	}
-
-	@Test
-	public void testXmlConstructor() {
-		swDefFileDao = new SoftwareDefinitionFileDao(swDefFile);
-
-		assertEquals(swDefFileDao.getSoftwareDescription(),
-				new SoftwareDescriptionDao(swDefFile.getSoftwareDescription()));
-		assertEquals(swDefFileDao.getLspIntegrityDefinition(),
-				new IntegrityDefinitionDao(swDefFile.getLspIntegrityDefinition()));
-		assertEquals(swDefFileDao.getSdfIntegrityDefinition(),
-				new IntegrityDefinitionDao(swDefFile.getSdfIntegrityDefinition()));
-
-		assertEquals(swDefFileDao.getFileDefinitions().size(), swDefFile.getFileDefinitions().size());
-		assertEquals(swDefFileDao.getTargetHardwareDefinitions().size(), swDefFile.getThwDefinitions().size());
-	}
-
-	@Test
-	public void getFileDefinitions() {
-		FileDefinitionDao first = mock(FileDefinitionDao.class);
+	public void testFileDefinitionAccessor() {
+		FileDefinitionDao first = new FileDefinitionDao();
 		FileDefinitionDao second = mock(FileDefinitionDao.class);
 
+		swDefFileDao.getFileDefinitions().clear();
 		swDefFileDao.getFileDefinitions().add(first);
 		swDefFileDao.getFileDefinitions().add(second);
 
@@ -165,133 +156,56 @@ public class SoftwareDefinitionFileDaoTest {
 	}
 
 	@Test
-	public void addFileDefinition() {
-		swDefFile.getFileDefinitions().clear();
-
-		FileDefinition expected = mock(FileDefinition.class);
-
-		swDefFile.getFileDefinitions().add(expected);
-		FileDefinitionDao actualFileDefinition = swDefFile.getFileDefinitions().get(0);
-		
-		assertEquals(actualFileDefinition, expected);
+	public void testDefaultConstructor() {
+		assertEquals(swDefFileDao.getFileFormatVersion(),
+				SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION);
 	}
 
-	
 	@Test
-	public void getFileDefinitions() {
-		assertEquals(swDefFile.getFileDefinitions().size(), 2);
+	public void testXmlConstructor() {
+		swDefFileDao = new SoftwareDefinitionFileDao(swDefFile);
 
+		assertEquals(swDefFileDao.getSoftwareDescription(),
+				new SoftwareDescriptionDao(swDefFile.getSoftwareDescription()));
 		assertEquals(
-				swDefFile.getFileDefinitions().get(0).getFileName(),
-				"file");
+				swDefFileDao.getLspIntegrityDefinition(),
+				new IntegrityDefinitionDao(swDefFile
+						.getLspIntegrityDefinition()));
 		assertEquals(
-				swDefFile.getFileDefinitions().get(1).getFileName(),
-				"file");
-	}
-	
-	
-	@Test
-	public void getLspIntegrityDefinition() {
-		assertEquals(swDefFileBuilder.getLspIntegrityDefinition()
-				.getIntegrityType(), integrity.getIntegrityType());
-		assertEquals(swDefFileBuilder.getLspIntegrityDefinition()
-				.getIntegrityValue(), integrity.getIntegrityValue());
-	}
+				swDefFileDao.getSdfIntegrityDefinition(),
+				new IntegrityDefinitionDao(swDefFile
+						.getSdfIntegrityDefinition()));
 
-	@Test
-	public void setLspIntegrityDefinition() {
-
-		IntegrityDefinitionDao newDef = mock(IntegrityDefinitionDao.class);
-		when(newDef.getIntegrityType()).thenReturn(10l);
-		when(newDef.getIntegrityValue()).thenReturn(new byte[] { 1, 2, 3, 4 });
-
-		swDefFileBuilder.setLspIntegrityDefinition(newDef);
-
-		assertEquals(swDefFileBuilder.getLspIntegrityDefinition()
-				.getIntegrityType(), newDef.getIntegrityType());
-		assertEquals(swDefFileBuilder.getLspIntegrityDefinition()
-				.getIntegrityValue(), newDef.getIntegrityValue());
-	}
-
-	@Test
-	public void getSdfIntegrityDefinition() {
-		assertEquals(swDefFileBuilder.getSdfIntegrityDefinition()
-				.getIntegrityType(), integrity.getIntegrityType());
-		assertEquals(swDefFileBuilder.getSdfIntegrityDefinition()
-				.getIntegrityValue(), integrity.getIntegrityValue());
-	}
-
-	@Test
-	public void setSdfIntegrityDefinition() {
-
-		IntegrityDefinitionDao newDef = mock(IntegrityDefinitionDao.class);
-		when(newDef.getIntegrityType()).thenReturn(10l);
-		when(newDef.getIntegrityValue()).thenReturn(new byte[] { 1, 2, 3, 4 });
-
-		swDefFileBuilder.setSdfIntegrityDefinition(newDef);
-
-		assertEquals(swDefFileBuilder.getSdfIntegrityDefinition()
-				.getIntegrityType(), newDef.getIntegrityType());
-		assertEquals(swDefFileBuilder.getSdfIntegrityDefinition()
-				.getIntegrityValue(), newDef.getIntegrityValue());
-	}
-
-	@Test
-	public void getSoftwareDescription() {
-		assertEquals(swDefFileBuilder.getSoftwareDescription()
-				.getSoftwarePartnumber(), description.getSoftwarePartnumber());
-		assertEquals(swDefFileBuilder.getSoftwareDescription()
-				.getSoftwareTypeDescription(),
-				description.getSoftwareTypeDescription());
-		assertEquals(swDefFileBuilder.getSoftwareDescription()
-				.getSoftwareTypeId(), description.getSoftwareTypeId());
-	}
-
-	@Test
-	public void setSoftwareDescription() {
-		SoftwareDescriptionDao newDesc = new SoftwareDescriptionDao();
-		newDesc.setSoftwarePartnumber(DataValidator
-				.generateSoftwarePartNumber("YZT??-ABCD-EFGH"));
-
-		newDesc.setSoftwareTypeDescription("new desc");
-		newDesc.setSoftwareTypeId(Converter.hexToBytes("0000000A"));
-
-		swDefFileBuilder.setSoftwareDescription(newDesc);
-
-		assertEquals(swDefFileBuilder.getSoftwareDescription()
-				.getSoftwarePartnumber(), newDesc.getSoftwarePartnumber());
-		assertEquals(swDefFileBuilder.getSoftwareDescription()
-				.getSoftwareTypeDescription(),
-				newDesc.getSoftwareTypeDescription());
-		assertEquals(swDefFileBuilder.getSoftwareDescription()
-				.getSoftwareTypeId(), newDesc.getSoftwareTypeId());
+		assertEquals(swDefFileDao.getFileDefinitions().size(), swDefFile
+				.getFileDefinitions().size());
+		assertEquals(swDefFileDao.getTargetHardwareDefinitions().size(),
+				swDefFile.getThwDefinitions().size());
 	}
 
 	@Test
 	public void getTargetHardwareDefinitions() {
 
-		assertEquals(swDefFileBuilder.getTargetHardwareDefinitions().size(), 2);
+		assertEquals(swDefFileDao.getTargetHardwareDefinitions().size(), 2);
 
-		assertEquals(swDefFileBuilder.getTargetHardwareDefinitions().get(0)
+		assertEquals(swDefFileDao.getTargetHardwareDefinitions().get(0)
 				.getThwId(), "hardware");
-		assertEquals(swDefFileBuilder.getTargetHardwareDefinitions().get(1)
+		assertEquals(swDefFileDao.getTargetHardwareDefinitions().get(1)
 				.getThwId(), "hardware");
 	}
 
 	@Test
 	public void addTargetHardwareDefinitions() {
-		swDefFileBuilder.getTargetHardwareDefinitions().clear();
+		swDefFileDao.getTargetHardwareDefinitions().clear();
 
-		TargetHardwareDefinitionBuilder expectedHardwareDefinition = new TargetHardwareDefinitionBuilder();
+		TargetHardwareDefinitionDao expectedHardwareDefinition = new TargetHardwareDefinitionDao();
 
-		swDefFileBuilder.getTargetHardwareDefinitions().add(
+		swDefFileDao.getTargetHardwareDefinitions().add(
 				expectedHardwareDefinition);
-		TargetHardwareDefinitionBuilder actualHardwareDefinition = swDefFileBuilder
+		TargetHardwareDefinitionDao actualHardwareDefinition = swDefFileDao
 				.getTargetHardwareDefinitions().get(0);
 		assertEquals(actualHardwareDefinition, expectedHardwareDefinition);
 	}
 
-	
 	@Test
 	public void getFileFormatVersion() {
 		assertEquals(SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION,
@@ -300,143 +214,113 @@ public class SoftwareDefinitionFileDaoTest {
 
 	@Test
 	public void getSoftwareDefinitionSections() {
-		assertEquals(description.getSoftwarePartnumber(),
-				swDefFile.getSoftwareDescription().getSoftwarePartnumber());
-	}
-	
-	@Test
-	public void testHasBinaryFileName() {
-		assertEquals(swDefFileBuilder.getBinaryFileName(),
-				swDefFileBuilder.getSoftwareDescription()
-						.getSoftwarePartnumber().replace("-", "")
-						+ ".BDF");
+		assertEquals(description.getSoftwarePartnumber(), swDefFile
+				.getSoftwareDescription().getSoftwarePartnumber());
 	}
 
 	@Test
-	public void testHasXmlFileName() {
-		assertEquals(swDefFileBuilder.getXmlFileName(),
-				swDefFileBuilder.getSoftwareDescription()
-						.getSoftwarePartnumber().replace("-", "")
-						+ ".XDF");
+	public void testHasBinaryFileName() {
+		String partNumber = "some-part";
+		SoftwareDescriptionDao descDao = new SoftwareDescriptionDao();
+		descDao.setSoftwarePartnumber(partNumber);
+		swDefFileDao.setSoftwareDescription(descDao);
+
+		assertEquals(swDefFileDao.getBinaryFileName(),
+				partNumber.replace("-", "") + ".BDF");
 	}
-	
+
 	@Test
 	public void testBinaryConstructorReadsDescription() {
 		assertEquals(readBinaryFile.getSoftwareDescription()
-				.getSoftwareTypeDescription(), swDefFileBuilder
+				.getSoftwareTypeDescription(), swDefFileDao
 				.getSoftwareDescription().getSoftwareTypeDescription());
 	}
-	
+
 	@Test
 	public void testSoftwareDefinitionFileBuilderBdfFile()
 			throws FileNotFoundException, IOException {
 		assertEquals(readBinaryFile.getLspIntegrityDefinition()
-				.getIntegrityValue(), swDefFileBuilder
-				.getLspIntegrityDefinition().getIntegrityValue());
+				.getIntegrityValue(), swDefFileDao.getLspIntegrityDefinition()
+				.getIntegrityValue());
 		assertEquals(readBinaryFile.getSdfIntegrityDefinition()
-				.getIntegrityValue(), swDefFileBuilder
-				.getSdfIntegrityDefinition().getIntegrityValue());
+				.getIntegrityValue(), swDefFileDao.getSdfIntegrityDefinition()
+				.getIntegrityValue());
 	}
-	
+
 	@Test
-	public void testEquals(){
-		SoftwareDefinitionFileDao copy = new SoftwareDefinitionFileDao(swDefFile);
-		
-		assertEquals(swDefFileBuilder, copy);		
+	public void testEquals() {
+		SoftwareDefinitionFileDao copy = new SoftwareDefinitionFileDao(
+				swDefFile);
+		swDefFileDao = new SoftwareDefinitionFileDao(swDefFile);
+
+		assertEquals(swDefFileDao, copy);
 	}
-	
+
 	@Test
-	public void testHashcode(){
-		assertEquals(swDefFileBuilder.hashCode(), swDefFileBuilder.getXmlFileName().hashCode());
+	public void testHashcode() {
+		swDefFileDao = new SoftwareDefinitionFileDao(swDefFile);
+		assertEquals(swDefFileDao.hashCode(), swDefFileDao.getXmlFileName()
+				.hashCode());
 	}
-	
+
 	@Test
-	public void testHashcodeWithNoDescriptionSet(){
+	public void testHashcode2() {
+		assertEquals(swDefFileDao.hashCode(), swDefFileDao.getXmlFileName()
+				.hashCode());
+	}
+
+	@Test
+	public void testHashcodeWithNoDescriptionSet() {
 		SoftwareDefinitionFileDao builder = new SoftwareDefinitionFileDao();
-		
+
 		assertEquals(builder.hashCode(), 0);
 	}
-	
-	@Test
-	public void testInitializeBinaryClearsFileDefinitions() throws IOException{
-		SoftwareDefinitionFileDao builder = new SoftwareDefinitionFileDao();
-		builder.getFileDefinitions().add(new FileDefinitionDao());
-		
-		builder.initialize(binaryFile);
-		
-		assertEquals(builder.getFileDefinitions().size(), swDefFile.getFileDefinitions().size());
-	}
-	
-	@Test
-	public void testInitializeBinaryClearsTargetHardwareDefinitions() throws IOException{
-		SoftwareDefinitionFileDao builder = new SoftwareDefinitionFileDao();
-		builder.getTargetHardwareDefinitions().add(new TargetHardwareDefinitionBuilder());
-		
-		builder.initialize(binaryFile);
-		
-		assertEquals(builder.getTargetHardwareDefinitions().size(), swDefFile.getThwDefinitions().size());		
-	}
-	
-	@Test
-	public void testInitializeXmlClearsFileDefinitions(){
-		SoftwareDefinitionFileDao builder = new SoftwareDefinitionFileDao();
-		builder.getFileDefinitions().add(new FileDefinitionDao());
-		
-		builder.initialize(swDefFile);
-		
-		assertEquals(builder.getFileDefinitions().size(), swDefFile.getFileDefinitions().size());
-	}
-	
-	@Test
-	public void testInitializeXmlClearsTargetHardwareDefinitions(){
-		SoftwareDefinitionFileDao builder = new SoftwareDefinitionFileDao();
-		builder.getTargetHardwareDefinitions().add(new TargetHardwareDefinitionBuilder());
-		
-		builder.initialize(swDefFile);
-		
-		assertEquals(builder.getTargetHardwareDefinitions().size(), swDefFile.getThwDefinitions().size());		
-	}
-	
-	// @Test
-	// public void setSoftwareDescription() {
-	// SoftwareDescriptionDao newDesc = new SoftwareDescriptionDao();
-	// newDesc.setSoftwarePartnumber(DataValidator.generateSoftwarePartNumber("YZT??-ABCD-EFGH"));
-	//
-	// newDesc.setSoftwareTypeDescription("new desc");
-	// newDesc.setSoftwareTypeId(Converter.hexToBytes("0000000A"));
-	//
-	// swDefFileDao.setSoftwareDescription(newDesc);
-	//
-	// assertEquals(swDefFileDao.getSoftwareDescription().getSoftwarePartnumber(),
-	// newDesc.getSoftwarePartnumber());
-	// assertEquals(swDefFileDao.getSoftwareDescription().getSoftwareTypeDescription(),
-	// newDesc.getSoftwareTypeDescription());
-	// assertEquals(swDefFileDao.getSoftwareDescription().getSoftwareTypeId(),
-	// newDesc.getSoftwareTypeId());
-	// }
-	//
-	// @Test
-	// public void addTargetHardwareDefinitions() {
-	// swDefFileDao.getTargetHardwareDefinitions().clear();
-	//
-	// TargetHardwareDefinitionBuilder expectedHardwareDefinition = new
-	// TargetHardwareDefinitionBuilder();
-	//
-	// swDefFileDao.getTargetHardwareDefinitions().add(expectedHardwareDefinition);
-	// TargetHardwareDefinitionBuilder actualHardwareDefinition =
-	// swDefFileDao.getTargetHardwareDefinitions().get(
-	// 0);
-	// assertEquals(actualHardwareDefinition, expectedHardwareDefinition);
-	// }
 
 	@Test
-	public void testHasBinaryFileName() {
-		String partNumber = "some-part";
-		SoftwareDescriptionDao descDao = new SoftwareDescriptionDao();
-		descDao.setSoftwarePartnumber(partNumber);
-		swDefFileDao.setSoftwareDescription(descDao);
+	public void testInitializeBinaryClearsFileDefinitions() throws IOException {
+		SoftwareDefinitionFileDao builder = new SoftwareDefinitionFileDao();
+		builder.getFileDefinitions().add(new FileDefinitionDao());
 
-		assertEquals(swDefFileDao.getBinaryFileName(), partNumber.replace("-", "") + ".BDF");
+		builder.initialize(binaryFile);
+
+		assertEquals(builder.getFileDefinitions().size(), swDefFile
+				.getFileDefinitions().size());
+	}
+
+	@Test
+	public void testInitializeBinaryClearsTargetHardwareDefinitions()
+			throws IOException {
+		SoftwareDefinitionFileDao builder = new SoftwareDefinitionFileDao();
+		builder.getTargetHardwareDefinitions().add(
+				new TargetHardwareDefinitionDao());
+
+		builder.initialize(binaryFile);
+
+		assertEquals(builder.getTargetHardwareDefinitions().size(), swDefFile
+				.getThwDefinitions().size());
+	}
+
+	@Test
+	public void testInitializeXmlClearsFileDefinitions() {
+		SoftwareDefinitionFileDao builder = new SoftwareDefinitionFileDao();
+		builder.getFileDefinitions().add(new FileDefinitionDao());
+
+		builder.initialize(swDefFile);
+
+		assertEquals(builder.getFileDefinitions().size(), swDefFile
+				.getFileDefinitions().size());
+	}
+
+	@Test
+	public void testInitializeXmlClearsTargetHardwareDefinitions() {
+		SoftwareDefinitionFileDao builder = new SoftwareDefinitionFileDao();
+		builder.getTargetHardwareDefinitions().add(
+				new TargetHardwareDefinitionDao());
+
+		builder.initialize(swDefFile);
+
+		assertEquals(builder.getTargetHardwareDefinitions().size(), swDefFile
+				.getThwDefinitions().size());
 	}
 
 	@Test
@@ -446,7 +330,8 @@ public class SoftwareDefinitionFileDaoTest {
 		descDao.setSoftwarePartnumber(partNumber);
 		swDefFileDao.setSoftwareDescription(descDao);
 
-		assertEquals(swDefFileDao.getBinaryFileName(), partNumber.replace("-", "") + ".XDF");
+		assertEquals(swDefFileDao.getXmlFileName(),
+				partNumber.replace("-", "") + ".XDF");
 	}
 
 	@Test
@@ -456,7 +341,7 @@ public class SoftwareDefinitionFileDaoTest {
 		String path = System.getProperty("java.io.tmpdir");
 
 		writer.write(path, swDefFileDao);
-		File firstOnDisk = new File(writer.getFilename(swDefFileDao));
+		File firstOnDisk = new File(path + writer.getFilename(swDefFileDao));
 
 		BdfFile file = new BdfFile(firstOnDisk);
 		SoftwareDefinitionFileDao actual = new SoftwareDefinitionFileDao(file);
@@ -466,7 +351,7 @@ public class SoftwareDefinitionFileDaoTest {
 		first.readFully(firstBytes);
 
 		writer.write(path, actual);
-		File secondOnDisk = new File(writer.getFilename(actual));
+		File secondOnDisk = new File(path + writer.getFilename(actual));
 		RandomAccessFile second = new RandomAccessFile(secondOnDisk, "r");
 		byte[] secondBytes = new byte[(int) second.length()];
 		second.readFully(secondBytes);
@@ -477,24 +362,4 @@ public class SoftwareDefinitionFileDaoTest {
 		secondOnDisk.delete();
 	}
 
-	@Test
-	public void testEquals() {
-		SoftwareDefinitionFileDao copy = new SoftwareDefinitionFileDao(swDefFile);
-		swDefFileDao = new SoftwareDefinitionFileDao(swDefFile);
-		
-		assertEquals(swDefFileDao, copy);
-	}
-
-	@Test
-	 public void testHashcode() {
-	 assertEquals(swDefFileDao.hashCode(),
-	 swDefFileDao.getXmlFileName().hashCode());
-	 }
-	
-	 @Test
-	 public void testHashcodeWithNoDescriptionSet() {
-	 SoftwareDefinitionFileDao builder = new SoftwareDefinitionFileDao();
-	
-	 assertEquals(builder.hashCode(), 0);
-	 }
 }

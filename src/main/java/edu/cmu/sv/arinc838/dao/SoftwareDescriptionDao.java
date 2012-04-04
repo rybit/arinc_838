@@ -74,10 +74,10 @@ public class SoftwareDescriptionDao {
 	
 	public boolean equals(SoftwareDescriptionDao obj){
 		return obj != null &&
-				this == obj ||
+				(this == obj ||
 				(this.getSoftwarePartnumber().equals(obj.getSoftwarePartnumber()) &&
 				this.getSoftwareTypeDescription().equals(obj.getSoftwareTypeDescription()) &&
-				Arrays.equals(this.getSoftwareTypeId(), obj.getSoftwareTypeId()));
+				Arrays.equals(this.getSoftwareTypeId(), obj.getSoftwareTypeId())));
 	}
 	
 	@Override

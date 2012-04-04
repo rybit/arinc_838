@@ -18,7 +18,6 @@ import static org.testng.Assert.assertEquals;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +40,6 @@ import edu.cmu.sv.arinc838.dao.SoftwareDescriptionDao;
 import edu.cmu.sv.arinc838.dao.TargetHardwareDefinitionDao;
 import edu.cmu.sv.arinc838.util.Converter;
 import edu.cmu.sv.arinc838.validation.ReferenceData;
-import edu.cmu.sv.arinc838.writer.BdfWriter;
 
 public class SoftwareDefinitionFileBuilderTest {
 	private SdfFile swDefFile;
@@ -51,7 +49,6 @@ public class SoftwareDefinitionFileBuilderTest {
 	private SoftwareDescriptionBuilder swDescBuilder;
 	private com.arinc.arinc838.FileDefinition fileDef;
 	private com.arinc.arinc838.ThwDefinition hardwareDef;
-	private BdfFile binaryFile;
 	private SoftwareDefinitionFileDao sdfDao;
 	private BuilderFactory bFactory;
 	private TargetHardwareDefinitionBuilder thdBuilder;
@@ -111,11 +108,7 @@ public class SoftwareDefinitionFileBuilderTest {
 		swDefFile.getThwDefinitions().add(hardwareDef);
 		swDefFile.getThwDefinitions().add(hardwareDef);
 
-		
-
-		binaryFile = new BdfFile(new File("src/test/resources/ACM4712345678.BDF"));
 		sdfDao = new SoftwareDefinitionFileDao(swDefFile);
-		//swDefFileBuilder.buildBinary(readBinaryFile, binaryFile);
 	}
 
 
@@ -133,15 +126,12 @@ public class SoftwareDefinitionFileBuilderTest {
 
 		assertEquals(builder.getFileFormatVersion(),
 				SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION);
-
 	}
-
-
-	
 
 	@Test
 	public void testBuildBinaryWritesHeader() throws FileNotFoundException,
 			IOException {
+		swDefFileBuilder = new SoftwareDefinitionFileBuilder(new BuilderFactoryImpl());
 		BdfFile file = new BdfFile(File.createTempFile("tmp", "bin"));
 		int bytesWritten = swDefFileBuilder.buildBinary(sdfDao,file);
 
@@ -232,49 +222,5 @@ public class SoftwareDefinitionFileBuilderTest {
 		order.verify(file).seek(0);
 		order.verify(file).writeUint32(file.length());
 	}
-
-
-	@Test
-	public void testReadBinary() throws Exception {
-		SoftwareDefinitionFileDao actual = new SoftwareDefinitionFileDao(binaryFile);		
-		assertEquals(actual,  sdfDao);
-	}
-	
-	@Test
-	public void testReadBinaryActualFilesOnDisk() throws Exception {
-		BdfWriter writer = new BdfWriter();
-		
-		
-		String path = System.getProperty("java.io.tmpdir");
-		writer.write(path, sdfDao);
-
-		String firstFileName = path + sdfDao.getBinaryFileName();
-		File firstOnDisk = new File(firstFileName);
-
-		BdfFile file = new BdfFile(firstOnDisk);
-
-		SoftwareDefinitionFileDao actual = new SoftwareDefinitionFileDao(
-				file);
-		String nextPath = path + "/newBinary/";
-		writer.write(nextPath, actual);
-
-		String secondFileName = nextPath + actual.getBinaryFileName();
-
-		RandomAccessFile first = new RandomAccessFile(firstOnDisk, "r");
-		byte[] firstBytes = new byte[(int) first.length()];
-		first.readFully(firstBytes);
-
-		File secondOnDisk = new File(secondFileName);
-		RandomAccessFile second = new RandomAccessFile(secondOnDisk, "r");
-		byte[] secondBytes = new byte[(int) second.length()];
-		second.readFully(secondBytes);
-
-		assertEquals(firstBytes, secondBytes);
-
-		firstOnDisk.delete();
-		secondOnDisk.delete();
-	}
-
-	
 
 }

@@ -53,13 +53,6 @@ public class BdfFileTest {
 		assertEquals(actualUint32, 0);
 	}
 
-	@Test(expectedExceptions = IllegalArgumentException.class)
-	public void writeUint32UsesValidationTest() throws Exception {
-		long badUInt32 = Long.MAX_VALUE;
-
-		f.writeUint32(badUInt32);
-	}
-
 	/**
 	 * We have this test to ensure that the RandomAccessFile class we are
 	 * extending behaves as our API requires.
@@ -92,19 +85,6 @@ public class BdfFileTest {
 		String actual = f.readStr64k();
 
 		assertEquals(actual, ipsum);
-	}
-
-	@Test(expectedExceptions = IllegalArgumentException.class)
-	public void writeStr64kUsesValidation() throws Exception {
-
-		StringBuilder value = new StringBuilder();
-
-		// build a string that is too big
-		for (int i = 0; i < DataValidator.STR64K_MAX_LENGTH + 1; i++) {
-			value.append('c');
-		}
-
-		f.writeStr64k(value.toString());
 	}
 
 	@Test
