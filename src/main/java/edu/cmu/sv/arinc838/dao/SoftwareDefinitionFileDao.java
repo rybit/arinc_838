@@ -61,6 +61,22 @@ public class SoftwareDefinitionFileDao {
 		lspIntegrityDefinition = new IntegrityDefinitionDao(swDefFile.getLspIntegrityDefinition());
 		sdfIntegrityDefinition = new IntegrityDefinitionDao(swDefFile.getSdfIntegrityDefinition());
 	}
+	
+	public void initialize(SoftwareDefinitionFileDao sdfFile) {
+		fileDefinitions.clear();
+		for (FileDefinitionDao fileDef : sdfFile.getFileDefinitions()) {
+			fileDefinitions.add(fileDef);
+		}
+
+		thwDefinitions.clear();
+		for (TargetHardwareDefinitionDao thwDef : sdfFile.getTargetHardwareDefinitions()) {
+			thwDefinitions.add(thwDef);
+		}
+
+		softwareDescription = sdfFile.getSoftwareDescription();
+		lspIntegrityDefinition = sdfFile.getLspIntegrityDefinition();
+		sdfIntegrityDefinition = sdfFile.getSdfIntegrityDefinition();		
+	}
 
 	public void initialize(BdfFile file) throws IOException {
 
@@ -167,4 +183,6 @@ public class SoftwareDefinitionFileDao {
 		}
 		return 0;
 	}
+
+
 }
