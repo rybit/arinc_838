@@ -2,6 +2,8 @@ package edu.cmu.sv.arinc838.reader;
 
 import static org.testng.Assert.assertEquals;
 
+import java.util.ArrayList;
+
 import org.testng.annotations.Test;
 
 import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
@@ -14,7 +16,10 @@ public class BdfReaderTest {
 	@Test
 	public void testRead() throws Exception {
 		BdfReader reader = new BdfReader();
-		SoftwareDefinitionFileDao sdfDao = reader.read("src/test/resources/ACM4712345678.BDF");
+		ArrayList<Exception> errorList = new ArrayList<Exception>();
+		SoftwareDefinitionFileDao sdfDao = reader.read(
+				"src/test/resources/ACM4712345678.BDF", errorList);
+		assertEquals(errorList.size(), 0, "Unexpected errors during read");
 
 		assertEquals(sdfDao.getFileFormatVersion(),
 				ReferenceData.SDF_TEST_FILE.getFileFormatVersion());
@@ -63,12 +68,23 @@ public class BdfReaderTest {
 		assertEquals(sdfDao.getSdfIntegrityDefinition().getIntegrityValue(),
 				ReferenceData.SDF_TEST_FILE.getSdfIntegrityDefinition()
 						.getIntegrityValue());
-		
+
 		assertEquals(sdfDao.getLspIntegrityDefinition().getIntegrityType(),
 				ReferenceData.SDF_TEST_FILE.getLspIntegrityDefinition()
 						.getIntegrityType());
 		assertEquals(sdfDao.getLspIntegrityDefinition().getIntegrityValue(),
 				ReferenceData.SDF_TEST_FILE.getLspIntegrityDefinition()
 						.getIntegrityValue());
+	}
+
+	@Test
+	public void testReadErrors() throws Exception {
+		BdfReader reader = new BdfReader();
+		ArrayList<Exception> errorList = new ArrayList<Exception>();
+		SoftwareDefinitionFileDao sdfDao = reader.read(
+				"src/test/resources/error/ACM4712345678.BDF", errorList);
+
+		assertEquals(errorList.size(), 2,
+				"Did not get expected number of errors");
 	}
 }

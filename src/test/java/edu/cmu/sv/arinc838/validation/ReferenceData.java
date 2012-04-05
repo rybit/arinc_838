@@ -33,6 +33,8 @@ public class ReferenceData {
 	public static final SoftwareDefinitionFileDao SDF_TEST_FILE = new SoftwareDefinitionFileDao();
 
 	static {
+		SDF_TEST_FILE.setFileFormatVersion(SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION);
+		
 		SoftwareDescriptionDao desc = new SoftwareDescriptionDao();
 		desc.setSoftwarePartnumber(SOFTWARE_PART_NUMBER_REFERENCE);
 		desc.setSoftwareTypeDescription("STD");

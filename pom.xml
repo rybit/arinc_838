@@ -7,7 +7,7 @@
 	<name>ARINC 838</name>
 	<url>http://github.com/squirrely/arinc_838</url>
 	<artifactId>arinc838</artifactId>
-	<version>0.1</version>
+	<version>0.2</version>
 
 	<description>A prototype system capable of installing various types of software onto a mock avionics unit following the ARINC 838 standard.
 

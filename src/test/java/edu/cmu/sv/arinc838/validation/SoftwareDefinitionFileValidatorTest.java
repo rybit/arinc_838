@@ -69,7 +69,7 @@ public class SoftwareDefinitionFileValidatorTest {
 
 			@Override
 			public List<Exception> validateSoftwareDescription(
-					SoftwareDescriptionDao softwareDesc) {
+					SoftwareDescriptionDao softwareDesc, String sourceFile) {
 				softwareDesc.getSoftwarePartnumber();
 				return errorList("1");
 			}
@@ -103,7 +103,7 @@ public class SoftwareDefinitionFileValidatorTest {
 			}
 		};
 
-		List<Exception> errors = sdfVal.validateSdfFile(sdfDao);
+		List<Exception> errors = sdfVal.validateSdfFile(sdfDao, "abc");
 		assertEquals(errors.size(), 6);
 		for (int i = 0; i < errors.size(); i++) {
 			assertEquals(errors.get(i).getMessage(), i + "");
@@ -121,7 +121,7 @@ public class SoftwareDefinitionFileValidatorTest {
 	@Test
 	public void testValidateSoftwareDescriptionSoftwarePartnumber() {
 		SoftwareDescriptionDao softDesc = mock(SoftwareDescriptionDao.class);
-		when(softDesc.getSoftwarePartnumber()).thenReturn("123");
+		when(softDesc.getSoftwarePartnumber()).thenReturn("ACM47-1234-5677");
 		when(
 				dataVal.validateSoftwarePartNumber(softDesc
 						.getSoftwarePartnumber())).thenThrow(
@@ -130,14 +130,17 @@ public class SoftwareDefinitionFileValidatorTest {
 		SoftwareDefinitionFileValidator sdfVal = new SoftwareDefinitionFileValidator(
 				dataVal);
 
-		List<Exception> errors = sdfVal.validateSoftwareDescription(softDesc);
-		assertEquals(errors.size(), 1);
+		List<Exception> errors = sdfVal.validateSoftwareDescription(softDesc,
+				"ACM4712345678.XDF");
+		assertEquals(errors.size(), 2);
 		assertEquals(errors.get(0).getMessage(), "0");
 	}
 
 	@Test
 	public void testValidateSoftwareDescriptionSoftwareTypeDescription() {
 		SoftwareDescriptionDao softDesc = mock(SoftwareDescriptionDao.class);
+		when(softDesc.getSoftwarePartnumber()).thenReturn(
+				ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
 		when(softDesc.getSoftwareTypeDescription()).thenReturn("123");
 		when(dataVal.validateStr64kXml(softDesc.getSoftwareTypeDescription()))
 				.thenReturn(errorList("0"));
@@ -145,7 +148,10 @@ public class SoftwareDefinitionFileValidatorTest {
 		SoftwareDefinitionFileValidator sdfVal = new SoftwareDefinitionFileValidator(
 				dataVal);
 
-		List<Exception> errors = sdfVal.validateSoftwareDescription(softDesc);
+		List<Exception> errors = sdfVal.validateSoftwareDescription(
+				softDesc,
+				ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE
+						.replaceAll("-", "") + ".XDF");
 		assertEquals(errors.size(), 1);
 		assertEquals(errors.get(0).getMessage(), "0");
 	}
@@ -153,6 +159,9 @@ public class SoftwareDefinitionFileValidatorTest {
 	@Test
 	public void testValidateSoftwareDescriptionSoftwareTypeId() {
 		SoftwareDescriptionDao softDesc = mock(SoftwareDescriptionDao.class);
+		when(softDesc.getSoftwarePartnumber()).thenReturn(
+				ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE);
+
 		when(softDesc.getSoftwareTypeId()).thenReturn(new byte[] {});
 		when(dataVal.validateHexbin32(softDesc.getSoftwareTypeId())).thenThrow(
 				new IllegalArgumentException("0"));
@@ -160,19 +169,19 @@ public class SoftwareDefinitionFileValidatorTest {
 		SoftwareDefinitionFileValidator sdfVal = new SoftwareDefinitionFileValidator(
 				dataVal);
 
-		List<Exception> errors = sdfVal.validateSoftwareDescription(softDesc);
+		List<Exception> errors = sdfVal.validateSoftwareDescription(
+				softDesc,
+				ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE
+						.replaceAll("-", "") + ".XDF");
 		assertEquals(errors.size(), 1);
 		assertEquals(errors.get(0).getMessage(), "0");
 	}
 
 	@Test
 	public void testValidateTargetHardwareDefinitions() {
-		when(dataVal.validateStr64kXml("0")).thenReturn(
-				errorList("0"));
-		when(dataVal.validateStr64kXml("1")).thenReturn(
-				errorList("1"));
-		when(dataVal.validateStr64kXml("2")).thenReturn(
-				errorList("2"));
+		when(dataVal.validateStr64kXml("0")).thenReturn(errorList("0"));
+		when(dataVal.validateStr64kXml("1")).thenReturn(errorList("1"));
+		when(dataVal.validateStr64kXml("2")).thenReturn(errorList("2"));
 
 		TargetHardwareDefinitionDao thwDef1 = mock(TargetHardwareDefinitionDao.class);
 		when(thwDef1.getPositions()).thenReturn(
@@ -218,23 +227,22 @@ public class SoftwareDefinitionFileValidatorTest {
 
 		FileDefinitionDao fileDef2 = mock(FileDefinitionDao.class);
 		when(fileDef2.getFileName()).thenReturn("b");
-		
+
 		FileDefinitionDao fileDef3 = mock(FileDefinitionDao.class);
 		when(fileDef3.getFileName()).thenReturn("b");
 
 		List<FileDefinitionDao> fileDefs = Arrays
 				.asList(new FileDefinitionDao[] { fileDef1, fileDef2 });
 
-		
 		InOrder order = inOrder(dataVal);
 		when(dataVal.validateList1(fileDefs)).thenThrow(
 				new IllegalArgumentException("0"));
 
 		List<Exception> errors = sdfVal.validateFileDefinitions(fileDefs);
-		
+
 		order.verify(dataVal).validateList1(fileDefs);
 		order.verify(dataVal).validateDataFileNamesAreUnique(fileDefs);
-		
+
 		assertEquals(errors.size(), 3);
 		assertEquals(errors.get(0).getMessage(), "0");
 		assertEquals(errors.get(1).getMessage(), fileDef1.getFileName());
@@ -308,9 +316,10 @@ public class SoftwareDefinitionFileValidatorTest {
 	@Test
 	public void testValidateIntegrityDefinitionIntegrityType() {
 		IntegrityDefinitionDao integDef = mock(IntegrityDefinitionDao.class);
-		when(integDef.getIntegrityType()).thenReturn(IntegrityType.CRC16.getType());
-		when(dataVal.validateIntegrityType(integDef.getIntegrityType())).thenThrow(
-				new IllegalArgumentException("0"));
+		when(integDef.getIntegrityType()).thenReturn(
+				IntegrityType.CRC16.getType());
+		when(dataVal.validateIntegrityType(integDef.getIntegrityType()))
+				.thenThrow(new IllegalArgumentException("0"));
 
 		SoftwareDefinitionFileValidator sdfVal = new SoftwareDefinitionFileValidator(
 				dataVal);
@@ -319,13 +328,14 @@ public class SoftwareDefinitionFileValidatorTest {
 		assertEquals(errors.size(), 1);
 		assertEquals(errors.get(0).getMessage(), "0");
 	}
-	
+
 	@Test
 	public void testValidateIntegrityDefinitionIntegrityValue() {
 		IntegrityDefinitionDao integDef = mock(IntegrityDefinitionDao.class);
-		when(integDef.getIntegrityValue()).thenReturn(new byte[]{1,2,3,4});
-		when(dataVal.validateIntegrityValue(integDef.getIntegrityValue())).thenThrow(
-				new IllegalArgumentException("0"));
+		when(integDef.getIntegrityValue())
+				.thenReturn(new byte[] { 1, 2, 3, 4 });
+		when(dataVal.validateIntegrityValue(integDef.getIntegrityValue()))
+				.thenThrow(new IllegalArgumentException("0"));
 
 		SoftwareDefinitionFileValidator sdfVal = new SoftwareDefinitionFileValidator(
 				dataVal);
@@ -334,7 +344,7 @@ public class SoftwareDefinitionFileValidatorTest {
 		assertEquals(errors.size(), 1);
 		assertEquals(errors.get(0).getMessage(), "0");
 	}
-	
+
 	@Test
 	public void testValidateSdfIntegrityDefinition() {
 		SoftwareDefinitionFileValidator sdfVal = new SoftwareDefinitionFileValidator(
@@ -345,15 +355,16 @@ public class SoftwareDefinitionFileValidatorTest {
 					IntegrityDefinitionDao integDef) {
 				return errorList("0");
 			}
-			
+
 		};
 
-		List<Exception> errors = sdfVal.validateSdfIntegrityDefinition(new IntegrityDefinitionDao());
+		List<Exception> errors = sdfVal
+				.validateSdfIntegrityDefinition(new IntegrityDefinitionDao());
 
 		assertEquals(errors.size(), 1);
 		assertEquals(errors.get(0).getMessage(), "0");
 	}
-	
+
 	@Test
 	public void testValidateLspIntegrityDefinition() {
 		SoftwareDefinitionFileValidator sdfVal = new SoftwareDefinitionFileValidator(
@@ -364,10 +375,11 @@ public class SoftwareDefinitionFileValidatorTest {
 					IntegrityDefinitionDao integDef) {
 				return errorList("0");
 			}
-			
+
 		};
 
-		List<Exception> errors = sdfVal.validateLspIntegrityDefinition(new IntegrityDefinitionDao());
+		List<Exception> errors = sdfVal
+				.validateLspIntegrityDefinition(new IntegrityDefinitionDao());
 
 		assertEquals(errors.size(), 1);
 		assertEquals(errors.get(0).getMessage(), "0");

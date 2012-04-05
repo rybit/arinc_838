@@ -32,6 +32,7 @@ public class SoftwareDefinitionFileDao {
 	private SoftwareDescriptionDao softwareDescription;
 	private IntegrityDefinitionDao lspIntegrityDefinition;
 	private IntegrityDefinitionDao sdfIntegrityDefinition;
+	private byte[] fileFormatVersion = DEFAULT_FILE_FORMAT_VERSION;
 
 	public SoftwareDefinitionFileDao() {
 		;
@@ -59,6 +60,7 @@ public class SoftwareDefinitionFileDao {
 		softwareDescription = new SoftwareDescriptionDao(swDefFile.getSoftwareDescription());
 		lspIntegrityDefinition = new IntegrityDefinitionDao(swDefFile.getLspIntegrityDefinition());
 		sdfIntegrityDefinition = new IntegrityDefinitionDao(swDefFile.getSdfIntegrityDefinition());
+		fileFormatVersion = swDefFile.getFileFormatVersion();
 	}
 	
 	public void initialize(SoftwareDefinitionFileDao sdfFile) {
@@ -75,12 +77,13 @@ public class SoftwareDefinitionFileDao {
 		softwareDescription = sdfFile.getSoftwareDescription();
 		lspIntegrityDefinition = sdfFile.getLspIntegrityDefinition();
 		sdfIntegrityDefinition = sdfFile.getSdfIntegrityDefinition();		
+		fileFormatVersion = sdfFile.getFileFormatVersion();
 	}
 
 	public void initialize(BdfFile file) throws IOException {
 
 		file.seek(BdfFile.FILE_FORMAT_VERSION_LOCATION);
-		byte[] fileFormatVersion = file.readHexbin32();
+		fileFormatVersion = file.readHexbin32();
 
 
 		file.seek(file.readSoftwareDescriptionPointer());
@@ -113,9 +116,12 @@ public class SoftwareDefinitionFileDao {
 		this.setLspIntegrityDefinition(new IntegrityDefinitionDao(file));
 	}
 
-	//TODO: This needs to be read from file and not hard coded
 	public byte[] getFileFormatVersion() {
-		return DEFAULT_FILE_FORMAT_VERSION;
+		return fileFormatVersion;
+	}
+	
+	public void setFileFormatVersion(byte[] fileFormatVersion) {
+		this.fileFormatVersion = fileFormatVersion;
 	}
 
 	public SoftwareDescriptionDao getSoftwareDescription() {
@@ -182,6 +188,4 @@ public class SoftwareDefinitionFileDao {
 		}
 		return 0;
 	}
-
-
 }

@@ -9,10 +9,12 @@
  */
 package edu.cmu.sv.arinc838.reader;
 
+import java.util.List;
+
 import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 
 public interface SdfReader {
 
-	public abstract SoftwareDefinitionFileDao read(String sdfFile) throws Exception;
+	public abstract SoftwareDefinitionFileDao read(String sdfFile, List<Exception> errorList);
 
 }

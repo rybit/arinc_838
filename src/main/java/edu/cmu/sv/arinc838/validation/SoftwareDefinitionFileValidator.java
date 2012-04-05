@@ -26,7 +26,8 @@ public class SoftwareDefinitionFileValidator {
 		this.dataVal = dataVal;
 	}
 
-	public List<Exception> validateSdfFile(SoftwareDefinitionFileDao sdfDao) {
+	public List<Exception> validateSdfFile(SoftwareDefinitionFileDao sdfDao,
+			String sourceFile) {
 		List<Exception> errors = new ArrayList<Exception>();
 
 		try {
@@ -35,8 +36,8 @@ public class SoftwareDefinitionFileValidator {
 			errors.add(e);
 		}
 
-		errors.addAll(validateSoftwareDescription(sdfDao
-				.getSoftwareDescription()));
+		errors.addAll(
+				validateSoftwareDescription(sdfDao.getSoftwareDescription(), sourceFile));
 		errors.addAll(validateTargetHardwareDefinitions(sdfDao
 				.getTargetHardwareDefinitions()));
 		errors.addAll(validateFileDefinitions(sdfDao.getFileDefinitions()));
@@ -49,7 +50,7 @@ public class SoftwareDefinitionFileValidator {
 	}
 
 	public List<Exception> validateSoftwareDescription(
-			SoftwareDescriptionDao softwareDesc) {
+			SoftwareDescriptionDao softwareDesc, String sourceFile) {
 		List<Exception> errors = new ArrayList<Exception>();
 
 		try {
@@ -58,7 +59,20 @@ public class SoftwareDefinitionFileValidator {
 		} catch (IllegalArgumentException e) {
 			errors.add(e);
 		}
-		errors.addAll(dataVal.validateStr64kXml(softwareDesc.getSoftwareTypeDescription()));
+		String partNumberAsFile = softwareDesc.getSoftwarePartnumber().replace(
+				"-", "");
+		String partNumberAsXDF = partNumberAsFile + ".XDF";
+		String partNumberAsBDF = partNumberAsFile + ".BDF";
+		if (!partNumberAsXDF.equals(sourceFile)
+				&& !partNumberAsBDF.equals(sourceFile)) {
+			errors.add(new IllegalArgumentException(
+					"Source file name did not match software part number. File name was '"
+							+ sourceFile + "', expected '" + partNumberAsXDF
+							+ "' or '" + partNumberAsBDF));
+		}
+
+		errors.addAll(dataVal.validateStr64kXml(softwareDesc
+				.getSoftwareTypeDescription()));
 		try {
 			dataVal.validateHexbin32(softwareDesc.getSoftwareTypeId());
 		} catch (IllegalArgumentException e) {
