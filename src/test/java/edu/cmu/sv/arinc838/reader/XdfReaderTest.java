@@ -1,11 +1,9 @@
 package edu.cmu.sv.arinc838.reader;
 
-import static org.testng.Assert.*;
-import java.io.File;
+import static org.testng.Assert.assertEquals;
+
 import java.util.ArrayList;
 
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
@@ -83,10 +81,10 @@ public class XdfReaderTest {
 	public void testReadErrors() throws Exception {
 		XdfReader reader = new XdfReader();
 		ArrayList<Exception> errorList = new ArrayList<Exception>();
-		SoftwareDefinitionFileDao sdfDao = reader.read(
+		reader.read(
 				"src/test/resources/error/ACM4712345678.XDF", errorList);
 
-		assertEquals(errorList.size(), 2,
+		assertEquals(errorList.size(), 5,
 				"Did not get expected number of errors");
 	}
 }

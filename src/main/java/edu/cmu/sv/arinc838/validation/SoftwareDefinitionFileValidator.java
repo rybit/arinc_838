@@ -68,7 +68,7 @@ public class SoftwareDefinitionFileValidator {
 			errors.add(new IllegalArgumentException(
 					"Source file name did not match software part number. File name was '"
 							+ sourceFile + "', expected '" + partNumberAsXDF
-							+ "' or '" + partNumberAsBDF));
+							+ "' or '" + partNumberAsBDF + "'."));
 		}
 
 		errors.addAll(dataVal.validateStr64kXml(softwareDesc

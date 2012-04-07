@@ -13,7 +13,6 @@ import java.io.File;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import com.arinc.arinc838.SdfFile;
@@ -49,7 +48,7 @@ public class XdfReader implements SdfReader {
 				errorList.addAll(validator.validateSdfFile(sdfDao, file.getName()));
 			}
 			
-		} catch (JAXBException e) {
+		} catch (Exception e) {
 			if (errorList != null) {
 				errorList.add(e);
 			}

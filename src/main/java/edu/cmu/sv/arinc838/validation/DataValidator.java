@@ -11,8 +11,9 @@ package edu.cmu.sv.arinc838.validation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -402,7 +403,7 @@ public class DataValidator {
 		if (!check.equals(checked)) {
 			throw new IllegalArgumentException(
 					"Software part number check characters did not validate. Got "
-							+ checked + ", expected " + check);
+							+ checked + ", expected " + check + ".");
 		}
 		return check;
 	}
@@ -515,12 +516,12 @@ public class DataValidator {
 			if (Arrays.asList(INVALID_DATA_FILE_EXTENSIONS).contains(
 					extension.toLowerCase())) {
 				errors.add(new IllegalArgumentException(
-						"File name contained an illegal extension '"
-								+ extension + "'"));
+						"File name '" + fileName + "' contained an illegal extension '"
+								+ extension + "'."));
 			}
 		} catch (StringIndexOutOfBoundsException e) {
 			errors.add(new IllegalArgumentException(
-					"File name must have an extension, e.g. '.bin'"));
+					"File name '" + fileName + "' must have an extension, e.g. '.bin'"));
 		}
 
 		// check file names for bad characters
@@ -531,8 +532,8 @@ public class DataValidator {
 			int index = m.start();
 			char illegal = name.charAt(index);
 			errors.add(new IllegalArgumentException(
-					"File name contained an illegal character '" + illegal
-							+ "' at index " + index));
+					"File name '" + fileName + "' contained an illegal character '" + illegal
+							+ "' at index " + index + "."));
 		}
 
 		return errors;
@@ -551,21 +552,26 @@ public class DataValidator {
 	public List<Exception> validateDataFileNamesAreUnique(
 			List<FileDefinitionDao> fileDefs) {
 		ArrayList<Exception> errors = new ArrayList<Exception>();
-		ArrayList<String> fileNames = new ArrayList<String>();
+		// map of lower case file names to list of actual file names 
+		Map<String, List<String>> fileNames = new HashMap<String, List<String>>();
 		for (FileDefinitionDao fileDef : fileDefs) {
-			fileNames.add(fileDef.getFileName().toLowerCase());
+			List<String> values = fileNames.get(fileDef.getFileName().toLowerCase());
+			if(values == null) {
+				values = new ArrayList<String>();
+				fileNames.put(fileDef.getFileName().toLowerCase(), values);
+			}
+			values.add(fileDef.getFileName());
 		}
 
-		Iterator<String> iter = fileNames.iterator();
-		while (iter.hasNext()) {
-			String name = iter.next();
-			iter.remove();
-			if (fileNames.contains(name)) {
+		for(String lowerCaseFileNames: fileNames.keySet()) {
+			String fileNameList = fileNames.get(lowerCaseFileNames).toString().replaceAll("^\\[|\\]$", "");
+
+			if(fileNames.get(lowerCaseFileNames).size() > 1) {
 				errors.add(new IllegalArgumentException(
-						"Duplicate data file name '" + name + "'"));
+						"Duplicate data file names: " + fileNameList + "."));
 			}
 		}
-
+		
 		return errors;
 	}
 }

@@ -23,11 +23,29 @@
 	</thw-definitions>
 	<file-definitions>
 		<file-loadable>true</file-loadable>
-		<file-name>CRC_T05A.rom</file-name>
+		<file-name>CRC_T05A.bdf</file-name>
 		<file-size>3976</file-size>
 		<file-integrity-definition>
 			<integrity-type>3</integrity-type>
 			<integrity-value>96142DCA</integrity-value>
+		</file-integrity-definition>
+	</file-definitions>
+	<file-definitions>
+		<file-loadable>true</file-loadable>
+		<file-name>CRC_?T06A.rom</file-name>
+		<file-size>18152</file-size>
+		<file-integrity-definition>
+			<integrity-type>3</integrity-type>
+			<integrity-value>AE34897C</integrity-value>
+		</file-integrity-definition>
+	</file-definitions>
+	<file-definitions>
+		<file-loadable>true</file-loadable>
+		<file-name>cRC_T06A.rom</file-name>
+		<file-size>18152</file-size>
+		<file-integrity-definition>
+			<integrity-type>3</integrity-type>
+			<integrity-value>AE34897C</integrity-value>
 		</file-integrity-definition>
 	</file-definitions>
 	<file-definitions>
