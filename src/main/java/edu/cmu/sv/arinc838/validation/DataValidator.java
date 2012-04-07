@@ -580,16 +580,17 @@ public class DataValidator {
 		for (int i = 0; i < ncCount; ++i) {
 			String name = xsr.getAttributeLocalName(i);
 			String value = xsr.getAttributeValue(i);
+			value = value.trim();
 
 			if (localCopy.containsKey(name)) {
 				String expected = localCopy.remove(name);
 				if (!value.equalsIgnoreCase(expected)) {
-					Exception e = new IllegalArgumentException("Attribute: " + name + " is wrong." + "Expected: "
-							+ expected + " found: " + value);
+					Exception e = new IllegalArgumentException("Attribute: " + name + " is wrong. Expected: '"
+							+ expected + "' found: '" + value + "'");
 					errors.add(e);
 				}
 			} else {
-				Exception e = new IllegalArgumentException("Attribute: " + name + " is unexpected.");
+				Exception e = new IllegalArgumentException("Attribute: '" + name + "' is unexpected.");
 				errors.add(e);
 			}
 		}
@@ -622,16 +623,17 @@ public class DataValidator {
 		for (int i = 0; i < ncCount; ++i) {
 			String name = xsr.getNamespacePrefix(i);
 			String value = xsr.getNamespaceURI(i);
-
+			value = value.trim();
+			
 			if (localCopy.containsKey(name)) {
 				String expected = localCopy.remove(name);
 				if (!value.equalsIgnoreCase(expected)) {
-					Exception e = new IllegalArgumentException("Namespace: " + name + " is wrong." + "Expected: "
-							+ expected + " found: " + value);
+					Exception e = new IllegalArgumentException("Namespace: '" + name + "' is wrong. Expected: '"
+							+ expected + "' found: '" + value + "'");
 					errors.add(e);
 				}
 			} else {
-				Exception e = new IllegalArgumentException("Namespace Prefix: " + name + " is unexpected.");
+				Exception e = new IllegalArgumentException("Namespace Prefix: '" + name + "' is unexpected.");
 				errors.add(e);
 			}
 		}
