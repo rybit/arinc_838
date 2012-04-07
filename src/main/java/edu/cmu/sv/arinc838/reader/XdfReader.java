@@ -25,30 +25,27 @@ import edu.cmu.sv.arinc838.validation.SoftwareDefinitionFileValidator;
 public class XdfReader implements SdfReader {
 
 	private SoftwareDefinitionFileValidator validator;
-	
+
 	public XdfReader() {
 		validator = new SoftwareDefinitionFileValidator(new DataValidator());
 	}
-	
+
 	@Override
-	public SoftwareDefinitionFileDao read(String filename,
-			List<Exception> errorList) {
+	public SoftwareDefinitionFileDao read(String filename, List<Exception> errorList) {
 		File file = new File(filename);
 
 		SoftwareDefinitionFileDao sdfDao = null;
 		try {
 			JAXBContext jaxbContext = JAXBContext.newInstance(SdfFile.class);
-
 			Unmarshaller jaxbMarshaller = jaxbContext.createUnmarshaller();
-
 			SdfFile jaxbFile = (SdfFile) jaxbMarshaller.unmarshal(file);
-
-			sdfDao = new SoftwareDefinitionFileDao(jaxbFile);
 			
-			if(errorList != null) {
+			sdfDao = new SoftwareDefinitionFileDao(jaxbFile);
+			if (errorList != null) {
+				errorList.addAll(validator.validateXmlFileHeader(file));
 				errorList.addAll(validator.validateSdfFile(sdfDao, file.getName()));
 			}
-			
+
 		} catch (JAXBException e) {
 			if (errorList != null) {
 				errorList.add(e);
@@ -57,5 +54,4 @@ public class XdfReader implements SdfReader {
 
 		return sdfDao;
 	}
-
 }

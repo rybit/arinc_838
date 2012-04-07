@@ -9,8 +9,13 @@
  */
 package edu.cmu.sv.arinc838.validation;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
 
 import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
@@ -26,8 +31,48 @@ public class SoftwareDefinitionFileValidator {
 		this.dataVal = dataVal;
 	}
 
-	public List<Exception> validateSdfFile(SoftwareDefinitionFileDao sdfDao,
-			String sourceFile) {
+	/**
+	 * Validates that the header conforms to the spec. This includes the attributes (e.g. schemaLocation)
+	 * the namespace (e.g. xsi, sdf) and the encoding/version (utf-8, 1.0).
+	 * 
+	 * @param xmlFile
+	 * @return
+	 */
+	public List<Exception> validateXmlFileHeader(File xmlFile) {
+		XMLStreamReader xsr;
+		List<Exception> errors = new ArrayList<Exception>();
+
+		try {
+			xsr = XMLInputFactory.newInstance().createXMLStreamReader(new FileInputStream(xmlFile));
+			xsr.nextTag(); // move to the root
+		} catch (Exception e) {
+			errors.add(e);
+			return errors; // can't work if the xsr can't be created
+		}
+
+		if (!DataValidator.XML_ENCODING.equalsIgnoreCase(xsr.getCharacterEncodingScheme())) {
+			Exception e = new IllegalArgumentException("The XML Encoding is wrong." + 
+					"Expected: " + DataValidator.XML_ENCODING + 
+					" found: " + xsr.getCharacterEncodingScheme());
+			errors.add(e);
+		}
+		if (!DataValidator.XML_VERSION.equalsIgnoreCase(xsr.getVersion())) {
+			Exception e = new IllegalArgumentException("The XML version is wrong." + 
+					"Expected: " + DataValidator.XML_VERSION + 
+					" found: " + xsr.getVersion());
+			errors.add(e);
+		}
+
+		// attribute check
+		errors.addAll(dataVal.validateXmlHeaderAttributes(xsr));
+
+		// namespace check
+		errors.addAll(dataVal.validateXmlHeaderNamespaces(xsr));
+
+		return errors;
+	}
+
+	public List<Exception> validateSdfFile(SoftwareDefinitionFileDao sdfDao, String sourceFile) {
 		List<Exception> errors = new ArrayList<Exception>();
 
 		try {
@@ -36,43 +81,33 @@ public class SoftwareDefinitionFileValidator {
 			errors.add(e);
 		}
 
-		errors.addAll(
-				validateSoftwareDescription(sdfDao.getSoftwareDescription(), sourceFile));
-		errors.addAll(validateTargetHardwareDefinitions(sdfDao
-				.getTargetHardwareDefinitions()));
+		errors.addAll(validateSoftwareDescription(sdfDao.getSoftwareDescription(), sourceFile));
+		errors.addAll(validateTargetHardwareDefinitions(sdfDao.getTargetHardwareDefinitions()));
 		errors.addAll(validateFileDefinitions(sdfDao.getFileDefinitions()));
-		errors.addAll(validateSdfIntegrityDefinition(sdfDao
-				.getSdfIntegrityDefinition()));
-		errors.addAll(validateLspIntegrityDefinition(sdfDao
-				.getLspIntegrityDefinition()));
+		errors.addAll(validateSdfIntegrityDefinition(sdfDao.getSdfIntegrityDefinition()));
+		errors.addAll(validateLspIntegrityDefinition(sdfDao.getLspIntegrityDefinition()));
 
 		return errors;
 	}
 
-	public List<Exception> validateSoftwareDescription(
-			SoftwareDescriptionDao softwareDesc, String sourceFile) {
+	public List<Exception> validateSoftwareDescription(SoftwareDescriptionDao softwareDesc, String sourceFile) {
 		List<Exception> errors = new ArrayList<Exception>();
 
 		try {
-			dataVal.validateSoftwarePartNumber(softwareDesc
-					.getSoftwarePartnumber());
+			dataVal.validateSoftwarePartNumber(softwareDesc.getSoftwarePartnumber());
 		} catch (IllegalArgumentException e) {
 			errors.add(e);
 		}
-		String partNumberAsFile = softwareDesc.getSoftwarePartnumber().replace(
-				"-", "");
+		String partNumberAsFile = softwareDesc.getSoftwarePartnumber().replace("-", "");
 		String partNumberAsXDF = partNumberAsFile + ".XDF";
 		String partNumberAsBDF = partNumberAsFile + ".BDF";
-		if (!partNumberAsXDF.equals(sourceFile)
-				&& !partNumberAsBDF.equals(sourceFile)) {
+		if (!partNumberAsXDF.equals(sourceFile) && !partNumberAsBDF.equals(sourceFile)) {
 			errors.add(new IllegalArgumentException(
-					"Source file name did not match software part number. File name was '"
-							+ sourceFile + "', expected '" + partNumberAsXDF
-							+ "' or '" + partNumberAsBDF));
+					"Source file name did not match software part number. File name was '" + sourceFile
+							+ "', expected '" + partNumberAsXDF + "' or '" + partNumberAsBDF));
 		}
 
-		errors.addAll(dataVal.validateStr64kXml(softwareDesc
-				.getSoftwareTypeDescription()));
+		errors.addAll(dataVal.validateStr64kXml(softwareDesc.getSoftwareTypeDescription()));
 		try {
 			dataVal.validateHexbin32(softwareDesc.getSoftwareTypeId());
 		} catch (IllegalArgumentException e) {
@@ -82,8 +117,7 @@ public class SoftwareDefinitionFileValidator {
 		return errors;
 	}
 
-	public List<Exception> validateTargetHardwareDefinitions(
-			List<TargetHardwareDefinitionDao> thwDefs) {
+	public List<Exception> validateTargetHardwareDefinitions(List<TargetHardwareDefinitionDao> thwDefs) {
 		List<Exception> errors = new ArrayList<Exception>();
 
 		for (TargetHardwareDefinitionDao thwDef : thwDefs) {
@@ -98,8 +132,7 @@ public class SoftwareDefinitionFileValidator {
 		return errors;
 	}
 
-	public List<Exception> validateFileDefinitions(
-			List<FileDefinitionDao> fileDefs) {
+	public List<Exception> validateFileDefinitions(List<FileDefinitionDao> fileDefs) {
 		List<Exception> errors = new ArrayList<Exception>();
 
 		try {
@@ -117,13 +150,11 @@ public class SoftwareDefinitionFileValidator {
 		return errors;
 	}
 
-	public List<Exception> validateSdfIntegrityDefinition(
-			IntegrityDefinitionDao sdfInteg) {
+	public List<Exception> validateSdfIntegrityDefinition(IntegrityDefinitionDao sdfInteg) {
 		return validateIntegrityDefinition(sdfInteg);
 	}
 
-	public List<Exception> validateLspIntegrityDefinition(
-			IntegrityDefinitionDao lspInteg) {
+	public List<Exception> validateLspIntegrityDefinition(IntegrityDefinitionDao lspInteg) {
 		return validateIntegrityDefinition(lspInteg);
 	}
 
@@ -138,14 +169,12 @@ public class SoftwareDefinitionFileValidator {
 			errors.add(e);
 		}
 
-		errors.addAll(validateIntegrityDefinition(fileDef
-				.getFileIntegrityDefinition()));
+		errors.addAll(validateIntegrityDefinition(fileDef.getFileIntegrityDefinition()));
 
 		return errors;
 	}
 
-	public List<Exception> validateIntegrityDefinition(
-			IntegrityDefinitionDao integDef) {
+	public List<Exception> validateIntegrityDefinition(IntegrityDefinitionDao integDef) {
 		List<Exception> errors = new ArrayList<Exception>();
 
 		try {
