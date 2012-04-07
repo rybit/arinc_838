@@ -10,5 +10,11 @@ public class ConverterTest {
 		assertEquals(Converter.hexToBytes("DEADBEEF"), new byte[] { (byte) 222,
 				(byte) 173, (byte) 190, (byte) 239 });
 	}
+	
+	@Test
+	public void bytesToHex() {
+		assertEquals(Converter.bytesToHex(new byte[] { (byte) 222,
+				(byte) 173, (byte) 190, (byte) 239 }), "DEADBEEF");
+	}
 
 }
