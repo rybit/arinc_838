@@ -21,6 +21,7 @@ import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao.IntegrityType;
 import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 import edu.cmu.sv.arinc838.dao.SoftwareDescriptionDao;
+import edu.cmu.sv.arinc838.util.Converter;
 
 /**
  * <p>
@@ -242,10 +243,10 @@ public class DataValidator {
 		if (!Arrays.equals(version,
 				SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION)) {
 			throw new IllegalArgumentException(
-					"File format version was set to "
-							+ version
-							+ ", expected "
-							+ SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION);
+					"File format version was set to 0x"
+							+ Converter.bytesToHex(version)
+							+ ", expected 0x"
+							+ Converter.bytesToHex(SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION));
 		}
 		return version;
 	}
