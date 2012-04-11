@@ -14,7 +14,6 @@ import java.io.IOException;
 import com.arinc.arinc838.FileDefinition;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
-import edu.cmu.sv.arinc838.validation.DataValidator;
 
 /**
  * The builder paradigm is that all the fields will be extracted and stored in

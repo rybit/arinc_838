@@ -36,24 +36,24 @@ public class SoftwareDefinitionFileBuilder implements
 		// without a set method to verify its validity prior to building
 		List<FileDefinitionDao> fileDefsValidated = softwareDefinitionFileDao
 				.getFileDefinitions();
-		FileDefinitionBuilder fileDefBuilder = new FileDefinitionBuilder();
+		Builder<FileDefinitionDao, FileDefinition> fileDefBuilder = builderFactory.getBuilder(FileDefinitionDao.class, FileDefinition.class);
 		for (FileDefinitionDao fileDef : fileDefsValidated) {
 			file.getFileDefinitions().add(fileDefBuilder.buildXml(fileDef));
 		}
 
-		TargetHardwareDefinitionBuilder thwDefBuilder = new TargetHardwareDefinitionBuilder();
+		Builder<TargetHardwareDefinitionDao, ThwDefinition> thwDefBuilder = builderFactory.getBuilder(TargetHardwareDefinitionDao.class, ThwDefinition.class);
 		for (TargetHardwareDefinitionDao thwDef : softwareDefinitionFileDao
 				.getTargetHardwareDefinitions()) {
 			file.getThwDefinitions().add(thwDefBuilder.buildXml(thwDef));
 		}
 
-		IntegrityDefinitionBuilder integDefBuilder = new IntegrityDefinitionBuilder();
+		Builder<IntegrityDefinitionDao, IntegrityDefinition> integDefBuilder = builderFactory.getBuilder(IntegrityDefinitionDao.class, IntegrityDefinition.class);
 		file.setLspIntegrityDefinition(integDefBuilder
 				.buildXml(softwareDefinitionFileDao.getLspIntegrityDefinition()));
 		file.setSdfIntegrityDefinition(integDefBuilder
 				.buildXml(softwareDefinitionFileDao.getSdfIntegrityDefinition()));
 
-		file.setSoftwareDescription(new SoftwareDescriptionBuilder()
+		file.setSoftwareDescription(builderFactory.getBuilder(SoftwareDescriptionDao.class, SoftwareDescription.class)
 				.buildXml(softwareDefinitionFileDao.getSoftwareDescription()));
 
 		return file;

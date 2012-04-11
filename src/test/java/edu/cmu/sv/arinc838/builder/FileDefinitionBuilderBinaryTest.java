@@ -9,6 +9,8 @@ import java.io.IOException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import com.arinc.arinc838.FileDefinition;
+
 import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
@@ -18,9 +20,12 @@ import edu.cmu.sv.arinc838.util.Converter;
 public class FileDefinitionBuilderBinaryTest {
 	
 	private FileDefinitionDao fileDefDao;
+	private BuilderFactory builderFactory;
 	
 	@BeforeMethod
 	public void setup() {
+		builderFactory = new BuilderFactory();
+		
 		fileDefDao = new FileDefinitionDao();
 		fileDefDao.setFileLoadable(true);
 		fileDefDao.setFileName("someFile.bin");
@@ -35,7 +40,7 @@ public class FileDefinitionBuilderBinaryTest {
 	@Test
 	public void buildBinary() throws FileNotFoundException, IOException {
 		BdfFile bdfFile = new BdfFile(File.createTempFile("tmpFile", ".bdf"));
-		int bytesWritten = new FileDefinitionBuilder().buildBinary(fileDefDao, bdfFile);
+		int bytesWritten = builderFactory.getBuilder(FileDefinitionDao.class, FileDefinition.class).buildBinary(fileDefDao, bdfFile);
 
 		// 4 ptr to next + 1 is loadable + 14 file name + 4 file size + 10 CRC32 integrity
 		// 4 + 1 + 14 + 4 + 14 = 37
@@ -59,7 +64,7 @@ public class FileDefinitionBuilderBinaryTest {
 	public void buildBinaryIsLast() throws FileNotFoundException, IOException {
 		fileDefDao.setIsLast(true);
 		BdfFile bdfFile = new BdfFile(File.createTempFile("tmpFile", ".bdf"));
-		int bytesWritten = new FileDefinitionBuilder().buildBinary(fileDefDao, bdfFile);
+		int bytesWritten = builderFactory.getBuilder(FileDefinitionDao.class, FileDefinition.class).buildBinary(fileDefDao, bdfFile);
 
 		// 4 ptr to next + 1 is loadable + 14 file name + 4 file size + 10 CRC32 integrity
 		// 4 + 1 + 14 + 4 + 14 = 37
@@ -74,7 +79,7 @@ public class FileDefinitionBuilderBinaryTest {
 	@Test
 	public void fileDefinitionBuilderBdfFile() throws FileNotFoundException, IOException {
 		BdfFile bdfFile = new BdfFile(File.createTempFile("tmpFile", ".bdf"));
-		new FileDefinitionBuilder().buildBinary(fileDefDao, bdfFile);
+		builderFactory.getBuilder(FileDefinitionDao.class, FileDefinition.class).buildBinary(fileDefDao, bdfFile);
 
 		bdfFile.seek(0); //return to start of file
 		bdfFile.readUint32(); //parent object reads the pointers

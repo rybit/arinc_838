@@ -3,11 +3,19 @@ package edu.cmu.sv.arinc838.builder;
 import java.io.IOException;
 
 import com.arinc.arinc838.FileDefinition;
+import com.arinc.arinc838.IntegrityDefinition;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
+import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
 
 public class FileDefinitionBuilder implements Builder<FileDefinitionDao, FileDefinition> {
+	private BuilderFactory builderFactory;
+
+	public FileDefinitionBuilder(BuilderFactory builderFactory) {
+		this.builderFactory = builderFactory;
+	}
+	
 	@Override
 	public FileDefinition buildXml(FileDefinitionDao fileDefinitionDao) {
 		FileDefinition retDef = new FileDefinition();
@@ -16,7 +24,7 @@ public class FileDefinitionBuilder implements Builder<FileDefinitionDao, FileDef
 		retDef.setFileName(fileDefinitionDao.getFileName());
 		retDef.setFileSize(fileDefinitionDao.getFileSize());
 
-		retDef.setFileIntegrityDefinition(new IntegrityDefinitionBuilder().buildXml(fileDefinitionDao.getFileIntegrityDefinition()));
+		retDef.setFileIntegrityDefinition(builderFactory.getBuilder(IntegrityDefinitionDao.class, IntegrityDefinition.class).buildXml(fileDefinitionDao.getFileIntegrityDefinition()));
 
 		return retDef;
 	}
@@ -30,7 +38,7 @@ public class FileDefinitionBuilder implements Builder<FileDefinitionDao, FileDef
 		bdfFile.writeBoolean(fileDefinitionDao.isFileLoadable());
 		bdfFile.writeStr64k(fileDefinitionDao.getFileName());
 		bdfFile.writeUint32(fileDefinitionDao.getFileSize());
-		new IntegrityDefinitionBuilder().buildBinary(fileDefinitionDao.getFileIntegrityDefinition(), bdfFile);
+		builderFactory.getBuilder(IntegrityDefinitionDao.class, IntegrityDefinition.class).buildBinary(fileDefinitionDao.getFileIntegrityDefinition(), bdfFile);
 
 		int finalPosition = (int) bdfFile.getFilePointer();
 
