@@ -6,7 +6,8 @@
 >
 	<documentation>
 		This file contains verified expected values for ARINC 665-compliant
-		CRCs.  The 8-bit, 16-bit, and 32-bit expected values are listed here.
+		CRCs.  The 8-bit, 16-bit, 32-bit, and 64-bit expected values are listed here.
+		The 8-bit values are currently not in use.
 		If an expected value of a certain CRC size is not available for a
 		particular file, that crc is listed as having an expected value of "N/A".
 	</documentation>
@@ -18,6 +19,7 @@
 		crc8="0x00"
 		crc16="0xFFFF"
 		crc32="0x00000000"
+		crc64="0x0000000000000000"
 	/>
 	
 	<test_file 
@@ -26,6 +28,7 @@
 		crc8="0x00"
 		crc16="0x1DA3"
 		crc32="0x322AB4A6"
+		crc64="0x034528B5989BED4D"
 	/>
 	
 	<test_file 
@@ -34,6 +37,7 @@
 		crc8="0x00"
 		crc16="0x4634"
 		crc32="0x53631199"
+		crc64="0x5B2ACFD2703ED63D"
 	/>
 	
 	<test_file 
@@ -42,6 +46,7 @@
 		crc8="N/A"
 		crc16="0x1D7E"
 		crc32="0xC2F270BC"
+		crc64="0x428A028B474233E4"
 	/>
 	
 	<test_file 
@@ -50,6 +55,7 @@
 		crc8="N/A"
 		crc16="0xA208"
 		crc32="0x96142DCA"
+		crc64="0x618F40AA15A2DC72"
 	/>
 	
 	<test_file 
@@ -58,6 +64,7 @@
 		crc8="N/A"
 		crc16="0xA12C"
 		crc32="0xAE34897C"
+		crc64="0xD94CC2A454FA11BC"
 	/>
 	
 	<test_file 
@@ -66,6 +73,7 @@
 		crc8="N/A"
 		crc16="0x2DA3"
 		crc32="0x55A1228D"
+		crc64="0xA885E956D6BEC75E"
 	/>
 	
 	<test_file 
@@ -74,6 +82,7 @@
 		crc8="N/A"
 		crc16="0xCF07"
 		crc32="0x3109EB62"
+		crc64="0xD23FE9D5A92AF468"
 	/>
 	
 	<test_file 
@@ -82,6 +91,7 @@
 		crc8="N/A"
 		crc16="0x9EB1"
 		crc32="0x239B226B"
+		crc64="0xE9F590A5022406E3"
 	/>
 	
 	<test_file 
@@ -90,6 +100,7 @@
 		crc8="0xE8"
 		crc16="0xD8D2"
 		crc32="0xC0BB3B8E"
+		crc64="0xCA085294CDFEA18E"
 	/>
 	
 	<test_file 
@@ -98,6 +109,7 @@
 		crc8="N/A"
 		crc16="0x3FBD"
 		crc32="0xB6B5EE95"
+		crc64="0x59C3325B2927A19A"
 	/>
 	
 	<test_file 
@@ -106,6 +118,7 @@
 		crc8="0x47"
 		crc16="0x1AB9"
 		crc32="0x8C3732D8"
+		crc64="0x3EC2FA680887A9AF"
 	/>
 	
 	<test_file 
@@ -114,6 +127,7 @@
 		crc8="0x40"
 		crc16="0x96B3"
 		crc32="0x7CB0F16A"
+		crc64="0xE26963B0CE827A47"
 	/>
 
 </crc_dataset>
