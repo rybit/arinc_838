@@ -621,6 +621,24 @@ public class DataValidator {
 			Exception e = new IllegalArgumentException("Attributes missing: " + missingList);
 			errors.add(e);
 		}
+		
+		if(xsr.standaloneSet()) {
+			Exception e = new IllegalArgumentException("Standalone attribute should not be set.");
+			errors.add(e);
+		}
+
+		if (!DataValidator.XML_ENCODING.equalsIgnoreCase(xsr.getCharacterEncodingScheme())) {
+			Exception e = new IllegalArgumentException("The XML Encoding is wrong." + 
+					"Expected: " + DataValidator.XML_ENCODING + 
+					" found: " + xsr.getCharacterEncodingScheme());
+			errors.add(e);
+		}
+		if (!DataValidator.XML_VERSION.equalsIgnoreCase(xsr.getVersion())) {
+			Exception e = new IllegalArgumentException("The XML version is wrong." + 
+					"Expected: " + DataValidator.XML_VERSION + 
+					" found: " + xsr.getVersion());
+			errors.add(e);
+		}
 
 		return errors;
 	}

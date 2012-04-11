@@ -474,7 +474,7 @@ public class DataValidatorTest {
 		assertEquals(0, errors.size());
 	}
 	
-	@Test  (expectedExceptions = XMLStreamException.class) 
+	@Test(expectedExceptions = XMLStreamException.class)
 	public void testValidateXmlHeaderNamespacesTooFew () throws Exception {
 		String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
 		                "<sdf:sdf-file xmlns:sdf=\"http://www.arinc.com/arinc838\"" + 
@@ -502,6 +502,67 @@ public class DataValidatorTest {
 		assertEquals(IllegalArgumentException.class, errors.get(0).getClass());
 	}
 	
+	@Test   
+	public void testValidateXmlHeaderHasStandaloneAttribute() throws Exception {
+		String header = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
+		                "<sdf:sdf-file xmlns:sdf=\"http://www.arinc.com/arinc838\"" + 
+					      " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+					      " xsi:schemaLocation=\"http://www.arinc.com\"/>";
+		
+		InputStream inStream = new ByteArrayInputStream(header.getBytes()); 
+		XMLStreamReader xsr = XMLInputFactory.newInstance().createXMLStreamReader(inStream);
+		xsr.nextTag();
+		
+		List<Exception> errors = new DataValidator().validateXmlHeaderAttributes(xsr);
+		assertEquals(1, errors.size());
+		assertEquals(IllegalArgumentException.class, errors.get(0).getClass());
+	}
+
+	@Test
+	public void testValidateXmlHeaderHasNoStandaloneAttribute() throws Exception {
+		String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+		                "<sdf:sdf-file xmlns:sdf=\"http://www.arinc.com/arinc838\"" + 
+					      " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+					      " xsi:schemaLocation=\"http://www.arinc.com\"/>";
+		
+		InputStream inStream = new ByteArrayInputStream(header.getBytes()); 
+		XMLStreamReader xsr = XMLInputFactory.newInstance().createXMLStreamReader(inStream);
+		xsr.nextTag();
+		
+		List<Exception> errors = new DataValidator().validateXmlHeaderAttributes(xsr);
+		assertEquals(0, errors.size());
+	}
+
+	@Test(expectedExceptions = XMLStreamException.class)
+	public void testValidateXmlHeaderHasBadVersion() throws Exception {
+		String header = "<?xml version=\"2.0\" encoding=\"UTF-8\"?>" +
+		                "<sdf:sdf-file xmlns:sdf=\"http://www.arinc.com/arinc838\"" + 
+					      " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+					      " xsi:schemaLocation=\"http://www.arinc.com\"/>";
+		
+		InputStream inStream = new ByteArrayInputStream(header.getBytes()); 
+		XMLStreamReader xsr = XMLInputFactory.newInstance().createXMLStreamReader(inStream);
+		xsr.nextTag();
+		
+		new DataValidator().validateXmlHeaderAttributes(xsr);
+	}
+
+	@Test   
+	public void testValidateXmlHeaderHasBadEncoding() throws Exception {
+		String header = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>" +
+		                "<sdf:sdf-file xmlns:sdf=\"http://www.arinc.com/arinc838\"" + 
+					      " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+					      " xsi:schemaLocation=\"http://www.arinc.com\"/>";
+		
+		InputStream inStream = new ByteArrayInputStream(header.getBytes()); 
+		XMLStreamReader xsr = XMLInputFactory.newInstance().createXMLStreamReader(inStream);
+		xsr.nextTag();
+		
+		List<Exception> errors = new DataValidator().validateXmlHeaderAttributes(xsr);
+		assertEquals(1, errors.size());
+		assertEquals(IllegalArgumentException.class, errors.get(0).getClass());
+	}
+		
 	@Test   
 	public void testValidateXmlHeaderAttributesNoErrors () throws Exception {
 		String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +

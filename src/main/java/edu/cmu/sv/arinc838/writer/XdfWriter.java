@@ -11,6 +11,7 @@ package edu.cmu.sv.arinc838.writer;
 
 import java.io.File;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
@@ -34,14 +35,21 @@ public class XdfWriter implements SdfWriter {
 	public void write(File file, SdfFile sdfFile) throws Exception {
 		JAXBContext jaxbContext = JAXBContext.newInstance(SdfFile.class);
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
+		jaxbMarshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "http://www.arinc.com");
 
 		NamespacePrefixMapper mapper = new NamespacePrefixMapper() {
 			public String getPreferredPrefix(String namespaceUri, String suggestion, boolean requirePrefix) {
+            	if (namespaceUri.equals(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI))
+                    return "xsi";
+                if (namespaceUri.equals(XMLConstants.W3C_XML_SCHEMA_NS_URI))
+                    return "xs";
+                
 				if (namespaceUri.contains("arinc.com")) {
 					return "sdf";
-				} else {
-					return "";
 				}
+
+                return suggestion;
 			}
 		};
 

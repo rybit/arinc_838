@@ -50,19 +50,6 @@ public class SoftwareDefinitionFileValidator {
 			return errors; // can't work if the xsr can't be created
 		}
 
-		if (!DataValidator.XML_ENCODING.equalsIgnoreCase(xsr.getCharacterEncodingScheme())) {
-			Exception e = new IllegalArgumentException("The XML Encoding is wrong." + 
-					"Expected: " + DataValidator.XML_ENCODING + 
-					" found: " + xsr.getCharacterEncodingScheme());
-			errors.add(e);
-		}
-		if (!DataValidator.XML_VERSION.equalsIgnoreCase(xsr.getVersion())) {
-			Exception e = new IllegalArgumentException("The XML version is wrong." + 
-					"Expected: " + DataValidator.XML_VERSION + 
-					" found: " + xsr.getVersion());
-			errors.add(e);
-		}
-
 		// attribute check
 		errors.addAll(dataVal.validateXmlHeaderAttributes(xsr));
 

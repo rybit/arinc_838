@@ -44,7 +44,7 @@ public class XdfWriterTest {
 		SdfFile jaxbFile = readJaxb(writtenXmlFile);
 
 		// verify the files match
-		vefifyMatch(file, jaxbFile);
+		verifyMatch(file, jaxbFile);
 	}
 
 	@Test
@@ -57,7 +57,7 @@ public class XdfWriterTest {
 		assertEquals(fileName, sdfDao.getXmlFileName());
 	}
 
-	private void vefifyMatch(SdfFile file1, SdfFile file2) {
+	private void verifyMatch(SdfFile file1, SdfFile file2) {
 		assertEquals(file1.getFileFormatVersion(), file2.getFileFormatVersion());
 
 		assertEquals(file1.getLspIntegrityDefinition().getIntegrityType(), file2.getLspIntegrityDefinition()
