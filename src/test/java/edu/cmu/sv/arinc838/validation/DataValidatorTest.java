@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -57,22 +56,25 @@ public class DataValidatorTest {
 	@Test
 	public void testValidateStr64kBinary() {
 		String inputStr = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789 -_=+`~'\"[]{}\\|;:,./?!@#$%^*()";
-		assertEquals(inputStr,
-				new DataValidator().validateStr64kBinary(inputStr));
-		assertEquals(str64kMax,
-				new DataValidator().validateStr64kBinary(str64kMax));
-		assertEquals("", new DataValidator().validateStr64kBinary(""));
+		assertTrue(new DataValidator().validateStr64kBinary(inputStr).isEmpty());
+		assertTrue(str64kMax,
+				new DataValidator().validateStr64kBinary(str64kMax).isEmpty());
+		assertTrue(new DataValidator().validateStr64kBinary("").isEmpty());
 
-		assertEquals("&lt", new DataValidator().validateStr64kBinary("&lt"));
-		assertEquals("hello&lt",
-				new DataValidator().validateStr64kBinary("hello&lt"));
-		assertEquals("&gt", new DataValidator().validateStr64kBinary("&gt"));
-		assertEquals("&gtthere",
-				new DataValidator().validateStr64kBinary("&gtthere"));
-		assertEquals("&amp", new DataValidator().validateStr64kBinary("&amp"));
-		assertEquals("hello&amp&ampthere",
-				new DataValidator().validateStr64kBinary("hello&amp&ampthere"));
+		assertTrue(new DataValidator().validateStr64kBinary("&lt").isEmpty());
+		assertTrue(new DataValidator().validateStr64kBinary("hello&lt")
+				.isEmpty());
+		assertTrue(new DataValidator().validateStr64kBinary("&gt").isEmpty());
+		assertTrue(new DataValidator().validateStr64kBinary("&gtthere")
+				.isEmpty());
+		assertTrue(new DataValidator().validateStr64kBinary("&amp").isEmpty());
+		assertTrue(new DataValidator().validateStr64kBinary(
+				"hello&amp&ampthere").isEmpty());
+	}
 
+	@Test
+	public void testValidateStr64kBinaryNonASCII() {
+		assertEquals(1, new DataValidator().validateStr64kBinary("abc" + (char) 255).size());
 	}
 
 	@Test
@@ -103,6 +105,13 @@ public class DataValidatorTest {
 	}
 
 	@Test
+	public void testValidateStr64kXmlNonASCII() {
+		assertEquals(1,
+				new DataValidator().validateStr64kXml("abc" + (char) 255)
+						.size());
+	}
+
+	@Test
 	public void testValidateStr64kXmlWithNonEscapedChars() {
 		assertEquals(
 				"Did not throw IllegalArgumentException for non-escaped >", 1,
@@ -128,9 +137,14 @@ public class DataValidatorTest {
 				.size());
 	}
 
-	@Test(expectedExceptions = IllegalArgumentException.class)
+	@Test
 	public void testValidateStr64kBinaryTooLarge() {
-		new DataValidator().validateStr64kBinary(str64kMax + "Y");
+		assertEquals(1, new DataValidator().validateStr64kBinary(str64kMax + "Y").size());
+	}
+	
+	@Test
+	public void testValidateStr64kBinaryMultipleErrors() {
+		assertEquals(2, new DataValidator().validateStr64kBinary(str64kMax + (char)255).size());
 	}
 
 	@Test
@@ -138,9 +152,9 @@ public class DataValidatorTest {
 		assertEquals(1, new DataValidator().validateStr64kXml(null).size());
 	}
 
-	@Test(expectedExceptions = IllegalArgumentException.class)
+	@Test
 	public void testValidateStr64kBinaryNull() {
-		new DataValidator().validateStr64kBinary(null);
+		assertEquals(1, new DataValidator().validateStr64kBinary(null).size());
 	}
 
 	@Test

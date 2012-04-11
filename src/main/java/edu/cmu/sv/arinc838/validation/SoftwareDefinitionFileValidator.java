@@ -71,6 +71,7 @@ public class SoftwareDefinitionFileValidator {
 							+ "' or '" + partNumberAsBDF + "'."));
 		}
 
+		// TODO when do we use XML vs. binary validator?
 		errors.addAll(dataVal.validateStr64kXml(softwareDesc
 				.getSoftwareTypeDescription()));
 		try {
@@ -91,6 +92,7 @@ public class SoftwareDefinitionFileValidator {
 				continue;
 			}
 			for (String position : thwDef.getPositions()) {
+				// TODO when do we use XML vs. binary validator?
 				errors.addAll(dataVal.validateStr64kXml(position));
 			}
 		}

@@ -117,24 +117,47 @@ public class DataValidator {
 	 * defined as a string that is a maximum of {@link STR64K_MAX_LENGTH}
 	 * characters.
 	 * 
-	 * 
 	 * @param value
 	 *            The input value
-	 * @return The validated input value
-	 * @throws IllegalArgumentException
-	 *             if the input value does not validate.
+	 * @return A {@link List} of {@link Exception}s that detail the errors found
 	 */
-	public String validateStr64kBinary(String value) {
+	public List<Exception> validateStr64kBinary(String value) {
+		ArrayList<Exception> errors = new ArrayList<Exception>();
+
 		if (value == null) {
-			throw new IllegalArgumentException("The input value cannot be null");
+			errors.add(new IllegalArgumentException(
+					"The input value cannot be null"));
+		} else {
+
+			String checked = XmlFormatter.unescapeXmlSpecialChars(value);
+
+			try {
+				checked = checkForNonASCII(checked);
+			} catch (Exception e) {
+				errors.add(e);
+			}
+
+			if (checked.length() > STR64K_MAX_LENGTH) {
+				errors.add(new IllegalArgumentException(
+						"The input value length of "
+								+ checked.length()
+								+ " exceeds the maximum allowed characters of 65535"));
+			}
 		}
 
-		String checked = XmlFormatter.unescapeXmlSpecialChars(value);
+		return errors;
+	}
 
-		if (checked.length() > STR64K_MAX_LENGTH) {
-			throw new IllegalArgumentException("The input value length of "
-					+ checked.length()
-					+ " exceeds the maximum allowed characters of 65535");
+	private String checkForNonASCII(String value) {
+
+		Pattern p = Pattern.compile("[^\\p{ASCII}]");
+		Matcher m = p.matcher(value);
+
+		if (m.find()) {
+			int index = m.start();
+			char illegal = value.charAt(index);
+			throw new IllegalArgumentException("Non-ASCII character '"
+					+ illegal + "' found at index " + index);
 		}
 
 		return value;
@@ -160,11 +183,8 @@ public class DataValidator {
 			errors.add(new IllegalAccessException("Str64k cannot be null"));
 			return errors;
 		}
-		try {
-			validateStr64kBinary(value);
-		} catch (IllegalArgumentException e) {
-			errors.add(e);
-		}
+
+		errors.addAll(validateStr64kBinary(value));
 
 		try {
 			checkForEscapedXMLChars(value);
@@ -246,7 +266,8 @@ public class DataValidator {
 					"File format version was set to 0x"
 							+ Converter.bytesToHex(version)
 							+ ", expected 0x"
-							+ Converter.bytesToHex(SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION));
+							+ Converter
+									.bytesToHex(SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION));
 		}
 		return version;
 	}
@@ -516,13 +537,13 @@ public class DataValidator {
 					.substring(fileName.lastIndexOf(".") + 1);
 			if (Arrays.asList(INVALID_DATA_FILE_EXTENSIONS).contains(
 					extension.toLowerCase())) {
-				errors.add(new IllegalArgumentException(
-						"File name '" + fileName + "' contained an illegal extension '"
-								+ extension + "'."));
+				errors.add(new IllegalArgumentException("File name '"
+						+ fileName + "' contained an illegal extension '"
+						+ extension + "'."));
 			}
 		} catch (StringIndexOutOfBoundsException e) {
-			errors.add(new IllegalArgumentException(
-					"File name '" + fileName + "' must have an extension, e.g. '.bin'"));
+			errors.add(new IllegalArgumentException("File name '" + fileName
+					+ "' must have an extension, e.g. '.bin'"));
 		}
 
 		// check file names for bad characters
@@ -532,9 +553,9 @@ public class DataValidator {
 		if (m.find()) {
 			int index = m.start();
 			char illegal = name.charAt(index);
-			errors.add(new IllegalArgumentException(
-					"File name '" + fileName + "' contained an illegal character '" + illegal
-							+ "' at index " + index + "."));
+			errors.add(new IllegalArgumentException("File name '" + fileName
+					+ "' contained an illegal character '" + illegal
+					+ "' at index " + index + "."));
 		}
 
 		return errors;
@@ -553,26 +574,28 @@ public class DataValidator {
 	public List<Exception> validateDataFileNamesAreUnique(
 			List<FileDefinitionDao> fileDefs) {
 		ArrayList<Exception> errors = new ArrayList<Exception>();
-		// map of lower case file names to list of actual file names 
+		// map of lower case file names to list of actual file names
 		Map<String, List<String>> fileNames = new HashMap<String, List<String>>();
 		for (FileDefinitionDao fileDef : fileDefs) {
-			List<String> values = fileNames.get(fileDef.getFileName().toLowerCase());
-			if(values == null) {
+			List<String> values = fileNames.get(fileDef.getFileName()
+					.toLowerCase());
+			if (values == null) {
 				values = new ArrayList<String>();
 				fileNames.put(fileDef.getFileName().toLowerCase(), values);
 			}
 			values.add(fileDef.getFileName());
 		}
 
-		for(String lowerCaseFileNames: fileNames.keySet()) {
-			String fileNameList = fileNames.get(lowerCaseFileNames).toString().replaceAll("^\\[|\\]$", "");
+		for (String lowerCaseFileNames : fileNames.keySet()) {
+			String fileNameList = fileNames.get(lowerCaseFileNames).toString()
+					.replaceAll("^\\[|\\]$", "");
 
-			if(fileNames.get(lowerCaseFileNames).size() > 1) {
+			if (fileNames.get(lowerCaseFileNames).size() > 1) {
 				errors.add(new IllegalArgumentException(
 						"Duplicate data file names: " + fileNameList + "."));
 			}
 		}
-		
+
 		return errors;
 	}
 }
