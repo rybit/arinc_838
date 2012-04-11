@@ -87,7 +87,7 @@ public class IntegrityDefinitionDao {
 	@Override
 	public int hashCode() {
 		if (this.getIntegrityValue() != null) {
-			return this.getIntegrityValue().hashCode();
+			return Arrays.hashCode(this.getIntegrityValue());
 		}
 
 		return 0;
@@ -102,9 +102,9 @@ public class IntegrityDefinitionDao {
 
 	public boolean equals(IntegrityDefinitionDao obj) {
 		return obj != null
-				&& this == obj
+				&& (this == obj
 				|| (Arrays.equals(this.getIntegrityValue(),
 						obj.getIntegrityValue()) && (this.getIntegrityType() == obj
-						.getIntegrityType()));
+						.getIntegrityType())));
 	}
 }

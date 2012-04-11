@@ -11,6 +11,7 @@ package edu.cmu.sv.arinc838.dao;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.arinc.arinc838.FileDefinition;
@@ -172,13 +173,13 @@ public class SoftwareDefinitionFileDao {
 
 	public boolean equals(SoftwareDefinitionFileDao obj) {
 		return obj != null
-				&& this == obj
+				&& (this == obj
 				|| (this.getSoftwareDescription().equals(obj.getSoftwareDescription())
-						&& this.getFileFormatVersion().equals(obj.getFileFormatVersion())
+						&& Arrays.equals(this.getFileFormatVersion(), obj.getFileFormatVersion())
 						&& this.getTargetHardwareDefinitions().equals(obj.getTargetHardwareDefinitions())
 						&& this.getFileDefinitions().equals(obj.getFileDefinitions())
 						&& this.getSdfIntegrityDefinition().equals(obj.getSdfIntegrityDefinition()) && this
-						.getLspIntegrityDefinition().equals(obj.getLspIntegrityDefinition()));
+						.getLspIntegrityDefinition().equals(obj.getLspIntegrityDefinition())));
 	}
 
 	@Override
