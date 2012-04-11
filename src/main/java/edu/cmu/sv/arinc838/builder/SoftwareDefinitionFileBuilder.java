@@ -179,7 +179,12 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 	}
 
 	@Override
-	public int buildBinary(BdfFile file) throws IOException {
+	public int buildBinary(BdfFile file) throws IOException, IllegalArgumentException{
+		
+		if (file.length() != 0){
+			throw new IllegalArgumentException();
+		}
+		
 		file.seek(0);
 		// write the header
 		file.writePlaceholder(); // file size
@@ -210,7 +215,9 @@ public class SoftwareDefinitionFileBuilder implements Builder<SdfFile> {
 		for (int i = 0; i < size; i++) {
 			this.getFileDefinitions().get(i).buildBinary(file);
 		}
-
+		
+		//calculate CRC up to this point
+		
 		// write the SDF integrity def
 		file.writeSdfIntegrityDefinitionPointer();
 		this.getSdfIntegrityDefinition().setIntegrityValue(

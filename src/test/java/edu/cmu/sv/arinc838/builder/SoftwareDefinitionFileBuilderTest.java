@@ -324,7 +324,7 @@ public class SoftwareDefinitionFileBuilderTest {
 		InOrder order = inOrder(file, swDescription, thdBuilder,
 				thdBuilderLast, fdBuilder, fdBuilderLast, sdfInteg, lspInteg);
 
-		when(file.length()).thenReturn(14L);
+		when(file.length()).thenReturn(0L, 14L);
 		int bytesWritten = swDefFileBuilder.buildBinary(file);
 		assertEquals(bytesWritten, 14L);
 
@@ -348,8 +348,9 @@ public class SoftwareDefinitionFileBuilderTest {
 		order.verify(fdBuilder, times(2)).buildBinary(file);
 		order.verify(fdBuilderLast).buildBinary(file);
 
+		order.verify(file)
 		order.verify(file).writeSdfIntegrityDefinitionPointer();
-		// TODO actually calculate the CRC
+		
 		order.verify(sdfInteg).setIntegrityValue(
 				Converter.hexToBytes("0000000A"));
 		order.verify(sdfInteg).buildBinary(file);
@@ -504,4 +505,17 @@ public class SoftwareDefinitionFileBuilderTest {
 		
 		assertEquals(builder.getTargetHardwareDefinitions().size(), swDefFile.getThwDefinitions().size());		
 	}
+	
+	
+	@Test (expectedExceptions = IllegalArgumentException.class)
+	public void testBinaryFileIsEmptyPriorToBuild() throws FileNotFoundException, IOException{
+		BdfFile bdf = new BdfFile(File.createTempFile("tmp", "BDF"));
+		bdf.write(3);
+		
+		SoftwareDefinitionFileBuilder builder = new SoftwareDefinitionFileBuilder();
+		
+		builder.buildBinary(bdf);
+		
+	}
+	
 }

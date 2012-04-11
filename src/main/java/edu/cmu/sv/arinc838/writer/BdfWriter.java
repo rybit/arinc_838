@@ -21,9 +21,14 @@ public class BdfWriter implements SdfWriter {
 	public String write(String path, SoftwareDefinitionFileBuilder builder)
 			throws Exception {		
 		
+		
 		File fileOnDisk =new File(path+builder.getBinaryFileName());
 		
+		
 		BdfFile file = new BdfFile(fileOnDisk);
+		
+		//This file must be empty
+		file.setLength(0);
 		
 		write(file, builder);
 		
