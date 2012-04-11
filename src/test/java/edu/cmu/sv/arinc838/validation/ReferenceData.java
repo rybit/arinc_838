@@ -9,8 +9,6 @@
  */
 package edu.cmu.sv.arinc838.validation;
 
-import java.util.ArrayList;
-
 import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
 import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;

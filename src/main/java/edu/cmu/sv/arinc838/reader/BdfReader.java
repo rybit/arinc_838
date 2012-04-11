@@ -10,8 +10,6 @@
 package edu.cmu.sv.arinc838.reader;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.List;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;

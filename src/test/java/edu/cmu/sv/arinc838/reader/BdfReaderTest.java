@@ -81,7 +81,7 @@ public class BdfReaderTest {
 	public void testReadErrors() throws Exception {
 		BdfReader reader = new BdfReader();
 		ArrayList<Exception> errorList = new ArrayList<Exception>();
-		SoftwareDefinitionFileDao sdfDao = reader.read(
+		reader.read(
 				"src/test/resources/error/ACM4712345678.BDF", errorList);
 
 		assertEquals(errorList.size(), 2,

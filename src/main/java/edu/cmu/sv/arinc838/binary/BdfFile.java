@@ -14,8 +14,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-import edu.cmu.sv.arinc838.validation.DataValidator;
-
 public class BdfFile extends RandomAccessFile {
 
 	public static final int UINT32_LENGTH = 4;

@@ -17,6 +17,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.XMLConstants;
+import javax.xml.stream.XMLStreamReader;
+
 import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao.IntegrityType;
 import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
@@ -78,6 +81,14 @@ import edu.cmu.sv.arinc838.util.Converter;
  * 
  */
 public class DataValidator {
+	/**
+	 * The XML version required. Value is {@value}
+	 */
+	public static final String XML_VERSION = "1.0";
+	/**
+	 * The Character encoding of the XML. Value is {@value}
+	 */
+	public static final String XML_ENCODING = "utf-8";
 
 	/**
 	 * The maximum length of a STR64k. Value is {@value}
@@ -89,10 +100,24 @@ public class DataValidator {
 	 */
 	public static final int HEXBIN64K_MAX_LENGTH = 32768;
 
-	public static final String[] INVALID_DATA_FILE_EXTENSIONS = { "bdf", "crc",
-			"dir", "hdr", "ldr", "lci", "lcl", "lcs", "lna", "lnd", "lnl",
-			"lno", "lnr", "lns", "lub", "luh", "lui", "lum", "lur", "lus",
-			"xdf" };
+	public static final String[] INVALID_DATA_FILE_EXTENSIONS = { "bdf", "crc", "dir", "hdr", "ldr", "lci", "lcl",
+			"lcs", "lna", "lnd", "lnl", "lno", "lnr", "lns", "lub", "luh", "lui", "lum", "lur", "lus", "xdf" };
+
+	/**
+	 * A mapping between required attributes to values in the XML header
+	 */
+	private static final Map<String, String> ATTRIB_VALUE_MAP = new HashMap<String, String>();
+	private static final Map<String, String> NS_PREFIX_URI_MAP = new HashMap<String, String>();
+
+	/**
+	 * Populate the maps
+	 */
+	static {
+		ATTRIB_VALUE_MAP.put("schemaLocation", "http://www.arinc.com");
+
+		NS_PREFIX_URI_MAP.put("xsi", XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
+		NS_PREFIX_URI_MAP.put("sdf", "http://www.arinc.com/arinc838");
+	}
 
 	/**
 	 * Validates that the given value is an unsigned 32-bit integer.
@@ -107,8 +132,7 @@ public class DataValidator {
 		if ((value >= 0) && (value <= (long) Math.pow(2, 32))) {
 			return value;
 		} else {
-			throw new IllegalArgumentException("The value '" + value
-					+ "' is not an unsigned, 32-bit integer");
+			throw new IllegalArgumentException("The value '" + value + "' is not an unsigned, 32-bit integer");
 		}
 	}
 
@@ -132,8 +156,7 @@ public class DataValidator {
 		String checked = XmlFormatter.unescapeXmlSpecialChars(value);
 
 		if (checked.length() > STR64K_MAX_LENGTH) {
-			throw new IllegalArgumentException("The input value length of "
-					+ checked.length()
+			throw new IllegalArgumentException("The input value length of " + checked.length()
 					+ " exceeds the maximum allowed characters of 65535");
 		}
 
@@ -210,20 +233,17 @@ public class DataValidator {
 	public String checkForEscapedXMLChars(String value) {
 		int idx = value.indexOf('<');
 		if (idx != -1) {
-			throw new IllegalArgumentException(
-					"Found unescaped '<' char at index " + idx);
+			throw new IllegalArgumentException("Found unescaped '<' char at index " + idx);
 		}
 		idx = value.indexOf('>');
 		if (idx != -1) {
-			throw new IllegalArgumentException(
-					"Found unescaped '>' char at index " + idx);
+			throw new IllegalArgumentException("Found unescaped '>' char at index " + idx);
 		}
 
 		idx = value.indexOf('&');
 
 		if (idx != -1 && !value.matches(".*((&amp)|(&lt)|(&gt)).*")) {
-			throw new IllegalArgumentException(
-					"Found unescaped '&' char at index " + idx);
+			throw new IllegalArgumentException("Found unescaped '&' char at index " + idx);
 		}
 
 		return value;
@@ -262,9 +282,8 @@ public class DataValidator {
 	 */
 	public long validateIntegrityType(long type) {
 		if (IntegrityType.fromLong(type) == null) {
-			throw new IllegalArgumentException(
-					"Integrity type was invalid. Got " + type + ", expected "
-							+ IntegrityType.asString());
+			throw new IllegalArgumentException("Integrity type was invalid. Got " + type + ", expected "
+					+ IntegrityType.asString());
 		}
 		return type;
 	}
@@ -287,9 +306,8 @@ public class DataValidator {
 		int size = value.length;
 
 		if (size != 2 && size != 4 && size != 8) {
-			throw new IllegalArgumentException(
-					"Incorrect number of bytes for integrity value. Got "
-							+ size + ", expected 2, 4, or 8");
+			throw new IllegalArgumentException("Incorrect number of bytes for integrity value. Got " + size
+					+ ", expected 2, 4, or 8");
 
 		}
 
@@ -319,17 +337,13 @@ public class DataValidator {
 	 */
 	public String validateSoftwarePartNumber(String value) {
 		if (value == null) {
-			throw new IllegalArgumentException(
-					"Software part number cannot be null");
+			throw new IllegalArgumentException("Software part number cannot be null");
 		}
 
 		// Just check the basic format first: MMMCC-SSSS-SSSS
 		if (!value.matches("[A-Z0-9]{5}-[A-Z0-9]{4}-[A-Z0-9]{4}")) {
-			throw new IllegalArgumentException(
-					"Software part number format was invalid. Got "
-							+ value
-							+ ", expected format to be "
-							+ SoftwareDescriptionDao.SOFTWARE_PART_NUMBER_FORMAT);
+			throw new IllegalArgumentException("Software part number format was invalid. Got " + value
+					+ ", expected format to be " + SoftwareDescriptionDao.SOFTWARE_PART_NUMBER_FORMAT);
 		}
 
 		checkForIllegalCharsInPartNumber(value);
@@ -359,8 +373,7 @@ public class DataValidator {
 	 */
 	public String generateSoftwarePartNumber(String value) {
 		if (value == null) {
-			throw new IllegalArgumentException(
-					"Software part number cannot be null");
+			throw new IllegalArgumentException("Software part number cannot be null");
 		}
 
 		checkForIllegalCharsInPartNumber(value);
@@ -376,11 +389,8 @@ public class DataValidator {
 		try {
 			partNumber = value.substring(value.indexOf('-') + 1);
 		} catch (StringIndexOutOfBoundsException e) {
-			throw new IllegalArgumentException(
-					"Software part number format was invalid. Got "
-							+ value
-							+ ", expected format to be "
-							+ SoftwareDescriptionDao.SOFTWARE_PART_NUMBER_FORMAT);
+			throw new IllegalArgumentException("Software part number format was invalid. Got " + value
+					+ ", expected format to be " + SoftwareDescriptionDao.SOFTWARE_PART_NUMBER_FORMAT);
 		}
 		// check for illegal characters in the SSSS-SSSS (part number) section
 		Pattern p = Pattern.compile("[iIoOqQzZ]");
@@ -389,9 +399,8 @@ public class DataValidator {
 		if (m.find()) {
 			int index = m.start();
 			char illegal = partNumber.charAt(index);
-			throw new IllegalArgumentException(
-					"Software part number contains illegal character '"
-							+ illegal + "' at index " + index);
+			throw new IllegalArgumentException("Software part number contains illegal character '" + illegal
+					+ "' at index " + index);
 		}
 
 		return value;
@@ -425,8 +434,7 @@ public class DataValidator {
 	 * 
 	 */
 	private String generateCheckCharacters(String partNumber) {
-		String data = partNumber.substring(0, 3) + partNumber.substring(6, 10)
-				+ partNumber.substring(11);
+		String data = partNumber.substring(0, 3) + partNumber.substring(6, 10) + partNumber.substring(11);
 
 		int result = 0;
 		for (char c : data.toCharArray()) {
@@ -471,8 +479,7 @@ public class DataValidator {
 		if (value == null) {
 			throw new IllegalArgumentException("Hexbin 64k type cannot be null");
 		} else if (value.length > HEXBIN64K_MAX_LENGTH) {
-			throw new IllegalArgumentException("Hexbin 64k type must be =< "
-					+ HEXBIN64K_MAX_LENGTH + " bytes");
+			throw new IllegalArgumentException("Hexbin 64k type must be =< " + HEXBIN64K_MAX_LENGTH + " bytes");
 		}
 		return value;
 	}
@@ -503,9 +510,8 @@ public class DataValidator {
 		}
 
 		if (fileName.length() > 255) {
-			errors.add(new IllegalArgumentException(
-					"File name must be <= 255 characters. The length is "
-							+ fileName.length()));
+			errors.add(new IllegalArgumentException("File name must be <= 255 characters. The length is "
+					+ fileName.length()));
 		}
 
 		// check extension
@@ -550,8 +556,7 @@ public class DataValidator {
 	 *            for uniqueness
 	 * @return A {@link List} of {@link Exception}s that detail the errors found
 	 */
-	public List<Exception> validateDataFileNamesAreUnique(
-			List<FileDefinitionDao> fileDefs) {
+	public List<Exception> validateDataFileNamesAreUnique(List<FileDefinitionDao> fileDefs) {
 		ArrayList<Exception> errors = new ArrayList<Exception>();
 		// map of lower case file names to list of actual file names 
 		Map<String, List<String>> fileNames = new HashMap<String, List<String>>();
@@ -573,6 +578,93 @@ public class DataValidator {
 			}
 		}
 		
+		return errors;
+	}
+
+	/**
+	 * verifies that the attributes specified on the opening element are what is
+	 * specified in the spec. This will ignore trailing/leading whitespace and
+	 * capitalization.
+	 * 
+	 * @param xsr
+	 * @return
+	 */
+	public List<Exception> validateXmlHeaderAttributes(XMLStreamReader xsr) {
+		List<Exception> errors = new ArrayList<Exception>();
+		Map<String, String> localCopy = new HashMap<String, String>(ATTRIB_VALUE_MAP);
+
+		int ncCount = xsr.getAttributeCount();
+		for (int i = 0; i < ncCount; ++i) {
+			String name = xsr.getAttributeLocalName(i);
+			String value = xsr.getAttributeValue(i);
+			value = value.trim();
+
+			if (localCopy.containsKey(name)) {
+				String expected = localCopy.remove(name);
+				if (!value.equalsIgnoreCase(expected)) {
+					Exception e = new IllegalArgumentException("Attribute: " + name + " is wrong. Expected: '"
+							+ expected + "' found: '" + value + "'");
+					errors.add(e);
+				}
+			} else {
+				Exception e = new IllegalArgumentException("Attribute: '" + name + "' is unexpected.");
+				errors.add(e);
+			}
+		}
+
+		if (!localCopy.isEmpty()) {
+			String missingList = "";
+			for (String item : localCopy.keySet()) {
+				missingList += " " + item;
+			}
+
+			Exception e = new IllegalArgumentException("Attributes missing: " + missingList);
+			errors.add(e);
+		}
+
+		return errors;
+	}
+
+	/**
+	 * Verifes that only the namespaces specified in the spec are present. It
+	 * will ignore whitespace and capitalization
+	 * 
+	 * @param xsr
+	 * @return
+	 */
+	public List<Exception> validateXmlHeaderNamespaces(XMLStreamReader xsr) {
+		List<Exception> errors = new ArrayList<Exception>();
+		Map<String, String> localCopy = new HashMap<String, String>(NS_PREFIX_URI_MAP);
+
+		int ncCount = xsr.getNamespaceCount();
+		for (int i = 0; i < ncCount; ++i) {
+			String name = xsr.getNamespacePrefix(i);
+			String value = xsr.getNamespaceURI(i);
+			value = value.trim();
+			
+			if (localCopy.containsKey(name)) {
+				String expected = localCopy.remove(name);
+				if (!value.equalsIgnoreCase(expected)) {
+					Exception e = new IllegalArgumentException("Namespace: '" + name + "' is wrong. Expected: '"
+							+ expected + "' found: '" + value + "'");
+					errors.add(e);
+				}
+			} else {
+				Exception e = new IllegalArgumentException("Namespace Prefix: '" + name + "' is unexpected.");
+				errors.add(e);
+			}
+		}
+
+		if (!localCopy.isEmpty()) {
+			String missingList = "";
+			for (String item : localCopy.keySet()) {
+				missingList += " " + item;
+			}
+
+			Exception e = new IllegalArgumentException("Namespaces missing: " + missingList);
+			errors.add(e);
+		}
+
 		return errors;
 	}
 }

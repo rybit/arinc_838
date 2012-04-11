@@ -12,7 +12,7 @@ package edu.cmu.sv.arinc838.writer;
 import java.io.File;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
-import edu.cmu.sv.arinc838.builder.BuilderFactoryImpl;
+import edu.cmu.sv.arinc838.builder.BuilderFactory;
 import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
 import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 
@@ -22,7 +22,7 @@ public class BdfWriter implements SdfWriter {
 		File fileOnDisk = new File(path + sdfDao.getBinaryFileName());
 		BdfFile file = new BdfFile(fileOnDisk);
 		
-		SoftwareDefinitionFileBuilder builder = new SoftwareDefinitionFileBuilder(new BuilderFactoryImpl());
+		SoftwareDefinitionFileBuilder builder = new SoftwareDefinitionFileBuilder(new BuilderFactory());
 		write (file, builder, sdfDao);
 		
 	}

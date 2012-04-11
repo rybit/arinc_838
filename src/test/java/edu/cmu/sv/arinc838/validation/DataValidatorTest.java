@@ -9,12 +9,19 @@
  */
 package edu.cmu.sv.arinc838.validation;
 
-import static org.testng.AssertJUnit.*;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.AssertJUnit.fail;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -450,5 +457,77 @@ public class DataValidatorTest {
 		List<Exception> errors = new DataValidator()
 				.validateDataFileNamesAreUnique(files);
 		assertTrue(errors.isEmpty());
+	}
+	
+	@Test   
+	public void testValidateXmlHeaderNamespacesNoErrors () throws Exception {
+		String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+		                "<sdf:sdf-file xmlns:sdf=\"http://www.arinc.com/arinc838\"" + 
+					      " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+					      " xsi:schemaLocation=\"http://www.arinc.com/arinc838\"/>";
+		
+		InputStream inStream = new ByteArrayInputStream(header.getBytes()); 
+		XMLStreamReader xsr = XMLInputFactory.newInstance().createXMLStreamReader(inStream);
+		xsr.nextTag();
+		
+		List<Exception> errors = new DataValidator().validateXmlHeaderNamespaces(xsr);
+		assertEquals(0, errors.size());
+	}
+	
+	@Test  (expectedExceptions = XMLStreamException.class) 
+	public void testValidateXmlHeaderNamespacesTooFew () throws Exception {
+		String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+		                "<sdf:sdf-file xmlns:sdf=\"http://www.arinc.com/arinc838\"" + 
+					      " xsi:schemaLocation=\"http://www.arinc.com/arinc838\"/>";
+		
+		InputStream inStream = new ByteArrayInputStream(header.getBytes()); 
+		XMLStreamReader xsr = XMLInputFactory.newInstance().createXMLStreamReader(inStream);
+		xsr.nextTag();
+	}
+	
+	@Test   
+	public void testValidateXmlHeaderNamespacesTooMany () throws Exception {
+		String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+		                "<sdf:sdf-file xmlns:sdf=\"http://www.arinc.com/arinc838\"" + 
+					      " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+					      " xmlns:vamps=\"http://www.nosferatu.com\"" +
+					      " xsi:schemaLocation=\"http://www.arinc.com/arinc838\"/>";
+		
+		InputStream inStream = new ByteArrayInputStream(header.getBytes()); 
+		XMLStreamReader xsr = XMLInputFactory.newInstance().createXMLStreamReader(inStream);
+		xsr.nextTag();
+		
+		List<Exception> errors = new DataValidator().validateXmlHeaderNamespaces(xsr);
+		assertEquals(1, errors.size());
+		assertEquals(IllegalArgumentException.class, errors.get(0).getClass());
+	}
+	
+	@Test   
+	public void testValidateXmlHeaderAttributesNoErrors () throws Exception {
+		String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+		                "<sdf:sdf-file xmlns:sdf=\"http://www.arinc.com/arinc838\"" + 
+					      " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+					      " xsi:schemaLocation=\"http://www.arinc.com\"/>";
+		
+		InputStream inStream = new ByteArrayInputStream(header.getBytes()); 
+		XMLStreamReader xsr = XMLInputFactory.newInstance().createXMLStreamReader(inStream);
+		xsr.nextTag();
+		
+		List<Exception> errors = new DataValidator().validateXmlHeaderAttributes(xsr);
+		assertEquals(0, errors.size());
+	}
+	
+	@Test   
+	public void testValidateXmlHeaderAttributesTooFew () throws Exception {
+		String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+		                "<sdf:sdf-file xmlns:sdf=\"http://www.arinc.com/arinc838\"" + 
+					      " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>";
+		
+		InputStream inStream = new ByteArrayInputStream(header.getBytes()); 
+		XMLStreamReader xsr = XMLInputFactory.newInstance().createXMLStreamReader(inStream);
+		xsr.nextTag();
+		
+		List<Exception> errors = new DataValidator().validateXmlHeaderAttributes(xsr);
+		assertEquals(1, errors.size());
 	}
 }

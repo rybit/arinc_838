@@ -50,7 +50,7 @@ public class FileDefinitionBuilderTest {
 	@Test
 	public void testBuilder() {
 		FileDefinitionDao fdDao = new FileDefinitionDao(xmlFileDef);
-		FileDefinition built = new FileDefinitionBuilder().buildXml(fdDao);
+		FileDefinition built = new FileDefinitionBuilder(new BuilderFactory()).buildXml(fdDao);
 
 		assertNotEquals(null, built);
 		assertNotEquals(built, xmlFileDef,

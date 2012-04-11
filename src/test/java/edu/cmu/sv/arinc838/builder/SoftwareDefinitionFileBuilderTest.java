@@ -131,7 +131,7 @@ public class SoftwareDefinitionFileBuilderTest {
 	@Test
 	public void testBuildBinaryWritesHeader() throws FileNotFoundException,
 			IOException {
-		swDefFileBuilder = new SoftwareDefinitionFileBuilder(new BuilderFactoryImpl());
+		swDefFileBuilder = new SoftwareDefinitionFileBuilder(new BuilderFactory());
 		BdfFile file = new BdfFile(File.createTempFile("tmp", "bin"));
 		int bytesWritten = swDefFileBuilder.buildBinary(sdfDao,file);
 
