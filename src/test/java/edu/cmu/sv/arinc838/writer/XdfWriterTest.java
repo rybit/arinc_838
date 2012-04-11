@@ -9,7 +9,7 @@
  */
 package edu.cmu.sv.arinc838.writer;
 
-import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.*;
 
 import java.io.File;
 import java.util.List;
@@ -26,7 +26,7 @@ import com.arinc.arinc838.SdfFile;
 import com.arinc.arinc838.SoftwareDescription;
 import com.arinc.arinc838.ThwDefinition;
 
-import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
+import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 import edu.cmu.sv.arinc838.util.Converter;
 import edu.cmu.sv.arinc838.validation.ReferenceData;
 
@@ -48,36 +48,30 @@ public class XdfWriterTest {
 	}
 
 	@Test
-	public void testWriteReturnsFileName() throws Exception {
+	public void testGetFileName() throws Exception {
 		SdfFile file = getTestFile();
-		SoftwareDefinitionFileBuilder builder = new SoftwareDefinitionFileBuilder(
-				file);
+
+		SoftwareDefinitionFileDao sdfDao = new SoftwareDefinitionFileDao(file);
 		XdfWriter writer = new XdfWriter();
-
-		String path = System.getProperty("java.io.tmpdir");
-
-		String writtenFile = writer.write(path, builder);
-
-		assertEquals(writtenFile, path + builder.getXmlFileName());
+		String fileName = writer.getFilename(sdfDao);
+		assertEquals(fileName, sdfDao.getXmlFileName());
 	}
 
 	private void vefifyMatch(SdfFile file1, SdfFile file2) {
 		assertEquals(file1.getFileFormatVersion(), file2.getFileFormatVersion());
 
-		assertEquals(file1.getLspIntegrityDefinition().getIntegrityType(),
-				file2.getLspIntegrityDefinition().getIntegrityType());
-		assertEquals(file1.getLspIntegrityDefinition().getIntegrityValue(),
-				file2.getLspIntegrityDefinition().getIntegrityValue());
-		assertEquals(file1.getSoftwareDescription().getSoftwarePartnumber(),
-				file2.getSoftwareDescription().getSoftwarePartnumber());
-		assertEquals(file1.getSoftwareDescription()
-				.getSoftwareTypeDescription(), file2.getSoftwareDescription()
+		assertEquals(file1.getLspIntegrityDefinition().getIntegrityType(), file2.getLspIntegrityDefinition()
+				.getIntegrityType());
+		assertEquals(file1.getLspIntegrityDefinition().getIntegrityValue(), file2.getLspIntegrityDefinition()
+				.getIntegrityValue());
+		assertEquals(file1.getSoftwareDescription().getSoftwarePartnumber(), file2.getSoftwareDescription()
+				.getSoftwarePartnumber());
+		assertEquals(file1.getSoftwareDescription().getSoftwareTypeDescription(), file2.getSoftwareDescription()
 				.getSoftwareTypeDescription());
-		assertEquals(file1.getSoftwareDescription().getSoftwareTypeId(), file2
-				.getSoftwareDescription().getSoftwareTypeId());
+		assertEquals(file1.getSoftwareDescription().getSoftwareTypeId(), file2.getSoftwareDescription()
+				.getSoftwareTypeId());
 
-		assertEquals(file1.getFileDefinitions().size(), file2
-				.getFileDefinitions().size());
+		assertEquals(file1.getFileDefinitions().size(), file2.getFileDefinitions().size());
 		List<FileDefinition> file1FileDefs = file1.getFileDefinitions();
 		List<FileDefinition> file2FileDefs = file2.getFileDefinitions();
 		for (int i = 0; i < file1FileDefs.size(); i++) {
@@ -85,15 +79,13 @@ public class XdfWriterTest {
 			FileDefinition fdef2 = file2FileDefs.get(i);
 			assertEquals(fdef1.getFileName(), fdef2.getFileName());
 			assertEquals(fdef1.getFileSize(), fdef2.getFileSize());
-			assertEquals(fdef1.getFileIntegrityDefinition().getIntegrityType(),
-					fdef2.getFileIntegrityDefinition().getIntegrityType());
-			assertEquals(
-					fdef1.getFileIntegrityDefinition().getIntegrityValue(),
-					fdef2.getFileIntegrityDefinition().getIntegrityValue());
+			assertEquals(fdef1.getFileIntegrityDefinition().getIntegrityType(), fdef2.getFileIntegrityDefinition()
+					.getIntegrityType());
+			assertEquals(fdef1.getFileIntegrityDefinition().getIntegrityValue(), fdef2.getFileIntegrityDefinition()
+					.getIntegrityValue());
 		}
 
-		assertEquals(file1.getThwDefinitions().size(), file2
-				.getThwDefinitions().size());
+		assertEquals(file1.getThwDefinitions().size(), file2.getThwDefinitions().size());
 		List<ThwDefinition> file1ThwDefs = file1.getThwDefinitions();
 		List<ThwDefinition> file2ThwDefs = file2.getThwDefinitions();
 		for (int i = 0; i < file1ThwDefs.size(); i++) {
@@ -136,23 +128,23 @@ public class XdfWriterTest {
 
 		swDefFile.getFileDefinitions().add(file);
 
-		swDefFile
-				.setFileFormatVersion(SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION);
+		swDefFile.setFileFormatVersion(SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION);
 		return swDefFile;
 	}
 
 	@Test
 	public void testBuildsCorrectFileName() throws Exception {
-		SoftwareDefinitionFileBuilder builder = new SoftwareDefinitionFileBuilder(
-				getTestFile());
+		SoftwareDefinitionFileDao builder = new SoftwareDefinitionFileDao(getTestFile());
 
 		XdfWriter writer = new XdfWriter();
 
 		String tempPath = System.getProperty("java.io.tmpdir");
-		String file = writer.write(tempPath, builder);
-
-		assertEquals(file, tempPath + builder.getXmlFileName());
+		String filename = tempPath + builder.getXmlFileName();
 		
-		new File(file).delete();
+		writer.write(tempPath, builder);
+
+		File file = new File (filename);
+		assertTrue (file.exists());
+		file.delete();
 	}
 }

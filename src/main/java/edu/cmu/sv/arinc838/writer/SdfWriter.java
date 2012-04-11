@@ -1,8 +1,8 @@
 package edu.cmu.sv.arinc838.writer;
 
-import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
+import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 
 public interface SdfWriter {
-
-	public String write (String path, SoftwareDefinitionFileBuilder builder) throws Exception;	
+	public void write (String path, SoftwareDefinitionFileDao sdfDao) throws Exception;
+	public String getFilename (SoftwareDefinitionFileDao sdfDao);
 }

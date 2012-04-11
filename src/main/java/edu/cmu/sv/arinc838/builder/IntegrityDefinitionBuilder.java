@@ -1,133 +1,33 @@
-/*
- * Copyright (c) 2012 Chris Ellison, Mike Deats, Liron Yahdav, Ryan Neal,
- * Brandon Sutherlin, Scott Griffin
- * 
- * This software is released under the MIT license
- * (http://www.opensource.org/licenses/mit-license.php)
- * 
- * Created on Feb 7, 2012
- */
 package edu.cmu.sv.arinc838.builder;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import com.arinc.arinc838.IntegrityDefinition;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
-import edu.cmu.sv.arinc838.validation.DataValidator;
+import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
 
-public class IntegrityDefinitionBuilder implements Builder<IntegrityDefinition> {
-
-	public static enum IntegrityType {
-		CRC16(2), CRC32(3), CRC64(6);
-
-		private long type;
-
-		private IntegrityType(long type) {
-			this.type = type;
-		}
-
-		public long getType() {
-			return type;
-		}
-
-		@Override
-		public String toString() {
-			return super.toString() + "(" + type + ")";
-		}
-
-		public static String asString() {
-			return "[" + CRC16 + "," + CRC32 + "," + CRC64 + "]";
-		}
-
-		public static IntegrityType fromLong(long value) {
-			if (value == CRC16.getType()) {
-				return CRC16;
-			} else if (value == CRC32.getType()) {
-				return CRC32;
-			} else if (value == CRC64.getType()) {
-				return CRC64;
-			}
-			return null;
-		}
-	}
-
-	private long integType;
-	private byte[] integValue;
-
-	public IntegrityDefinitionBuilder() {
-	}
-
-	public IntegrityDefinitionBuilder(IntegrityDefinition integDef) {
-		setIntegrityType(integDef.getIntegrityType());
-		setIntegrityValue(integDef.getIntegrityValue());
-	}
-
-	public IntegrityDefinitionBuilder(BdfFile bdfFile) throws IOException {
-		setIntegrityType(bdfFile.readUint32());
-		setIntegrityValue(bdfFile.readHexbin64k());
-	}
-
-	public void setIntegrityType(long value) {
-		integType = DataValidator.validateIntegrityType(value);
-	}
-
-	public long getIntegrityType() {
-		return integType;
-	}
-
-	public void setIntegrityValue(byte[] value) {
-		integValue = DataValidator.validateIntegrityValue(value);
-	}
-
-	public byte[] getIntegrityValue() {
-		return integValue;
-	}
+public class IntegrityDefinitionBuilder implements Builder<IntegrityDefinitionDao, IntegrityDefinition> {
 
 	@Override
-	public IntegrityDefinition buildXml() {
+	public IntegrityDefinition buildXml(IntegrityDefinitionDao integDao) {
 		IntegrityDefinition retDef = new IntegrityDefinition();
 
-		retDef.setIntegrityType(integType);
-		retDef.setIntegrityValue(integValue);
+		retDef.setIntegrityType(integDao.getIntegrityType());
+		retDef.setIntegrityValue(integDao.getIntegrityValue());
 
 		return retDef;
 	}
 
 	@Override
-	public int buildBinary(BdfFile bdfFile) throws IOException {
+	public int buildBinary(IntegrityDefinitionDao integDao, BdfFile bdfFile) throws IOException {
 		int initialPosition = (int) bdfFile.getFilePointer();
 
-		bdfFile.writeUint32(getIntegrityType());
-		bdfFile.writeHexbin64k(getIntegrityValue());
+		bdfFile.writeUint32(integDao.getIntegrityType());
+		bdfFile.writeHexbin64k(integDao.getIntegrityValue());
 
 		int finalPosition = (int) bdfFile.getFilePointer();
 
 		return (int) (finalPosition - initialPosition);
-	}
-
-	@Override
-	public int hashCode() {
-		if (this.getIntegrityValue() != null) {
-			return this.getIntegrityValue().hashCode();
-		}
-
-		return 0;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		return obj != null
-				&& this == obj
-				|| (obj instanceof IntegrityDefinitionBuilder && equals((IntegrityDefinitionBuilder) obj));
-	}
-
-	public boolean equals(IntegrityDefinitionBuilder obj) {
-		return obj != null
-				&& this == obj
-				|| (Arrays.equals(this.getIntegrityValue(),
-						obj.getIntegrityValue()) && (this.getIntegrityType() == obj
-						.getIntegrityType()));
 	}
 }

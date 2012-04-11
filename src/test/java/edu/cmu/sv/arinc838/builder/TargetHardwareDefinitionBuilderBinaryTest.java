@@ -1,32 +1,33 @@
 package edu.cmu.sv.arinc838.builder;
 
+import static org.testng.Assert.assertEquals;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
-import static org.testng.Assert.*;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
+import edu.cmu.sv.arinc838.dao.TargetHardwareDefinitionDao;
 
 public class TargetHardwareDefinitionBuilderBinaryTest {
 	
-	private TargetHardwareDefinitionBuilder thwDefBuilder;
+	private TargetHardwareDefinitionDao thwDao;
 	
 	@BeforeMethod
 	public void setup() {
-		thwDefBuilder = new TargetHardwareDefinitionBuilder();
-		thwDefBuilder.setId("ID3");
-		thwDefBuilder.getPositions().add("R");
-		thwDefBuilder.getPositions().add("L");
+		thwDao = new TargetHardwareDefinitionDao();
+		thwDao.setThwId("ID3");
+		thwDao.getPositions().add("R");
+		thwDao.getPositions().add("L");
 	}
 	
 	@Test
 	public void buildBinary() throws FileNotFoundException, IOException {
 		BdfFile bdfFile = new BdfFile(File.createTempFile("tmpFile", ".bdf"));
-		int bytesWritten = thwDefBuilder.buildBinary(bdfFile);
+		int bytesWritten = new TargetHardwareDefinitionBuilder().buildBinary(thwDao, bdfFile);
 
 		// 4 ptr to next + 5 thwID + 4 positions length +
 		// 2(4 next position ptr + 3 thw postion) =
@@ -47,9 +48,9 @@ public class TargetHardwareDefinitionBuilderBinaryTest {
 
 	@Test
 	public void buildBinaryIsLast() throws FileNotFoundException, IOException {
-		thwDefBuilder.setIsLast(true);
+		thwDao.setIsLast(true);
 		BdfFile bdfFile = new BdfFile(File.createTempFile("tmpFile", ".bdf"));
-		int bytesWritten = thwDefBuilder.buildBinary(bdfFile);
+		int bytesWritten = new TargetHardwareDefinitionBuilder().buildBinary(thwDao, bdfFile);
 
 		// 4 ptr to next + 5 thwID + 4 positions length +
 		// 2(4 next position ptr + 3 thw postion) =
@@ -65,16 +66,16 @@ public class TargetHardwareDefinitionBuilderBinaryTest {
 	@Test
 	public void targetHardwareDefinitionBuilderBdfFile() throws FileNotFoundException, IOException {
 		BdfFile bdfFile = new BdfFile(File.createTempFile("tmpFile", ".bdf"));
-		thwDefBuilder.buildBinary(bdfFile);
+		new TargetHardwareDefinitionBuilder().buildBinary(thwDao, bdfFile);
 
 		bdfFile.seek(0); //return to start of file
 		bdfFile.readUint32(); //parent object reads the pointers
 		
-		TargetHardwareDefinitionBuilder thwDefBuilder2 = new TargetHardwareDefinitionBuilder(bdfFile);
-		assertEquals(thwDefBuilder2.getId(), thwDefBuilder.getId());
-		assertEquals(thwDefBuilder2.getPositions().size(), thwDefBuilder.getPositions().size());
-		for(int i=0; i<thwDefBuilder2.getPositions().size(); i++) {
-			assertEquals(thwDefBuilder2.getPositions().get(i), thwDefBuilder.getPositions().get(i));
+		TargetHardwareDefinitionDao thDao2 = new TargetHardwareDefinitionDao (bdfFile);
+		assertEquals(thDao2.getThwId(), thwDao.getThwId());
+		assertEquals(thDao2.getPositions().size(), thwDao.getPositions().size());
+		for(int i=0; i<thDao2.getPositions().size(); i++) {
+			assertEquals(thDao2.getPositions().get(i), thwDao.getPositions().get(i));
 		}
 	}
 }

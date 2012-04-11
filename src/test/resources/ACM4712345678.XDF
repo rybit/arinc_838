@@ -23,7 +23,7 @@
 	</thw-definitions>
 	<file-definitions>
 		<file-loadable>true</file-loadable>
-		<file-name> CRC_T05A.rom</file-name>
+		<file-name>CRC_T05A.rom</file-name>
 		<file-size>3976</file-size>
 		<file-integrity-definition>
 			<integrity-type>3</integrity-type>

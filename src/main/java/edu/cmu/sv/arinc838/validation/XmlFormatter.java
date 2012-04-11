@@ -14,9 +14,9 @@ public class XmlFormatter {
 /**
 	 * Returns a string with special XML characters escaped:
 	 * <ol>
-	 * <li>'<' becomes '&lt'</li>
-	 * <li>'>' becomes '&gt'</li>
-	 * <li>'&' becomes '&amp'</li>
+	 * <li>'<' becomes {@literal '&lt'}</li>
+	 * <li>'>' becomes {@literal '&gt'}</li>
+	 * <li>'&' becomes {@literal '&amp'}</li>
 	 * </ol>
 	 * @param value
 	 * @return
@@ -27,7 +27,7 @@ public class XmlFormatter {
 		// if any chars are are already escaped, unescape them first
 		// this will handle strings that are partially escaped
 		try {
-			DataValidator.checkForEscapedXMLChars(value);
+			new DataValidator().checkForEscapedXMLChars(value);
 		} catch (IllegalArgumentException e) {
 			unescaped = unescapeXmlSpecialChars(value);
 		}
@@ -39,9 +39,9 @@ public class XmlFormatter {
 /**
 	 * Returns a string with escaped special XML characters reverted to plain characters:
 	 * <ol>
-	 * <li>'&lt' becomes '<'</li>
-	 * <li>'&gt' becomes '>'</li>
-	 * <li>'&amp' becomes '&'</li>
+	 * <li>{@literal '&lt'} becomes '<'</li>
+	 * <li>{@literal '&gt'} becomes '>'</li>
+	 * <li>{@literal '&amp'} becomes '&'</li>
 	 * </ol>
 	 * @param value
 	 * @return
