@@ -22,7 +22,7 @@ public class SaveItem extends AbstractMenuItem {
 
 	@Override
 	public MenuItem[] execute(SoftwareDefinitionFileDao sdfDao) throws Exception {
-		String path = promptForResponse("Save where? (path only, filename will be appended)");
+		String path = promptForResponse("Save where? (path only, filename will be appended; include trailing '/')");
 
 		String filename = this.writer.getFilename(sdfDao);
 		this.writer.write(path, sdfDao);
