@@ -37,15 +37,24 @@ public class SoftwareDefinitionFileValidator {
 	 * 
 	 * @param xmlFile
 	 * @return
+	 * @throws Exception 
 	 */
-	public List<Exception> validateXmlFileHeader(File xmlFile) {
-		XMLStreamReader xsr;
+	public List<Exception> validateXmlFileHeader(File xmlFile) throws Exception {
+		XMLStreamReader xsr = null;
+		FileInputStream fileInputStream = null;
 		List<Exception> errors = new ArrayList<Exception>();
 
 		try {
-			xsr = XMLInputFactory.newInstance().createXMLStreamReader(new FileInputStream(xmlFile));
+			fileInputStream = new FileInputStream(xmlFile);
+			xsr = XMLInputFactory.newInstance().createXMLStreamReader(fileInputStream);
 			xsr.nextTag(); // move to the root
 		} catch (Exception e) {
+			if(xsr != null) {
+				xsr.close();
+			}
+			if(fileInputStream != null) {
+				fileInputStream.close();
+			}
 			errors.add(e);
 			return errors; // can't work if the xsr can't be created
 		}
@@ -56,6 +65,8 @@ public class SoftwareDefinitionFileValidator {
 		// namespace check
 		errors.addAll(dataVal.validateXmlHeaderNamespaces(xsr));
 
+		xsr.close();
+		fileInputStream.close();
 		return errors;
 	}
 
