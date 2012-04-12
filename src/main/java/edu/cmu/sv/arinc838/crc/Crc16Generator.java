@@ -1,6 +1,6 @@
 package edu.cmu.sv.arinc838.crc;
 
-public class Crc16Generator {
+public class Crc16Generator  {
 
 	public static int calculateCrc(byte[] bytes) {
 		int crc = 0xFFFF; // initial value
