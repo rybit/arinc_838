@@ -32,6 +32,7 @@ import com.arinc.arinc838.ThwDefinition;
 import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.builder.BuilderFactory;
 import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
+import edu.cmu.sv.arinc838.crc.CrcGeneratorFactory;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao.IntegrityType;
 import edu.cmu.sv.arinc838.util.Converter;
 import edu.cmu.sv.arinc838.validation.ReferenceData;
@@ -90,7 +91,7 @@ public class SoftwareDefinitionFileDaoTest {
 				swDefFile);
 		binaryFile = new BdfFile(File.createTempFile("tmp", "bin"));
 		SoftwareDefinitionFileBuilder swDefFileBuilder = new SoftwareDefinitionFileBuilder(
-				new BuilderFactory());
+				new BuilderFactory(), new CrcGeneratorFactory());
 		swDefFileBuilder.buildBinary(swDefFileDao, binaryFile);
 		readBinaryFile = new SoftwareDefinitionFileDao(binaryFile);
 	}

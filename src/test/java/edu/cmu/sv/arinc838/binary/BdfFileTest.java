@@ -271,4 +271,19 @@ public class BdfFileTest {
 		assertEquals(f.length(), 10);
 		assertEquals(f.readHexbin64k(), expected);		
 	}
+	
+	@Test
+	public void testReadAll() throws Exception {
+		f.writeBoolean(true);
+		f.writeInt(7);
+	
+		f.seek(2);
+		
+		byte[] result = f.readAll();
+		
+		assertEquals(result.length, f.length());
+		assertEquals(result[0], (byte)1);
+		assertEquals(result[4], (byte)7);
+		assertEquals(f.getFilePointer(), 2);
+	}
 }

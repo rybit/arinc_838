@@ -1,5 +1,6 @@
 package edu.cmu.sv.arinc838.builder;
 
+import edu.cmu.sv.arinc838.crc.CrcGeneratorFactory;
 import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
 import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
@@ -26,7 +27,7 @@ public class BuilderFactory {
 		}
 
 		if (Dao == SoftwareDefinitionFileDao.class){
-			return (Builder<DaoType, JaxbType>) new SoftwareDefinitionFileBuilder(this);
+			return (Builder<DaoType, JaxbType>) new SoftwareDefinitionFileBuilder(this, new CrcGeneratorFactory());
 		}
 
 		if (Dao == TargetHardwareDefinitionDao.class){

@@ -1,5 +1,8 @@
 package edu.cmu.sv.arinc838.util;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 
 public class Converter {
@@ -25,5 +28,16 @@ public class Converter {
 	 */
 	public static String bytesToHex(byte[] bytes) {
 		return new HexBinaryAdapter().marshal(bytes);
+	}
+
+	public static byte[] intToBytes(int i) {
+		ByteBuffer bb = ByteBuffer.allocate(4);
+		bb.putInt(i);		
+		return bb.array();
+	}
+
+	public static int bytesToInt(byte[] bytes) {
+		ByteBuffer bb = ByteBuffer.wrap(bytes);
+		return bb.getInt();
 	}
 }

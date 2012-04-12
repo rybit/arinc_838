@@ -10,11 +10,12 @@ import org.testng.annotations.Test;
 public class Crc32GeneratorTest {
 	@Test
 	public void calculateCrcTest() throws Exception {
+		Crc32Generator generator = new Crc32Generator();
+
 		Map<BigInteger, byte[]> expectedCrcs = CrcGeneratorTestCommon
 				.getExpectedCrcs("crc32");
 		for (BigInteger expectedCrc : expectedCrcs.keySet()) {
-			long crc = Crc32Generator.calculateCrc(expectedCrcs
-					.get(expectedCrc));
+			long crc = generator.calculateCrc(expectedCrcs.get(expectedCrc));
 			assertEquals(crc, expectedCrc.longValue());
 		}
 	}

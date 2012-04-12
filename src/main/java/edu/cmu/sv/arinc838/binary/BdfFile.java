@@ -138,4 +138,18 @@ public class BdfFile extends RandomAccessFile {
 		seek(pointerLocation);
 		return readUint32();
 	}
+
+	public byte[] readAll() throws IOException {
+		byte[] buffer = new byte[(int) this.length()];
+		
+		long location = this.getFilePointer();
+		
+		this.seek(0);
+		
+		this.readFully(buffer);
+		
+		this.seek(location);
+		
+		return buffer;
+	}
 }

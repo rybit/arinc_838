@@ -10,6 +10,8 @@ import com.arinc.arinc838.SoftwareDescription;
 import com.arinc.arinc838.ThwDefinition;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
+import edu.cmu.sv.arinc838.crc.Crc16Generator;
+import edu.cmu.sv.arinc838.crc.CrcGeneratorFactory;
 import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
 import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
@@ -20,10 +22,13 @@ import edu.cmu.sv.arinc838.util.Converter;
 public class SoftwareDefinitionFileBuilder implements
 		Builder<SoftwareDefinitionFileDao, SdfFile> {
 
-	private BuilderFactory builderFactory;
+	private final BuilderFactory builderFactory;
+	private final CrcGeneratorFactory crcFactory;
 
-	public SoftwareDefinitionFileBuilder(BuilderFactory builderFact) {
+	public SoftwareDefinitionFileBuilder(BuilderFactory builderFact,
+			CrcGeneratorFactory crcFactory) {
 		this.builderFactory = builderFact;
+		this.crcFactory = crcFactory;
 	}
 
 	@Override
@@ -36,36 +41,43 @@ public class SoftwareDefinitionFileBuilder implements
 		// without a set method to verify its validity prior to building
 		List<FileDefinitionDao> fileDefsValidated = softwareDefinitionFileDao
 				.getFileDefinitions();
-		Builder<FileDefinitionDao, FileDefinition> fileDefBuilder = builderFactory.getBuilder(FileDefinitionDao.class, FileDefinition.class);
+		Builder<FileDefinitionDao, FileDefinition> fileDefBuilder = builderFactory
+				.getBuilder(FileDefinitionDao.class, FileDefinition.class);
 		for (FileDefinitionDao fileDef : fileDefsValidated) {
 			file.getFileDefinitions().add(fileDefBuilder.buildXml(fileDef));
 		}
 
-		Builder<TargetHardwareDefinitionDao, ThwDefinition> thwDefBuilder = builderFactory.getBuilder(TargetHardwareDefinitionDao.class, ThwDefinition.class);
+		Builder<TargetHardwareDefinitionDao, ThwDefinition> thwDefBuilder = builderFactory
+				.getBuilder(TargetHardwareDefinitionDao.class,
+						ThwDefinition.class);
 		for (TargetHardwareDefinitionDao thwDef : softwareDefinitionFileDao
 				.getTargetHardwareDefinitions()) {
 			file.getThwDefinitions().add(thwDefBuilder.buildXml(thwDef));
 		}
 
-		Builder<IntegrityDefinitionDao, IntegrityDefinition> integDefBuilder = builderFactory.getBuilder(IntegrityDefinitionDao.class, IntegrityDefinition.class);
+		Builder<IntegrityDefinitionDao, IntegrityDefinition> integDefBuilder = builderFactory
+				.getBuilder(IntegrityDefinitionDao.class,
+						IntegrityDefinition.class);
 		file.setLspIntegrityDefinition(integDefBuilder
 				.buildXml(softwareDefinitionFileDao.getLspIntegrityDefinition()));
 		file.setSdfIntegrityDefinition(integDefBuilder
 				.buildXml(softwareDefinitionFileDao.getSdfIntegrityDefinition()));
 
-		file.setSoftwareDescription(builderFactory.getBuilder(SoftwareDescriptionDao.class, SoftwareDescription.class)
+		file.setSoftwareDescription(builderFactory.getBuilder(
+				SoftwareDescriptionDao.class, SoftwareDescription.class)
 				.buildXml(softwareDefinitionFileDao.getSoftwareDescription()));
 
 		return file;
 	}
 
 	@Override
-	public int buildBinary(SoftwareDefinitionFileDao softwareDefinitionFileDao, BdfFile file) throws IOException, IllegalArgumentException{
-		
-		if (file.length() != 0){
+	public int buildBinary(SoftwareDefinitionFileDao softwareDefinitionFileDao,
+			BdfFile file) throws IOException, IllegalArgumentException {
+
+		if (file.length() != 0) {
 			throw new IllegalArgumentException();
 		}
-		
+
 		file.seek(0);
 		// write the header
 		file.writePlaceholder(); // file size
@@ -78,7 +90,7 @@ public class SoftwareDefinitionFileBuilder implements
 		Builder<SoftwareDescriptionDao, SoftwareDescription> swDescBuilder = builderFactory
 				.getBuilder(SoftwareDescriptionDao.class,
 						SoftwareDescription.class);
-		
+
 		swDescBuilder.buildBinary(
 				softwareDefinitionFileDao.getSoftwareDescription(), file);
 
@@ -87,7 +99,9 @@ public class SoftwareDefinitionFileBuilder implements
 				.size();
 		file.writeTargetDefinitionsPointer();
 		file.writeUint32(size);
-		Builder<TargetHardwareDefinitionDao, ThwDefinition> targetHardwareDefinitionBuilder = builderFactory.getBuilder(TargetHardwareDefinitionDao.class, ThwDefinition.class);
+		Builder<TargetHardwareDefinitionDao, ThwDefinition> targetHardwareDefinitionBuilder = builderFactory
+				.getBuilder(TargetHardwareDefinitionDao.class,
+						ThwDefinition.class);
 		if (size > 0) {
 			softwareDefinitionFileDao.getTargetHardwareDefinitions()
 					.get(size - 1).setIsLast(true);
@@ -104,30 +118,33 @@ public class SoftwareDefinitionFileBuilder implements
 		file.writeUint32(size);
 		softwareDefinitionFileDao.getFileDefinitions().get(size - 1)
 				.setIsLast(true);
-		
-		Builder<FileDefinitionDao, FileDefinition> fileDefBuilder = builderFactory.getBuilder(FileDefinitionDao.class, FileDefinition.class);
+
+		Builder<FileDefinitionDao, FileDefinition> fileDefBuilder = builderFactory
+				.getBuilder(FileDefinitionDao.class, FileDefinition.class);
 		for (int i = 0; i < size; i++) {
 			fileDefBuilder.buildBinary(softwareDefinitionFileDao
 					.getFileDefinitions().get(i), file);
 		}
 
-		
-		//calculate CRC up to this point
-		
+		// calculate CRC up to this point
+		Crc16Generator generator = crcFactory.getCrc16Generator();
+		int crc = generator.calculateCrc(file.readAll());
 
-		Builder<IntegrityDefinitionDao, IntegrityDefinition> integDefBuilder = builderFactory.getBuilder(IntegrityDefinitionDao.class, IntegrityDefinition.class);
+		Builder<IntegrityDefinitionDao, IntegrityDefinition> integDefBuilder = builderFactory
+				.getBuilder(IntegrityDefinitionDao.class,
+						IntegrityDefinition.class);
 
 		// write the SDF integrity def
 		file.writeSdfIntegrityDefinitionPointer();
 		softwareDefinitionFileDao.getSdfIntegrityDefinition()
-				.setIntegrityValue(Converter.hexToBytes("0000000A"));
+				.setIntegrityValue(Converter.intToBytes(crc));
 		integDefBuilder.buildBinary(
 				softwareDefinitionFileDao.getSdfIntegrityDefinition(), file);
 
 		// write the LSP integrity def
 		file.writeLspIntegrityDefinitionPointer();
 		softwareDefinitionFileDao.getLspIntegrityDefinition()
-				.setIntegrityValue(Converter.hexToBytes("0000000A"));
+				.setIntegrityValue(Converter.hexToBytes("FFFF"));
 		integDefBuilder.buildBinary(
 				softwareDefinitionFileDao.getLspIntegrityDefinition(), file);
 
@@ -138,5 +155,4 @@ public class SoftwareDefinitionFileBuilder implements
 
 		return (int) file.length();
 	}
-
 }
