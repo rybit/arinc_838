@@ -36,7 +36,7 @@ public class BdfReader implements SdfReader {
 			sdfDao = new SoftwareDefinitionFileDao(bdf);
 			if (errorList != null) {
 				errorList.addAll(validator.validateSdfFile(sdfDao,
-						file.getName()));
+						file.getName(), bdf));
 			}
 		} catch (Exception e) {
 			if (errorList != null) {
