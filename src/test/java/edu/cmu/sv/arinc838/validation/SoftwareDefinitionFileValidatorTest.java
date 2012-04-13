@@ -10,9 +10,17 @@
 package edu.cmu.sv.arinc838.validation;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +29,6 @@ import org.mockito.InOrder;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import edu.cmu.sv.arinc838.crc.Crc16Generator;
 import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao.IntegrityType;
@@ -144,7 +151,7 @@ public class SoftwareDefinitionFileValidatorTest {
 		};
 		SoftwareDefinitionFileValidator sdfVal = new SoftwareDefinitionFileValidator(
 				dataVal) {
-			
+
 			@Override
 			public List<Exception> validateFileDefinition(
 					FileDefinitionDao fileDef) {
@@ -481,6 +488,29 @@ public class SoftwareDefinitionFileValidatorTest {
 
 		};
 
+		List<Exception> errors = sdfVal
+				.validateSdfIntegrityDefinition(new IntegrityDefinitionDao());
+
+		assertEquals(errors.size(), 1);
+		assertEquals(errors.get(0).getMessage(), "0");
+	}
+
+	@Test
+	public void testValidateSdfIntegrityDefinitionCrcCheckPass() throws IOException {
+		SoftwareDefinitionFileValidator sdfVal = new SoftwareDefinitionFileValidator(
+				dataVal);
+		
+		File sdfFile = new File("src/test/resources/ACM47-1234-5678", "ACM4712345678.BDF");
+		
+		// SDF integrity the BDF file up to the CRC itself
+		byte[] data = new byte[(int)(sdfFile.length() - 16)];
+		
+		DataInputStream dis = new DataInputStream(new FileInputStream(sdfFile));
+		dis.read(data);
+		dis.close();
+		
+		
+		
 		List<Exception> errors = sdfVal
 				.validateSdfIntegrityDefinition(new IntegrityDefinitionDao());
 
