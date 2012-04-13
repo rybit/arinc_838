@@ -11,9 +11,12 @@ import com.arinc.arinc838.ThwDefinition;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.crc.Crc16Generator;
+import edu.cmu.sv.arinc838.crc.Crc32Generator;
+import edu.cmu.sv.arinc838.crc.Crc64Generator;
 import edu.cmu.sv.arinc838.crc.CrcGeneratorFactory;
 import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
+import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao.IntegrityType;
 import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 import edu.cmu.sv.arinc838.dao.SoftwareDescriptionDao;
 import edu.cmu.sv.arinc838.dao.TargetHardwareDefinitionDao;
@@ -127,8 +130,20 @@ public class SoftwareDefinitionFileBuilder implements
 		}
 
 		// calculate CRC up to this point
-		Crc16Generator generator = crcFactory.getCrc16Generator();
-		int crc = generator.calculateCrc(file.readAll());
+		long integType = softwareDefinitionFileDao.getSdfIntegrityDefinition().getIntegrityType();
+		long crc = 0;
+		
+		if (integType == IntegrityType.CRC16.getType()){
+			Crc16Generator generator = crcFactory.getCrc16Generator();
+			crc = generator.calculateCrc(file.readAll());
+		} else if(integType == IntegrityType.CRC32.getType()){
+			Crc32Generator generator = crcFactory.getCrc32Generator();
+			crc = generator.calculateCrc(file.readAll());
+		} else if(integType == IntegrityType.CRC64.getType()){
+			Crc64Generator generator = crcFactory.getCrc64Generator();
+			crc = generator.calculateCrc(file.readAll());
+		}
+
 
 		Builder<IntegrityDefinitionDao, IntegrityDefinition> integDefBuilder = builderFactory
 				.getBuilder(IntegrityDefinitionDao.class,
@@ -137,7 +152,7 @@ public class SoftwareDefinitionFileBuilder implements
 		// write the SDF integrity def
 		file.writeSdfIntegrityDefinitionPointer();
 		softwareDefinitionFileDao.getSdfIntegrityDefinition()
-				.setIntegrityValue(Converter.intToBytes(crc));
+				.setIntegrityValue(Converter.longToBytes(crc));
 		integDefBuilder.buildBinary(
 				softwareDefinitionFileDao.getSdfIntegrityDefinition(), file);
 

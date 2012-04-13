@@ -13,9 +13,9 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -35,6 +35,8 @@ import com.arinc.arinc838.ThwDefinition;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.crc.Crc16Generator;
+import edu.cmu.sv.arinc838.crc.Crc32Generator;
+import edu.cmu.sv.arinc838.crc.Crc64Generator;
 import edu.cmu.sv.arinc838.crc.CrcGeneratorFactory;
 import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
@@ -60,7 +62,7 @@ public class SoftwareDefinitionFileBuilderTest {
 	private IntegrityDefinitionBuilder integDefBuilder;
 	private CrcGeneratorFactory crcFactory;
 	private Crc16Generator crc16Generator;
-	private final int crcValue = 65535;
+	private final long crcValue = 65535;
 
 	@BeforeMethod
 	public void beforeMethod() throws Exception {
@@ -204,6 +206,10 @@ public class SoftwareDefinitionFileBuilderTest {
 				sdfIntegDao, lspIntegDao, crc16Generator);
 
 		when(file.length()).thenReturn(0L, 14L);
+		when(sdfIntegDao.getIntegrityType()).thenReturn(IntegrityType.CRC16.getType());
+		when(file.readAll()).thenReturn(new byte[] { (byte) 222,
+				(byte) 173, (byte) 190, (byte) 239 });
+		
 		int bytesWritten = swDefFileBuilder.buildBinary(sdfDao, file);
 
 		assertEquals(bytesWritten, 14L);
@@ -227,11 +233,13 @@ public class SoftwareDefinitionFileBuilderTest {
 		order.verify(fdBuilder, times(2)).buildBinary(fdDao, file);
 		order.verify(fdBuilder).buildBinary(fdDaoLast, file);
 
+		
+		
 		order.verify(crc16Generator).calculateCrc(file.readAll());
 
 		order.verify(file).writeSdfIntegrityDefinitionPointer();
 		order.verify(sdfIntegDao).setIntegrityValue(
-				Converter.intToBytes(crcValue));
+				Converter.longToBytes(crcValue));
 		order.verify(integDefBuilder).buildBinary(sdfIntegDao, file);
 
 		order.verify(file).writeLspIntegrityDefinitionPointer();
@@ -257,7 +265,33 @@ public class SoftwareDefinitionFileBuilderTest {
 	}
 	
 	@Test
-	public void testThatCorrectSdfCrcIsWrittenBasedOnType() throws Exception {
-		fail();
+	public void testThatCorrectSdfCrcIsWrittenBasedOnType32() throws Exception {
+		crcFactory = mock(CrcGeneratorFactory.class);
+		Crc32Generator crc32Generator = mock(Crc32Generator.class);
+		when(crcFactory.getCrc32Generator()).thenReturn(crc32Generator);
+		
+		
+		swDefFileBuilder = new SoftwareDefinitionFileBuilder(
+				new BuilderFactory(), crcFactory);
+		BdfFile file = new BdfFile(File.createTempFile("tmp", "bin"));
+		sdfDao.getSdfIntegrityDefinition().setIntegrityType(IntegrityType.CRC32.getType());
+		swDefFileBuilder.buildBinary(sdfDao, file);	
+		verify(crc32Generator).calculateCrc(any(byte[].class));
 	}
+	
+	@Test
+	public void testThatCorrectSdfCrcIsWrittenBasedOnType64() throws Exception {
+		crcFactory = mock(CrcGeneratorFactory.class);
+		Crc64Generator crc64Generator = mock(Crc64Generator.class);
+		when(crcFactory.getCrc64Generator()).thenReturn(crc64Generator);
+		
+		
+		swDefFileBuilder = new SoftwareDefinitionFileBuilder(
+				new BuilderFactory(), crcFactory);
+		BdfFile file = new BdfFile(File.createTempFile("tmp", "bin"));
+		sdfDao.getSdfIntegrityDefinition().setIntegrityType(IntegrityType.CRC64.getType());
+		swDefFileBuilder.buildBinary(sdfDao, file);	
+		verify(crc64Generator).calculateCrc(any(byte[].class));
+	}
+	
 }
