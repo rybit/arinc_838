@@ -2,6 +2,7 @@ package edu.cmu.sv.arinc838.ui;
 
 import edu.cmu.sv.arinc838.reader.BdfReader;
 import edu.cmu.sv.arinc838.reader.XdfReader;
+import edu.cmu.sv.arinc838.ui.item.BranchItem;
 import edu.cmu.sv.arinc838.ui.item.ExitItem;
 import edu.cmu.sv.arinc838.ui.item.MenuItem;
 import edu.cmu.sv.arinc838.ui.item.SaveItem;
@@ -15,6 +16,7 @@ public class InitialMenu implements Menu {
 		new SdfReadItem("Read in Binary File", new BdfReader()),
 		new SaveItem ("Save the file as XML", new XdfWriter ()),
 		new SaveItem ("Save the file as Binary", new BdfWriter ()),
+		new BranchItem ("Convert", new ConversionMenu ()),
 		new ExitItem()
 	};
 	
