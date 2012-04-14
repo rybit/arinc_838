@@ -1,6 +1,6 @@
 package edu.cmu.sv.arinc838.crc;
 
-public class Crc32Generator {
+public class Crc32Generator implements CrcGenerator {
 
 	final static int[] table = {
 		0x00000000, 0x04C11DB7, 0x09823B6E, 0x0D4326D9, 0x130476DC,
@@ -72,7 +72,7 @@ public class Crc32Generator {
 //		}
 //	}
 	
-	
+	@Override
 	public long calculateCrc(byte[] bytes) {
 		int crc = 0xffffffff; 
 		int k;

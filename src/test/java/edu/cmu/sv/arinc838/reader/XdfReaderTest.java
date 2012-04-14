@@ -1,5 +1,6 @@
 package edu.cmu.sv.arinc838.reader;
 
+import static org.testng.AssertJUnit.assertTrue;
 import static org.testng.Assert.assertEquals;
 
 import java.util.ArrayList;
@@ -86,5 +87,15 @@ public class XdfReaderTest {
 
 		assertEquals(errorList.size(), 5,
 				"Did not get expected number of errors");
+	}
+	
+	@Test
+	public void testSetsPath(){
+		XdfReader reader = new XdfReader();
+		ArrayList<Exception> errorList = new ArrayList<Exception>();
+		SoftwareDefinitionFileDao sdfDao = reader.read(
+				"src/test/resources/ACM4712345678.XDF", errorList);
+		
+		assertTrue(sdfDao.getPath().endsWith("resources"));
 	}
 }

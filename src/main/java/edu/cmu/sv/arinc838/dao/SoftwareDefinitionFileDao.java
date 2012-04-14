@@ -33,17 +33,20 @@ public class SoftwareDefinitionFileDao {
 	private IntegrityDefinitionDao lspIntegrityDefinition;
 	private IntegrityDefinitionDao sdfIntegrityDefinition;
 	private byte[] fileFormatVersion = DEFAULT_FILE_FORMAT_VERSION;
+	private String path;
 
 	public SoftwareDefinitionFileDao() {
 		;
 	}
 
-	public SoftwareDefinitionFileDao(SdfFile swDefFile) {
+	public SoftwareDefinitionFileDao(SdfFile swDefFile, String path) {
 		this.initialize(swDefFile);
+		this.path = path;
 	}
 
-	public SoftwareDefinitionFileDao(BdfFile bdfFile) throws IOException {
+	public SoftwareDefinitionFileDao(BdfFile bdfFile, String path) throws IOException {
 		this.initialize(bdfFile);
+		this.path = path;
 	}
 
 	public void initialize(SdfFile swDefFile) {
@@ -114,6 +117,14 @@ public class SoftwareDefinitionFileDao {
 
 		file.seek(file.readLspIntegrityDefinitionPointer());
 		this.setLspIntegrityDefinition(new IntegrityDefinitionDao(file));
+	}
+	
+	public String getPath(){
+		return path;
+	}
+	
+	public void setPath(String value){
+		path = value;
 	}
 
 	public byte[] getFileFormatVersion() {

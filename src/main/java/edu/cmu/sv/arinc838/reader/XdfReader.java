@@ -30,7 +30,8 @@ public class XdfReader implements SdfReader {
 	}
 
 	@Override
-	public SoftwareDefinitionFileDao read(String filename, List<Exception> errorList) {
+	public SoftwareDefinitionFileDao read(String filename,
+			List<Exception> errorList) {
 		File file = new File(filename);
 
 		SoftwareDefinitionFileDao sdfDao = null;
@@ -38,11 +39,13 @@ public class XdfReader implements SdfReader {
 			JAXBContext jaxbContext = JAXBContext.newInstance(SdfFile.class);
 			Unmarshaller jaxbMarshaller = jaxbContext.createUnmarshaller();
 			SdfFile jaxbFile = (SdfFile) jaxbMarshaller.unmarshal(file);
-			
-			sdfDao = new SoftwareDefinitionFileDao(jaxbFile);
+
+			sdfDao = new SoftwareDefinitionFileDao(jaxbFile, file
+					.getParentFile().getAbsolutePath());
 			if (errorList != null) {
 				errorList.addAll(validator.validateXmlFileHeader(file));
-				errorList.addAll(validator.validateSdfFile(sdfDao, file.getName()));
+				errorList.addAll(validator.validateSdfFile(sdfDao,
+						file.getName()));
 			}
 		} catch (Exception e) {
 			if (errorList != null) {

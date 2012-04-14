@@ -10,10 +10,11 @@ import com.arinc.arinc838.SoftwareDescription;
 import com.arinc.arinc838.ThwDefinition;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
-import edu.cmu.sv.arinc838.crc.Crc16Generator;
 import edu.cmu.sv.arinc838.crc.Crc32Generator;
 import edu.cmu.sv.arinc838.crc.Crc64Generator;
+import edu.cmu.sv.arinc838.crc.CrcGenerator;
 import edu.cmu.sv.arinc838.crc.CrcGeneratorFactory;
+import edu.cmu.sv.arinc838.crc.LspCrcCalculator;
 import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao.IntegrityType;
@@ -27,11 +28,13 @@ public class SoftwareDefinitionFileBuilder implements
 
 	private final BuilderFactory builderFactory;
 	private final CrcGeneratorFactory crcFactory;
+	private final LspCrcCalculator lspCrcCalculator;
 
 	public SoftwareDefinitionFileBuilder(BuilderFactory builderFact,
-			CrcGeneratorFactory crcFactory) {
+			CrcGeneratorFactory crcFactory, LspCrcCalculator lspCrc) {
 		this.builderFactory = builderFact;
 		this.crcFactory = crcFactory;
+		this.lspCrcCalculator = lspCrc;
 	}
 
 	@Override
@@ -134,7 +137,7 @@ public class SoftwareDefinitionFileBuilder implements
 		long crc = 0;
 		
 		if (integType == IntegrityType.CRC16.getType()){
-			Crc16Generator generator = crcFactory.getCrc16Generator();
+			CrcGenerator generator = crcFactory.getCrc16Generator();
 			crc = generator.calculateCrc(file.readAll());
 		} else if(integType == IntegrityType.CRC32.getType()){
 			Crc32Generator generator = crcFactory.getCrc32Generator();
@@ -157,9 +160,10 @@ public class SoftwareDefinitionFileBuilder implements
 				softwareDefinitionFileDao.getSdfIntegrityDefinition(), file);
 
 		// write the LSP integrity def
+		long lspCrc = lspCrcCalculator.calculateCrc(file, softwareDefinitionFileDao);
 		file.writeLspIntegrityDefinitionPointer();
 		softwareDefinitionFileDao.getLspIntegrityDefinition()
-				.setIntegrityValue(Converter.hexToBytes("FFFF"));
+				.setIntegrityValue(Converter.longToBytes(lspCrc));
 		integDefBuilder.buildBinary(
 				softwareDefinitionFileDao.getLspIntegrityDefinition(), file);
 

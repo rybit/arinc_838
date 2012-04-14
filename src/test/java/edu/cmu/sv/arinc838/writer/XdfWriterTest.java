@@ -51,7 +51,7 @@ public class XdfWriterTest {
 	public void testGetFileName() throws Exception {
 		SdfFile file = getTestFile();
 
-		SoftwareDefinitionFileDao sdfDao = new SoftwareDefinitionFileDao(file);
+		SoftwareDefinitionFileDao sdfDao = new SoftwareDefinitionFileDao(file, "");
 		XdfWriter writer = new XdfWriter();
 		String fileName = writer.getFilename(sdfDao);
 		assertEquals(fileName, sdfDao.getXmlFileName());
@@ -134,7 +134,7 @@ public class XdfWriterTest {
 
 	@Test
 	public void testBuildsCorrectFileName() throws Exception {
-		SoftwareDefinitionFileDao builder = new SoftwareDefinitionFileDao(getTestFile());
+		SoftwareDefinitionFileDao builder = new SoftwareDefinitionFileDao(getTestFile(), "");
 
 		XdfWriter writer = new XdfWriter();
 

@@ -1,6 +1,6 @@
 package edu.cmu.sv.arinc838.crc;
 
-public class Crc64Generator {
+public class Crc64Generator implements CrcGenerator {
 	
 	final static int[] tableHigh = { 0x00000000, 0x42F0E1EB, 0x85E1C3D7,
 			0xC711223C, 0x49336645, 0x0BC387AE, 0xCCD2A592, 0x8E224479,
@@ -108,6 +108,7 @@ public class Crc64Generator {
 			0x3AF9026D, 0x931334FE, 0x692D6F4B, 0xC0C759D8, 0x34BBEEB2,
 			0x9D51D821, 0x676F8394, 0xCE85B507 };
 	
+	@Override
 	public long calculateCrc(byte[] buffer) {
 		long low = 0xFFFFFFFFl, high = 0xFFFFFFFFl;
 		int index; // Index into table

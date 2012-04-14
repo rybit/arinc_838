@@ -20,13 +20,17 @@ import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import edu.cmu.sv.arinc838.builder.BuilderFactory;
 import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
 import edu.cmu.sv.arinc838.crc.CrcGeneratorFactory;
+import edu.cmu.sv.arinc838.crc.LspCrcCalculator;
 import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 
 public class XdfWriter implements SdfWriter {
 	@Override
-	public void write(String path, SoftwareDefinitionFileDao sdfDao) throws Exception {
+	public void write(String path, SoftwareDefinitionFileDao sdfDao)
+			throws Exception {
 		File file = new File(path + sdfDao.getXmlFileName());
-		SoftwareDefinitionFileBuilder builder = new SoftwareDefinitionFileBuilder(new BuilderFactory(), new CrcGeneratorFactory());
+		SoftwareDefinitionFileBuilder builder = new SoftwareDefinitionFileBuilder(
+				new BuilderFactory(), new CrcGeneratorFactory(),
+				new LspCrcCalculator());
 
 		SdfFile sdfFile = builder.buildXml(sdfDao);
 		write(file, sdfFile);
@@ -37,7 +41,8 @@ public class XdfWriter implements SdfWriter {
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 
 		NamespacePrefixMapper mapper = new NamespacePrefixMapper() {
-			public String getPreferredPrefix(String namespaceUri, String suggestion, boolean requirePrefix) {
+			public String getPreferredPrefix(String namespaceUri,
+					String suggestion, boolean requirePrefix) {
 				if (namespaceUri.contains("arinc.com")) {
 					return "sdf";
 				} else {
@@ -46,7 +51,8 @@ public class XdfWriter implements SdfWriter {
 			}
 		};
 
-		jaxbMarshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", mapper);
+		jaxbMarshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",
+				mapper);
 		// output pretty printed
 		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 		jaxbMarshaller.marshal(sdfFile, file);

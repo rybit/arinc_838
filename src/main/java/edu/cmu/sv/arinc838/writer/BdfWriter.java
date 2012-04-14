@@ -15,24 +15,28 @@ import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.builder.BuilderFactory;
 import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
 import edu.cmu.sv.arinc838.crc.CrcGeneratorFactory;
+import edu.cmu.sv.arinc838.crc.LspCrcCalculator;
 import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 
 public class BdfWriter implements SdfWriter {
 	@Override
-
-	public void write(String path, SoftwareDefinitionFileDao sdfDao) throws Exception {
+	public void write(String path, SoftwareDefinitionFileDao sdfDao)
+			throws Exception {
 		File fileOnDisk = new File(path + sdfDao.getBinaryFileName());
 		BdfFile file = new BdfFile(fileOnDisk);
-		//This file must be empty
+		// This file must be empty
 		file.setLength(0);
-		SoftwareDefinitionFileBuilder builder = new SoftwareDefinitionFileBuilder(new BuilderFactory(), new CrcGeneratorFactory());
-		write (file, builder, sdfDao);
-		
+		SoftwareDefinitionFileBuilder builder = new SoftwareDefinitionFileBuilder(
+				new BuilderFactory(), new CrcGeneratorFactory(),
+				new LspCrcCalculator());
+		write(file, builder, sdfDao);
+
 	}
 
-	public void write (BdfFile file, SoftwareDefinitionFileBuilder builder, SoftwareDefinitionFileDao sdfDao) throws Exception {
+	public void write(BdfFile file, SoftwareDefinitionFileBuilder builder,
+			SoftwareDefinitionFileDao sdfDao) throws Exception {
 		builder.buildBinary(sdfDao, file);
-		file.close ();
+		file.close();
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package edu.cmu.sv.arinc838.reader;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
 
 import java.util.ArrayList;
 
@@ -86,5 +87,15 @@ public class BdfReaderTest {
 
 		assertEquals(errorList.size(), 2,
 				"Did not get expected number of errors");
+	}
+	
+	@Test
+	public void testSetsPath(){
+		BdfReader reader = new BdfReader();
+		ArrayList<Exception> errorList = new ArrayList<Exception>();
+		SoftwareDefinitionFileDao sdfDao = reader.read(
+				"src/test/resources/ACM4712345678.BDF", errorList);
+		
+		assertTrue(sdfDao.getPath().endsWith("resources"));
 	}
 }

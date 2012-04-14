@@ -33,7 +33,8 @@ public class BdfReader implements SdfReader {
 		try {
 			File file = new File(filename);
 			bdf = new BdfFile(file);
-			sdfDao = new SoftwareDefinitionFileDao(bdf);
+			sdfDao = new SoftwareDefinitionFileDao(bdf, file.getParentFile()
+					.getAbsolutePath());
 			if (errorList != null) {
 				errorList.addAll(validator.validateSdfFile(sdfDao,
 						file.getName()));

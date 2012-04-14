@@ -33,6 +33,7 @@ import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.builder.BuilderFactory;
 import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
 import edu.cmu.sv.arinc838.crc.CrcGeneratorFactory;
+import edu.cmu.sv.arinc838.crc.LspCrcCalculator;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao.IntegrityType;
 import edu.cmu.sv.arinc838.util.Converter;
 import edu.cmu.sv.arinc838.validation.ReferenceData;
@@ -49,6 +50,7 @@ public class SoftwareDefinitionFileDaoTest {
 	private SoftwareDefinitionFileDao swDefFileDao;
 	private SoftwareDefinitionFileDao readBinaryFile;
 	private BdfFile binaryFile;
+	private final String path = "c:\\temp\\"; 
 
 	@BeforeMethod
 	public void beforeMethod() throws Exception {
@@ -88,12 +90,12 @@ public class SoftwareDefinitionFileDaoTest {
 		swDefFile.getThwDefinitions().add(hardwareDef);
 
 		swDefFileDao = new SoftwareDefinitionFileDao(
-				swDefFile);
+				swDefFile, path);
 		binaryFile = new BdfFile(File.createTempFile("tmp", "bin"));
 		SoftwareDefinitionFileBuilder swDefFileBuilder = new SoftwareDefinitionFileBuilder(
-				new BuilderFactory(), new CrcGeneratorFactory());
+				new BuilderFactory(), new CrcGeneratorFactory(), new LspCrcCalculator());
 		swDefFileBuilder.buildBinary(swDefFileDao, binaryFile);
-		readBinaryFile = new SoftwareDefinitionFileDao(binaryFile);
+		readBinaryFile = new SoftwareDefinitionFileDao(binaryFile, path);
 	}
 
 	@Test
@@ -164,7 +166,7 @@ public class SoftwareDefinitionFileDaoTest {
 
 	@Test
 	public void testXmlConstructor() {
-		swDefFileDao = new SoftwareDefinitionFileDao(swDefFile);
+		swDefFileDao = new SoftwareDefinitionFileDao(swDefFile, path);
 
 		assertEquals(swDefFileDao.getSoftwareDescription(),
 				new SoftwareDescriptionDao(swDefFile.getSoftwareDescription()));
@@ -218,6 +220,19 @@ public class SoftwareDefinitionFileDaoTest {
 		assertEquals(description.getSoftwarePartnumber(), swDefFile
 				.getSoftwareDescription().getSoftwarePartnumber());
 	}
+	
+	@Test
+	public void getPath(){
+		assertEquals(swDefFileDao.getPath(), path);
+	}
+	
+	@Test
+	public void setPath(){
+		String myPath = "my path";
+		swDefFileDao.setPath(myPath);
+		
+		assertEquals(swDefFileDao.getPath(), myPath);
+	}
 
 	@Test
 	public void testHasBinaryFileName() {
@@ -251,15 +266,15 @@ public class SoftwareDefinitionFileDaoTest {
 	@Test
 	public void testEquals() {
 		SoftwareDefinitionFileDao copy = new SoftwareDefinitionFileDao(
-				swDefFile);
-		swDefFileDao = new SoftwareDefinitionFileDao(swDefFile);
+				swDefFile, path);
+		swDefFileDao = new SoftwareDefinitionFileDao(swDefFile, path);
 
 		assertEquals(swDefFileDao, copy);
 	}
 
 	@Test
 	public void testHashcode() {
-		swDefFileDao = new SoftwareDefinitionFileDao(swDefFile);
+		swDefFileDao = new SoftwareDefinitionFileDao(swDefFile, path);
 		assertEquals(swDefFileDao.hashCode(), swDefFileDao.getXmlFileName()
 				.hashCode());
 	}
@@ -345,7 +360,7 @@ public class SoftwareDefinitionFileDaoTest {
 		File firstOnDisk = new File(path + writer.getFilename(swDefFileDao));
 
 		BdfFile file = new BdfFile(firstOnDisk);
-		SoftwareDefinitionFileDao actual = new SoftwareDefinitionFileDao(file);
+		SoftwareDefinitionFileDao actual = new SoftwareDefinitionFileDao(file, path);
 
 		RandomAccessFile first = new RandomAccessFile(firstOnDisk, "r");
 		byte[] firstBytes = new byte[(int) first.length()];

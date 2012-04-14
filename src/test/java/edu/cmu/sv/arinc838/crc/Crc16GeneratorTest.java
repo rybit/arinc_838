@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 public class Crc16GeneratorTest {
 	@Test
 	public void calculateCrcTest() throws Exception {
-		Crc16Generator generator = new Crc16Generator();
+		CrcGenerator generator = new Crc16Generator();
 
 		Map<BigInteger, byte[]> expectedCrcs = CrcGeneratorTestCommon
 				.getExpectedCrcs("crc16");
