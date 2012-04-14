@@ -9,11 +9,9 @@
  */
 package edu.cmu.sv.arinc838.validation;
 
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,12 +19,14 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
+import edu.cmu.sv.arinc838.crc.CrcGenerator;
 import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao.IntegrityType;
 import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 import edu.cmu.sv.arinc838.dao.SoftwareDescriptionDao;
 import edu.cmu.sv.arinc838.dao.TargetHardwareDefinitionDao;
+import edu.cmu.sv.arinc838.util.Converter;
 
 public class SoftwareDefinitionFileValidator {
 
@@ -97,10 +97,8 @@ public class SoftwareDefinitionFileValidator {
 		errors.addAll(validateTargetHardwareDefinitions(
 				sdfDao.getTargetHardwareDefinitions(), sourceFile));
 		errors.addAll(validateFileDefinitions(sdfDao.getFileDefinitions()));
-		errors.addAll(validateSdfIntegrityDefinition(
-				sdfDao.getSdfIntegrityDefinition(), bdfFile));
-		errors.addAll(validateLspIntegrityDefinition(sdfDao
-				.getLspIntegrityDefinition()));
+		errors.addAll(validateSdfIntegrityDefinition(sdfDao, bdfFile));
+		errors.addAll(validateLspIntegrityDefinition(sdfDao, bdfFile));
 
 		return errors;
 	}
@@ -184,30 +182,35 @@ public class SoftwareDefinitionFileValidator {
 	}
 
 	public List<Exception> validateSdfIntegrityDefinition(
-			IntegrityDefinitionDao sdfInteg, BdfFile bdfFile) {
+			SoftwareDefinitionFileDao sdf, BdfFile bdf) {
+		List<Exception> errors = new ArrayList<Exception>();
 
-		byte[] data = null;
-		if (bdfFile != null) {
-			try {
-				int bytesToRead = (int) (bdfFile
-						.readSdfIntegrityDefinitionPointer() + 6);
-				data = new byte[bytesToRead];
+		errors.addAll(validateIntegrityDefStructure(sdf
+				.getSdfIntegrityDefinition()));
 
-				bdfFile.seek(0);
-				bdfFile.read(data);
-			} catch (IOException e) {
-				List<Exception> errors = new ArrayList<Exception>();
-				errors.add(e);
-				return errors;
-			}
+		try {
+			CrcValidator.validateSdfCrc(sdf, bdf);
+		} catch (Exception e) {
+			errors.add(e);
 		}
 
-		return validateIntegrityDefinition(sdfInteg, data);
+		return errors;
 	}
 
 	public List<Exception> validateLspIntegrityDefinition(
-			IntegrityDefinitionDao lspInteg) {
-		return validateIntegrityDefinition(lspInteg, (byte[]) null);
+			SoftwareDefinitionFileDao sdf, BdfFile bdf) {
+		List<Exception> errors = new ArrayList<Exception>();
+
+		errors.addAll(validateIntegrityDefStructure(sdf
+				.getLspIntegrityDefinition()));
+
+		try {
+			CrcValidator.validateLspCrc(sdf, bdf);
+		} catch (Exception e) {
+			errors.add(e);
+		}
+
+		return errors;
 	}
 
 	public List<Exception> validateFileDefinition(FileDefinitionDao fileDef) {
@@ -221,18 +224,17 @@ public class SoftwareDefinitionFileValidator {
 			errors.add(e);
 		}
 
+		byte[] data = null;
+
 		// TODO we need to handle paths correctly since all we have is the file
 		// name
-		byte[] data = new byte[(int) fileDef.getFileSize()];
-
 		try {
-			DataInputStream dis = new DataInputStream(new FileInputStream(
-					new File(fileDef.getFileName())));
-			dis.read(data);
-			dis.close();
+			data = CrcGenerator.readFile(new File(fileDef.getFileName()));
+
 		} catch (IOException e) {
 			errors.add(e);
-			data = null; // don't validate CRC if there was an error reading the file
+			data = null; // don't validate CRC if there was an error reading the
+							// file
 		}
 
 		errors.addAll(validateIntegrityDefinition(
@@ -245,32 +247,21 @@ public class SoftwareDefinitionFileValidator {
 			IntegrityDefinitionDao integDef, byte[] data) {
 		List<Exception> errors = new ArrayList<Exception>();
 
-		try {
-			dataVal.validateIntegrityType(integDef.getIntegrityType());
-		} catch (IllegalArgumentException e) {
-			errors.add(e);
-		}
-
-		try {
-			dataVal.validateIntegrityValue(integDef.getIntegrityValue());
-		} catch (IllegalArgumentException e) {
-			errors.add(e);
-		}
+		errors.addAll(validateIntegrityDefStructure(integDef));
 
 		if (data != null) {
 			try {
 				IntegrityType type = IntegrityType.fromLong(integDef
 						.getIntegrityType());
 
-				long value = new BigInteger(integDef.getIntegrityValue())
-						.longValue();
+				long value = Converter.checksumBytesToLong(integDef);
 
 				switch (type) {
 				case CRC16:
-					CrcValidator.validateCrc16((int) value & 0xFFFF, data);
+					CrcValidator.validateCrc16((int) value, data);
 					break;
 				case CRC32:
-					CrcValidator.validateCrc32(value & 0xFFFFFFFF, data);
+					CrcValidator.validateCrc32(value, data);
 					break;
 				case CRC64:
 					CrcValidator.validateCrc64(value, data);
@@ -285,6 +276,25 @@ public class SoftwareDefinitionFileValidator {
 			} catch (Exception e) {
 				errors.add(e);
 			}
+		}
+
+		return errors;
+	}
+
+	protected List<Exception> validateIntegrityDefStructure(
+			IntegrityDefinitionDao integDef) {
+		List<Exception> errors = new ArrayList<Exception>();
+
+		try {
+			dataVal.validateIntegrityType(integDef.getIntegrityType());
+		} catch (IllegalArgumentException e) {
+			errors.add(e);
+		}
+
+		try {
+			dataVal.validateIntegrityValue(integDef.getIntegrityValue());
+		} catch (IllegalArgumentException e) {
+			errors.add(e);
 		}
 
 		return errors;

@@ -74,7 +74,7 @@ public class ReferenceData {
 		
 		IntegrityDefinitionDao sdfInteg = new IntegrityDefinitionDao();
 		sdfInteg.setIntegrityType((long)3);
-		sdfInteg.setIntegrityValue(Converter.hexToBytes("0000000A"));
+		sdfInteg.setIntegrityValue(Converter.hexToBytes("42f4237f"));
 		SDF_TEST_FILE.setSdfIntegrityDefinition(sdfInteg);
 		
 		IntegrityDefinitionDao lspInteg = new IntegrityDefinitionDao();

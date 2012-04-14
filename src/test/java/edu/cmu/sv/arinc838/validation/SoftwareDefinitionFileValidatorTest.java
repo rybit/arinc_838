@@ -16,9 +16,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,7 +27,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
-import edu.cmu.sv.arinc838.crc.Crc32Generator;
+import edu.cmu.sv.arinc838.crc.CrcGenerator;
 import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao.IntegrityType;
@@ -47,7 +45,8 @@ public class SoftwareDefinitionFileValidatorTest {
 	@BeforeMethod
 	public void setUp() throws IOException {
 		dataVal = mock(DataValidator.class);
-		sdfFile = new File("src/test/resources/ACM47-1234-5678", "ACM4712345678.BDF");
+		sdfFile = new File("src/test/resources/ACM47-1234-5678",
+				"ACM4712345678.BDF");
 		bdfFile = new BdfFile(sdfFile);
 	}
 
@@ -105,10 +104,10 @@ public class SoftwareDefinitionFileValidatorTest {
 
 			@Override
 			public List<Exception> validateSdfIntegrityDefinition(
-					IntegrityDefinitionDao sdfInteg, BdfFile bdfFile) {
-				sdfInteg.getIntegrityType();
+					SoftwareDefinitionFileDao sdf, BdfFile bdf) {
+				sdf.getSdfIntegrityDefinition();
 				try {
-					bdfFile.getFilePointer();
+					bdf.getFilePointer();
 				} catch (IOException e) {
 				}
 				return errorList("4");
@@ -116,8 +115,12 @@ public class SoftwareDefinitionFileValidatorTest {
 
 			@Override
 			public List<Exception> validateLspIntegrityDefinition(
-					IntegrityDefinitionDao lspInteg) {
-				lspInteg.getIntegrityType();
+					SoftwareDefinitionFileDao sdf, BdfFile bdf) {
+				sdf.getLspIntegrityDefinition();
+				try {
+					bdf.getFilePointer();
+				} catch (IOException e) {
+				}
 				return errorList("5");
 			}
 		};
@@ -131,9 +134,8 @@ public class SoftwareDefinitionFileValidatorTest {
 		verify(sdfDao.getSoftwareDescription()).getSoftwarePartnumber();
 		verify(sdfDao.getTargetHardwareDefinitions()).isEmpty();
 		verify(sdfDao.getFileDefinitions()).isEmpty();
-		verify(sdfDao.getSdfIntegrityDefinition()).getIntegrityType();
-		verify(bdfFile).getFilePointer();
-		verify(sdfDao.getLspIntegrityDefinition()).getIntegrityType();
+		verify(sdfDao).getSdfIntegrityDefinition();
+		verify(sdfDao).getLspIntegrityDefinition();
 		verify(dataVal)
 				.validateFileFormatVersion(sdfDao.getFileFormatVersion());
 	}
@@ -177,7 +179,7 @@ public class SoftwareDefinitionFileValidatorTest {
 
 			@Override
 			public List<Exception> validateSdfIntegrityDefinition(
-					IntegrityDefinitionDao sdfInteg, BdfFile bdfFile) {
+					SoftwareDefinitionFileDao sdf, BdfFile bdfFile) {
 				return new ArrayList<Exception>();
 			}
 		};
@@ -188,7 +190,8 @@ public class SoftwareDefinitionFileValidatorTest {
 		for (Exception e : errors) {
 			assertEquals(e.getMessage(), "xml");
 		}
-		errors = sdfVal.validateSdfFile(sdfDao, sdfDao.getBinaryFileName(), bdfFile);
+		errors = sdfVal.validateSdfFile(sdfDao, sdfDao.getBinaryFileName(),
+				bdfFile);
 		assertEquals(errors.size(), 3);
 		for (Exception e : errors) {
 			assertEquals(e.getMessage(), "binary");
@@ -498,41 +501,32 @@ public class SoftwareDefinitionFileValidatorTest {
 				dataVal) {
 
 			@Override
-			public List<Exception> validateIntegrityDefinition(
-					IntegrityDefinitionDao integDef, byte[] data) {
+			protected List<Exception> validateIntegrityDefStructure(
+					IntegrityDefinitionDao integDef) {
 				return errorList("0");
 			}
 
 		};
 
-		List<Exception> errors = sdfVal
-				.validateSdfIntegrityDefinition(new IntegrityDefinitionDao(), bdfFile);
+		SoftwareDefinitionFileDao sdf = mock(SoftwareDefinitionFileDao.class);
+		when(sdf.getSdfIntegrityDefinition()).thenReturn(
+				ReferenceData.SDF_TEST_FILE.getSdfIntegrityDefinition());
+
+		List<Exception> errors = sdfVal.validateSdfIntegrityDefinition(sdf,
+				bdfFile);
 
 		assertEquals(errors.size(), 1);
 		assertEquals(errors.get(0).getMessage(), "0");
 	}
 
 	@Test
-	public void testValidateSdfIntegrityDefinitionCrcCheckPass() throws IOException {
+	public void testValidateSdfIntegrityDefinitionCrcCheckPass()
+			throws IOException {
 		SoftwareDefinitionFileValidator sdfVal = new SoftwareDefinitionFileValidator(
 				dataVal);
-				
-		// SDF integrity the BDF file up to the CRC itself
-		byte[] data = new byte[(int)(sdfFile.length() - 14)];
-		
-		DataInputStream dis = new DataInputStream(new FileInputStream(sdfFile));
-		dis.read(data);
-		dis.close();
-		
-		
-		
-		IntegrityDefinitionDao sdfInteg = new IntegrityDefinitionDao();
-		sdfInteg.setIntegrityType(IntegrityType.CRC32.getType());
-		long crc = Crc32Generator.calculateCrc(data);
-		String hexCrc = Long.toHexString(crc);
-		sdfInteg.setIntegrityValue(Converter.hexToBytes(hexCrc));
-		List<Exception> errors = sdfVal
-				.validateSdfIntegrityDefinition(sdfInteg, bdfFile);
+
+		List<Exception> errors = sdfVal.validateSdfIntegrityDefinition(
+				ReferenceData.SDF_TEST_FILE, bdfFile);
 
 		assertEquals(errors.size(), 0);
 	}
@@ -543,18 +537,39 @@ public class SoftwareDefinitionFileValidatorTest {
 				dataVal) {
 
 			@Override
-			public List<Exception> validateIntegrityDefinition(
-					IntegrityDefinitionDao integDef, byte[] data) {
+			protected List<Exception> validateIntegrityDefStructure(
+					IntegrityDefinitionDao integDef) {
 				return errorList("0");
 			}
 
 		};
 
-		List<Exception> errors = sdfVal
-				.validateLspIntegrityDefinition(new IntegrityDefinitionDao());
+		SoftwareDefinitionFileDao sdf = mock(SoftwareDefinitionFileDao.class);
+		when(sdf.getLspIntegrityDefinition()).thenReturn(
+				ReferenceData.SDF_TEST_FILE.getLspIntegrityDefinition());
+
+		List<Exception> errors = sdfVal.validateLspIntegrityDefinition(sdf,
+				bdfFile);
 
 		assertEquals(errors.size(), 1);
 		assertEquals(errors.get(0).getMessage(), "0");
+	}
+
+	@Test
+	public void testValidateLspIntegrityDefinitionCrcCheckPass()
+			throws IOException {
+		SoftwareDefinitionFileValidator sdfVal = new SoftwareDefinitionFileValidator(
+				dataVal);
+
+		long crc = CrcGenerator.calculateLspCrc(ReferenceData.SDF_TEST_FILE,
+				bdfFile);
+
+		System.out.println(Long.toHexString(crc));
+
+		List<Exception> errors = sdfVal.validateLspIntegrityDefinition(
+				ReferenceData.SDF_TEST_FILE, bdfFile);
+
+		assertEquals(errors.size(), 0);
 	}
 
 }
