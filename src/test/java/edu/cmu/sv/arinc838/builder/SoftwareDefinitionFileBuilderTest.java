@@ -37,6 +37,7 @@ import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.crc.Crc16Generator;
 import edu.cmu.sv.arinc838.crc.Crc32Generator;
 import edu.cmu.sv.arinc838.crc.Crc64Generator;
+import edu.cmu.sv.arinc838.crc.CrcGenerator;
 import edu.cmu.sv.arinc838.crc.CrcGeneratorFactory;
 import edu.cmu.sv.arinc838.crc.LspCrcCalculator;
 import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
@@ -76,7 +77,7 @@ public class SoftwareDefinitionFileBuilderTest {
 		lspCalc = mock(LspCrcCalculator.class);
 		when(
 				lspCalc.calculateCrc(any(BdfFile.class),
-						any(SoftwareDefinitionFileDao.class))).thenReturn(
+						any(SoftwareDefinitionFileDao.class), any(CrcGenerator.class))).thenReturn(
 				lspCrcValue);
 
 		bFactory = mock(BuilderFactory.class);
@@ -251,7 +252,7 @@ public class SoftwareDefinitionFileBuilderTest {
 				Converter.longToBytes(sdfCrcValue));
 		order.verify(integDefBuilder).buildBinary(sdfIntegDao, file);
 
-		order.verify(lspCalc).calculateCrc(file, sdfDao);
+		order.verify(lspCalc).calculateCrc(file, sdfDao,crc16Generator);
 
 		order.verify(file).writeLspIntegrityDefinitionPointer();
 		order.verify(lspIntegDao).setIntegrityValue(
@@ -303,4 +304,7 @@ public class SoftwareDefinitionFileBuilderTest {
 		swDefFileBuilder.buildBinary(sdfDao, file);
 		verify(crc64Generator).calculateCrc(any(byte[].class));
 	}
+	
+	//TODO: Add tests for the correct LSPCalculator  
+	
 }

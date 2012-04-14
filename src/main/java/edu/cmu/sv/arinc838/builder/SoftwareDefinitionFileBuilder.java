@@ -134,19 +134,21 @@ public class SoftwareDefinitionFileBuilder implements
 
 		// calculate CRC up to this point
 		long integType = softwareDefinitionFileDao.getSdfIntegrityDefinition().getIntegrityType();
-		long crc = 0;
+		CrcGenerator generator;
+		
 		
 		if (integType == IntegrityType.CRC16.getType()){
-			CrcGenerator generator = crcFactory.getCrc16Generator();
-			crc = generator.calculateCrc(file.readAll());
+			generator = crcFactory.getCrc16Generator();
+			
 		} else if(integType == IntegrityType.CRC32.getType()){
-			Crc32Generator generator = crcFactory.getCrc32Generator();
-			crc = generator.calculateCrc(file.readAll());
+			generator = crcFactory.getCrc32Generator();
 		} else if(integType == IntegrityType.CRC64.getType()){
-			Crc64Generator generator = crcFactory.getCrc64Generator();
-			crc = generator.calculateCrc(file.readAll());
+			generator = crcFactory.getCrc64Generator();
+		}else {
+			throw new IllegalArgumentException();
 		}
 
+		long crc = generator.calculateCrc(file.readAll());
 
 		Builder<IntegrityDefinitionDao, IntegrityDefinition> integDefBuilder = builderFactory
 				.getBuilder(IntegrityDefinitionDao.class,
@@ -160,7 +162,7 @@ public class SoftwareDefinitionFileBuilder implements
 				softwareDefinitionFileDao.getSdfIntegrityDefinition(), file);
 
 		// write the LSP integrity def
-		long lspCrc = lspCrcCalculator.calculateCrc(file, softwareDefinitionFileDao);
+		long lspCrc = lspCrcCalculator.calculateCrc(file, softwareDefinitionFileDao, generator);
 		file.writeLspIntegrityDefinitionPointer();
 		softwareDefinitionFileDao.getLspIntegrityDefinition()
 				.setIntegrityValue(Converter.longToBytes(lspCrc));
