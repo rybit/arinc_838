@@ -32,7 +32,7 @@ public class ReferenceData {
 
 	static {
 		SDF_TEST_FILE.setFileFormatVersion(SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION);
-		
+		SDF_TEST_FILE.setPath("src/test/resources/ACM47-1234-5678");
 		SoftwareDescriptionDao desc = new SoftwareDescriptionDao();
 		desc.setSoftwarePartnumber(SOFTWARE_PART_NUMBER_REFERENCE);
 		desc.setSoftwareTypeDescription("STD");
@@ -74,12 +74,12 @@ public class ReferenceData {
 		
 		IntegrityDefinitionDao sdfInteg = new IntegrityDefinitionDao();
 		sdfInteg.setIntegrityType((long)3);
-		sdfInteg.setIntegrityValue(Converter.hexToBytes("0000000A"));
+		sdfInteg.setIntegrityValue(Converter.hexToBytes("42f4237f"));
 		SDF_TEST_FILE.setSdfIntegrityDefinition(sdfInteg);
 		
 		IntegrityDefinitionDao lspInteg = new IntegrityDefinitionDao();
 		lspInteg.setIntegrityType((long)3);
-		lspInteg.setIntegrityValue(Converter.hexToBytes("0000000A"));		
+		lspInteg.setIntegrityValue(Converter.hexToBytes("b0ed0636"));		
 		SDF_TEST_FILE.setLspIntegrityDefinition(lspInteg);
 	}
 }

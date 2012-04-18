@@ -37,9 +37,7 @@ import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.crc.Crc16Generator;
 import edu.cmu.sv.arinc838.crc.Crc32Generator;
 import edu.cmu.sv.arinc838.crc.Crc64Generator;
-import edu.cmu.sv.arinc838.crc.CrcGenerator;
 import edu.cmu.sv.arinc838.crc.CrcGeneratorFactory;
-import edu.cmu.sv.arinc838.crc.LspCrcCalculator;
 import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao.IntegrityType;
@@ -64,7 +62,6 @@ public class SoftwareDefinitionFileBuilderTest {
 	private IntegrityDefinitionBuilder integDefBuilder;
 	private CrcGeneratorFactory crcFactory;
 	private Crc16Generator crc16Generator;
-	private LspCrcCalculator lspCalc;
 	private final long sdfCrcValue = 65535;
 	private final long lspCrcValue = 12345;
 
@@ -74,11 +71,6 @@ public class SoftwareDefinitionFileBuilderTest {
 		crc16Generator = mock(Crc16Generator.class);
 		when(crcFactory.getCrc16Generator()).thenReturn(crc16Generator);
 
-		lspCalc = mock(LspCrcCalculator.class);
-		when(
-				lspCalc.calculateCrc(any(BdfFile.class),
-						any(SoftwareDefinitionFileDao.class), any(CrcGenerator.class))).thenReturn(
-				lspCrcValue);
 
 		bFactory = mock(BuilderFactory.class);
 		swDescBuilder = mock(SoftwareDescriptionBuilder.class);
@@ -87,8 +79,7 @@ public class SoftwareDefinitionFileBuilderTest {
 				bFactory.getBuilder(SoftwareDescriptionDao.class,
 						SoftwareDescription.class)).thenReturn(swDescBuilder);
 
-		swDefFileBuilder = new SoftwareDefinitionFileBuilder(bFactory,
-				crcFactory, lspCalc);
+		swDefFileBuilder = new SoftwareDefinitionFileBuilder(bFactory);
 
 		thdBuilder = mock(TargetHardwareDefinitionBuilder.class);
 		when(
@@ -118,7 +109,10 @@ public class SoftwareDefinitionFileBuilderTest {
 		description.setSoftwareTypeId(Converter.hexToBytes("FFFF"));
 
 		fileDef = new com.arinc.arinc838.FileDefinition();
-		fileDef.setFileName("file");
+		// we have to create a temp file for this, otherwise we'll get a FileNotFoundException during the 
+		// LSP CRC calculation
+		File fileDefTemp = File.createTempFile("tmp", ".bin");
+		fileDef.setFileName(fileDefTemp.getName());		
 		fileDef.setFileIntegrityDefinition(integrity);
 		fileDef.setFileSize(1234);
 		List<FileDefinition> fileDefs = new ArrayList<FileDefinition>();
@@ -141,7 +135,7 @@ public class SoftwareDefinitionFileBuilderTest {
 		swDefFile.getThwDefinitions().add(hardwareDef);
 		swDefFile.getThwDefinitions().add(hardwareDef);
 
-		sdfDao = new SoftwareDefinitionFileDao(swDefFile, "");
+		sdfDao = new SoftwareDefinitionFileDao(swDefFile, fileDefTemp.getParent());
 	}
 
 	@Test
@@ -163,8 +157,7 @@ public class SoftwareDefinitionFileBuilderTest {
 	public void testBuildBinaryWritesHeader() throws FileNotFoundException,
 			IOException {
 		swDefFileBuilder = new SoftwareDefinitionFileBuilder(
-				new BuilderFactory(), new CrcGeneratorFactory(),
-				new LspCrcCalculator());
+				new BuilderFactory());
 		BdfFile file = new BdfFile(File.createTempFile("tmp", "bin"));
 		int bytesWritten = swDefFileBuilder.buildBinary(sdfDao, file);
 
@@ -191,15 +184,19 @@ public class SoftwareDefinitionFileBuilderTest {
 
 	@Test
 	public void testBuildBinaryWritesSoftwareDefinition() throws IOException {
+		File tmpFile = File.createTempFile("tmp", ".bin");
 		BdfFile file = mock(BdfFile.class);
 		SoftwareDescriptionDao swDescription = mock(SoftwareDescriptionDao.class);
 		TargetHardwareDefinitionDao thdDao = mock(TargetHardwareDefinitionDao.class);
 		TargetHardwareDefinitionDao thdDAOLast = mock(TargetHardwareDefinitionDao.class);
 		FileDefinitionDao fdDao = mock(FileDefinitionDao.class);
+		when(fdDao.getFileName()).thenReturn(tmpFile.getName());
 		FileDefinitionDao fdDaoLast = mock(FileDefinitionDao.class);
+		when(fdDaoLast.getFileName()).thenReturn(tmpFile.getName());
 		IntegrityDefinitionDao sdfIntegDao = mock(IntegrityDefinitionDao.class);
 		IntegrityDefinitionDao lspIntegDao = mock(IntegrityDefinitionDao.class);
 
+		sdfDao.setPath(tmpFile.getParent());
 		sdfDao.setSoftwareDescription(swDescription);
 		sdfDao.getTargetHardwareDefinitions().clear();
 		sdfDao.getTargetHardwareDefinitions().add(thdDao);
@@ -214,7 +211,7 @@ public class SoftwareDefinitionFileBuilderTest {
 
 		InOrder order = inOrder(file, swDescBuilder, thdDao, integDefBuilder,
 				thdDAOLast, thdBuilder, fdBuilder, fdDao, fdDaoLast,
-				sdfIntegDao, lspIntegDao, crc16Generator, lspCalc);
+				sdfIntegDao, lspIntegDao);
 
 		when(file.length()).thenReturn(0L, 14L);
 		when(sdfIntegDao.getIntegrityType()).thenReturn(
@@ -245,18 +242,14 @@ public class SoftwareDefinitionFileBuilderTest {
 		order.verify(fdBuilder, times(2)).buildBinary(fdDao, file);
 		order.verify(fdBuilder).buildBinary(fdDaoLast, file);
 
-		order.verify(crc16Generator).calculateCrc(file.readAll());
-
 		order.verify(file).writeSdfIntegrityDefinitionPointer();
 		order.verify(sdfIntegDao).setIntegrityValue(
-				Converter.longToBytes(sdfCrcValue));
+				Converter.longToBytes(0L));
 		order.verify(integDefBuilder).buildBinary(sdfIntegDao, file);
-
-		order.verify(lspCalc).calculateCrc(file, sdfDao,crc16Generator);
 
 		order.verify(file).writeLspIntegrityDefinitionPointer();
 		order.verify(lspIntegDao).setIntegrityValue(
-				Converter.longToBytes(lspCrcValue));
+				Converter.longToBytes(0L));
 
 		order.verify(integDefBuilder).buildBinary(lspIntegDao, file);
 		order.verify(file).seek(0);
@@ -270,7 +263,7 @@ public class SoftwareDefinitionFileBuilderTest {
 		bdf.write(3);
 
 		SoftwareDefinitionFileBuilder builder = new SoftwareDefinitionFileBuilder(
-				null, null, null);
+				null);
 
 		builder.buildBinary(null, bdf);
 	}
@@ -282,7 +275,7 @@ public class SoftwareDefinitionFileBuilderTest {
 		when(crcFactory.getCrc32Generator()).thenReturn(crc32Generator);
 
 		swDefFileBuilder = new SoftwareDefinitionFileBuilder(
-				new BuilderFactory(), crcFactory, new LspCrcCalculator());
+				new BuilderFactory());
 		BdfFile file = new BdfFile(File.createTempFile("tmp", "bin"));
 		sdfDao.getSdfIntegrityDefinition().setIntegrityType(
 				IntegrityType.CRC32.getType());
@@ -297,7 +290,7 @@ public class SoftwareDefinitionFileBuilderTest {
 		when(crcFactory.getCrc64Generator()).thenReturn(crc64Generator);
 
 		swDefFileBuilder = new SoftwareDefinitionFileBuilder(
-				new BuilderFactory(), crcFactory, new LspCrcCalculator());
+				new BuilderFactory());
 		BdfFile file = new BdfFile(File.createTempFile("tmp", "bin"));
 		sdfDao.getSdfIntegrityDefinition().setIntegrityType(
 				IntegrityType.CRC64.getType());

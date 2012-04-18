@@ -32,8 +32,6 @@ import com.arinc.arinc838.ThwDefinition;
 import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.builder.BuilderFactory;
 import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
-import edu.cmu.sv.arinc838.crc.CrcGeneratorFactory;
-import edu.cmu.sv.arinc838.crc.LspCrcCalculator;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao.IntegrityType;
 import edu.cmu.sv.arinc838.util.Converter;
 import edu.cmu.sv.arinc838.validation.ReferenceData;
@@ -50,10 +48,14 @@ public class SoftwareDefinitionFileDaoTest {
 	private SoftwareDefinitionFileDao swDefFileDao;
 	private SoftwareDefinitionFileDao readBinaryFile;
 	private BdfFile binaryFile;
-	private final String path = "c:\\temp\\"; 
+	
+	
+	private String path;
 
 	@BeforeMethod
 	public void beforeMethod() throws Exception {
+		File tempFile = File.createTempFile("tmp", ".bin");
+
 		integrity = new IntegrityDefinition();
 		integrity.setIntegrityType(IntegrityType.CRC16.getType());
 		integrity.setIntegrityValue(Converter.hexToBytes("0000000A"));
@@ -65,7 +67,10 @@ public class SoftwareDefinitionFileDaoTest {
 		description.setSoftwareTypeId(Converter.hexToBytes("0000000A"));
 
 		fileDef = new FileDefinition();
-		fileDef.setFileName("file");
+		// we have to create a temp file for this, otherwise we'll get a FileNotFoundException during the 
+		// LSP CRC calculation
+		File fileDefTemp = File.createTempFile("tmp", ".bin");
+		fileDef.setFileName(fileDefTemp.getName());
 		fileDef.setFileIntegrityDefinition(integrity);
 		fileDef.setFileSize(1234);
 
@@ -89,11 +94,14 @@ public class SoftwareDefinitionFileDaoTest {
 		swDefFile.getThwDefinitions().add(hardwareDef);
 		swDefFile.getThwDefinitions().add(hardwareDef);
 
+		path = tempFile.getParent();
+		binaryFile = new BdfFile(tempFile);
+		
 		swDefFileDao = new SoftwareDefinitionFileDao(
 				swDefFile, path);
-		binaryFile = new BdfFile(File.createTempFile("tmp", "bin"));
+		
 		SoftwareDefinitionFileBuilder swDefFileBuilder = new SoftwareDefinitionFileBuilder(
-				new BuilderFactory(), new CrcGeneratorFactory(), new LspCrcCalculator());
+				new BuilderFactory());
 		swDefFileBuilder.buildBinary(swDefFileDao, binaryFile);
 		readBinaryFile = new SoftwareDefinitionFileDao(binaryFile, path);
 	}

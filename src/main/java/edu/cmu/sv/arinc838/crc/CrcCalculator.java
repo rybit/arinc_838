@@ -33,7 +33,7 @@ public class CrcCalculator {
 		int length = bdfData.length;
 		ArrayList<byte[]> fileDefData = new  ArrayList<byte[]>();
 		for(FileDefinitionDao fileDef : sdf.getFileDefinitions()) {
-			byte[] data = readFile(new File(fileDef.getFileName()));
+			byte[] data = readFile(new File(sdf.getPath(), fileDef.getFileName()));
 			length += data.length;
 			fileDefData.add(data);
 		}
@@ -73,15 +73,16 @@ public class CrcCalculator {
 	public static long calculateCrc(IntegrityDefinitionDao integ, byte[] data) {
 		IntegrityType type = IntegrityType.fromLong(integ.getIntegrityType());
 		long crc = -1;
+		CrcGeneratorFactory factory = new CrcGeneratorFactory();
 		switch (type) {
 		case CRC16:
-			crc = Crc16Generator.calculateCrc(data) & 0xFFFF;
+			crc = factory.getCrc16Generator().calculateCrc(data) & 0xFFFFL;
 			break;
 		case CRC32:
-			crc = Crc32Generator.calculateCrc(data) & 0xFFFFFFFF;
+			crc = factory.getCrc32Generator().calculateCrc(data) & 0xFFFFFFFFL;
 			break;
 		case CRC64:
-			crc = Crc64Generator.calculateCrc(data);
+			crc = factory.getCrc64Generator().calculateCrc(data);
 			break;
 		default:
 			break;

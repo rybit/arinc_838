@@ -19,8 +19,6 @@ import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 
 import edu.cmu.sv.arinc838.builder.BuilderFactory;
 import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
-import edu.cmu.sv.arinc838.crc.CrcGeneratorFactory;
-import edu.cmu.sv.arinc838.crc.LspCrcCalculator;
 import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 
 public class XdfWriter implements SdfWriter {
@@ -29,8 +27,7 @@ public class XdfWriter implements SdfWriter {
 			throws Exception {
 		File file = new File(path + sdfDao.getXmlFileName());
 		SoftwareDefinitionFileBuilder builder = new SoftwareDefinitionFileBuilder(
-				new BuilderFactory(), new CrcGeneratorFactory(),
-				new LspCrcCalculator());
+				new BuilderFactory());
 
 		SdfFile sdfFile = builder.buildXml(sdfDao);
 		write(file, sdfFile);

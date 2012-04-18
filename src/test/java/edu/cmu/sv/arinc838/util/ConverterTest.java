@@ -17,15 +17,4 @@ public class ConverterTest {
 				(byte) 173, (byte) 190, (byte) 239 }), "DEADBEEF");
 	}
 
-	@Test
-	public void testIntToBytes() throws Exception {
-		assertEquals(Converter.longToBytes(65535), new byte[] { (byte) 0,
-			(byte) 0, (byte) -1, (byte) -1 }, "FFFF");
-	}
-	
-	@Test
-	public void testBytesToInt() throws Exception {
-		assertEquals(Converter.bytesToLong(new byte[] { (byte) 0, (byte) 0, (byte) -1, (byte) -1 }), 
-				65535, "FFFF");
-	}
 }

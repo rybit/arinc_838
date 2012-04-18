@@ -10,14 +10,11 @@ import com.arinc.arinc838.SoftwareDescription;
 import com.arinc.arinc838.ThwDefinition;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
-import edu.cmu.sv.arinc838.crc.Crc32Generator;
-import edu.cmu.sv.arinc838.crc.Crc64Generator;
+import edu.cmu.sv.arinc838.crc.CrcCalculator;
 import edu.cmu.sv.arinc838.crc.CrcGenerator;
 import edu.cmu.sv.arinc838.crc.CrcGeneratorFactory;
-import edu.cmu.sv.arinc838.crc.LspCrcCalculator;
 import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
-import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao.IntegrityType;
 import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 import edu.cmu.sv.arinc838.dao.SoftwareDescriptionDao;
 import edu.cmu.sv.arinc838.dao.TargetHardwareDefinitionDao;
@@ -27,14 +24,9 @@ public class SoftwareDefinitionFileBuilder implements
 		Builder<SoftwareDefinitionFileDao, SdfFile> {
 
 	private final BuilderFactory builderFactory;
-	private final CrcGeneratorFactory crcFactory;
-	private final LspCrcCalculator lspCrcCalculator;
 
-	public SoftwareDefinitionFileBuilder(BuilderFactory builderFact,
-			CrcGeneratorFactory crcFactory, LspCrcCalculator lspCrc) {
+	public SoftwareDefinitionFileBuilder(BuilderFactory builderFact) {
 		this.builderFactory = builderFact;
-		this.crcFactory = crcFactory;
-		this.lspCrcCalculator = lspCrc;
 	}
 
 	@Override
@@ -139,15 +131,14 @@ public class SoftwareDefinitionFileBuilder implements
 		// write the SDF integrity def
 		file.writeSdfIntegrityDefinitionPointer();
 		softwareDefinitionFileDao.getSdfIntegrityDefinition()
-				.setIntegrityValue(Converter.longToBytes(crc));
+				.setIntegrityValue(Converter.longToBytes(0L));
 		integDefBuilder.buildBinary(
 				softwareDefinitionFileDao.getSdfIntegrityDefinition(), file);
 
 		// write the LSP integrity def
-		
 		file.writeLspIntegrityDefinitionPointer();
 		softwareDefinitionFileDao.getLspIntegrityDefinition()
-				.setIntegrityValue(Converter.longToBytes(lspCrc));
+				.setIntegrityValue(Converter.longToBytes(0L));
 		integDefBuilder.buildBinary(
 				softwareDefinitionFileDao.getLspIntegrityDefinition(), file);
 
@@ -156,40 +147,35 @@ public class SoftwareDefinitionFileBuilder implements
 		file.writeUint32(file.length());
 		file.seek(file.length());
 
-		writeSdfIntegrityDefinitionCrc(file, softwareDefinitionFileDao);
-		writeLspIntegrityDefinitionCrc(file, softwareDefinitionFileDao);
+		writeSdfIntegrityDefinitionCrc(softwareDefinitionFileDao, file);
+		writeLspIntegrityDefinitionCrc(softwareDefinitionFileDao, file);
 
 		return (int) file.length();
 	}
 
-	private void writeLspIntegrityDefinitionCrc(BdfFile file,
-			SoftwareDefinitionFileDao softwareDefinitionFileDao) {
+	private void writeSdfIntegrityDefinitionCrc(SoftwareDefinitionFileDao sdf,
+			BdfFile bdf) throws IOException {
+		long crc = CrcCalculator.calculateSdfCrc(sdf, bdf);
 
-		long lspCrc = lspCrcCalculator.calculateCrc(file,
-				softwareDefinitionFileDao, generator);
+		sdf.getSdfIntegrityDefinition().setIntegrityValue(
+				Converter.longToBytes(crc));
 
+		// Seek to the SDF integrity pointer, plus 6 bytes (4 for type + 2 for
+		// size)
+		bdf.seek(bdf.readSdfIntegrityDefinitionPointer() + 6);
+		bdf.write(sdf.getSdfIntegrityDefinition().getIntegrityValue());
 	}
 
-	private void writeSdfIntegrityDefinitionCrc(BdfFile file,
-			SoftwareDefinitionFileDao softwareDefinitionFileDao) {
-		// calculate CRC up to this point
-		long integType = softwareDefinitionFileDao.getSdfIntegrityDefinition()
-				.getIntegrityType();
-		CrcGenerator generator;
+	private void writeLspIntegrityDefinitionCrc(SoftwareDefinitionFileDao sdf,
+			BdfFile bdf) throws IOException {
+		long crc = CrcCalculator.calculateLspCrc(sdf, bdf);
 
-		if (integType == IntegrityType.CRC16.getType()) {
-			generator = crcFactory.getCrc16Generator();
+		sdf.getLspIntegrityDefinition().setIntegrityValue(
+				Converter.longToBytes(crc));
 
-		} else if (integType == IntegrityType.CRC32.getType()) {
-			generator = crcFactory.getCrc32Generator();
-		} else if (integType == IntegrityType.CRC64.getType()) {
-			generator = crcFactory.getCrc64Generator();
-		} else {
-			throw new IllegalArgumentException();
-		}
-
-		//Fix this by removing the readAll and using the file pointers and calcs
-		//long crc = generator.calculateCrc(file.readAll());
-
+		// Seek to the LSP integrity pointer, plus 6 bytes (4 for type + 2 for
+		// size)
+		bdf.seek(bdf.readLspIntegrityDefinitionPointer() + 6);
+		bdf.write(sdf.getLspIntegrityDefinition().getIntegrityValue());
 	}
 }

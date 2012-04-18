@@ -1,9 +1,12 @@
 package edu.cmu.sv.arinc838.util;
 
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
+
+import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
+import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao.IntegrityType;
 
 public class Converter {
 	/**
@@ -30,10 +33,36 @@ public class Converter {
 		return new HexBinaryAdapter().marshal(bytes);
 	}
 
+	public static long checksumBytesToLong(IntegrityDefinitionDao integDef) {
+		return checksumBytesToLong(integDef.getIntegrityValue(),
+				integDef.getIntegrityType());
+	}
+
+	public static long checksumBytesToLong(byte[] crcValue, long type) {
+		long value = new BigInteger(crcValue).longValue();
+
+		switch (IntegrityType.fromLong(type)) {
+		case CRC16:
+			value &= 0xFFFFL;
+			break;
+		case CRC32:
+			value &= 0xFFFFFFFFL;
+			break;
+		case CRC64:
+			break;
+		default:
+			throw new IllegalArgumentException("Unknown CRC type: " + type);
+
+		}
+
+		return value;
+	}
+
 	public static byte[] longToBytes(long i) {
 		ByteBuffer bb = ByteBuffer.allocate(4);
-		bb.putInt((int)i);		
+		bb.putInt((int) i);
 		return bb.array();
+
 	}
 
 	public static long bytesToLong(byte[] bytes) {

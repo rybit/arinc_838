@@ -14,8 +14,6 @@ import java.io.File;
 import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.builder.BuilderFactory;
 import edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
-import edu.cmu.sv.arinc838.crc.CrcGeneratorFactory;
-import edu.cmu.sv.arinc838.crc.LspCrcCalculator;
 import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 
 public class BdfWriter implements SdfWriter {
@@ -27,8 +25,7 @@ public class BdfWriter implements SdfWriter {
 		// This file must be empty
 		file.setLength(0);
 		SoftwareDefinitionFileBuilder builder = new SoftwareDefinitionFileBuilder(
-				new BuilderFactory(), new CrcGeneratorFactory(),
-				new LspCrcCalculator());
+				new BuilderFactory());
 		write(file, builder, sdfDao);
 
 	}
