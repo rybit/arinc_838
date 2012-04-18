@@ -15,7 +15,7 @@ import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.crc.Crc16Generator;
 import edu.cmu.sv.arinc838.crc.Crc32Generator;
 import edu.cmu.sv.arinc838.crc.Crc64Generator;
-import edu.cmu.sv.arinc838.crc.CrcGenerator;
+import edu.cmu.sv.arinc838.crc.CrcCalculator;
 import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 import edu.cmu.sv.arinc838.util.Converter;
 
@@ -96,7 +96,7 @@ public class CrcValidator {
 			throw new IllegalArgumentException("BDF parameter cannot be null");
 		}
 
-		long crc = CrcGenerator.calculateLspCrc(sdf, bdf);
+		long crc = CrcCalculator.calculateLspCrc(sdf, bdf);
 		long sdfCrc = Converter.checksumBytesToLong(sdf
 				.getSdfIntegrityDefinition());
 		if (crc != sdfCrc) {
@@ -120,7 +120,7 @@ public class CrcValidator {
 			throw new IllegalArgumentException("BDF parameter cannot be null");
 		}
 
-		long crc = CrcGenerator.calculateSdfCrc(sdf, bdf);
+		long crc = CrcCalculator.calculateSdfCrc(sdf, bdf);
 		long sdfCrc = Converter.checksumBytesToLong(sdf
 				.getSdfIntegrityDefinition());
 		if (crc != sdfCrc) {

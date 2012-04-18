@@ -27,7 +27,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
-import edu.cmu.sv.arinc838.crc.CrcGenerator;
+import edu.cmu.sv.arinc838.crc.CrcCalculator;
 import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao.IntegrityType;
@@ -561,7 +561,7 @@ public class SoftwareDefinitionFileValidatorTest {
 		SoftwareDefinitionFileValidator sdfVal = new SoftwareDefinitionFileValidator(
 				dataVal);
 
-		long crc = CrcGenerator.calculateLspCrc(ReferenceData.SDF_TEST_FILE,
+		long crc = CrcCalculator.calculateLspCrc(ReferenceData.SDF_TEST_FILE,
 				bdfFile);
 
 		System.out.println(Long.toHexString(crc));

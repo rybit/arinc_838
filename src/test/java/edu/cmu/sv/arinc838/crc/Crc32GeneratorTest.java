@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 public class Crc32GeneratorTest {
 	@Test
 	public void calculateCrcTest() throws Exception {
-		Map<BigInteger, byte[]> expectedCrcs = CrcGeneratorTestCommon
+		Map<BigInteger, byte[]> expectedCrcs = CrcCalculatorTestCommon
 				.getExpectedCrcs("crc32");
 		for (BigInteger expectedCrc : expectedCrcs.keySet()) {
 			long crc = Crc32Generator.calculateCrc(expectedCrcs

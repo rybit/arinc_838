@@ -14,7 +14,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public class CrcGeneratorTestCommon {
+public class CrcCalculatorTestCommon {
 	private static byte[] getBytes(String fileName) throws IOException {
 		File file = new File("src/test/resources/crc_test_files/" + fileName);
 		FileInputStream fin = new FileInputStream(file);

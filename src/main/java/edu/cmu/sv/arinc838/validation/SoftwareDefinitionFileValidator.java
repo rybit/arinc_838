@@ -19,7 +19,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
-import edu.cmu.sv.arinc838.crc.CrcGenerator;
+import edu.cmu.sv.arinc838.crc.CrcCalculator;
 import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao.IntegrityType;
@@ -229,7 +229,7 @@ public class SoftwareDefinitionFileValidator {
 		// TODO we need to handle paths correctly since all we have is the file
 		// name
 		try {
-			data = CrcGenerator.readFile(new File(fileDef.getFileName()));
+			data = CrcCalculator.readFile(new File(fileDef.getFileName()));
 
 		} catch (IOException e) {
 			errors.add(e);

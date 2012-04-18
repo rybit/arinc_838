@@ -21,7 +21,7 @@ import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao.IntegrityType;
 import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 
-public class CrcGenerator {
+public class CrcCalculator {
 
 	public static long calculateLspCrc(SoftwareDefinitionFileDao sdf,
 			BdfFile bdf) throws IOException {
