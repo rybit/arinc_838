@@ -132,24 +132,6 @@ public class SoftwareDefinitionFileBuilder implements
 					.getFileDefinitions().get(i), file);
 		}
 
-		// calculate CRC up to this point
-		long integType = softwareDefinitionFileDao.getSdfIntegrityDefinition().getIntegrityType();
-		CrcGenerator generator;
-		
-		
-		if (integType == IntegrityType.CRC16.getType()){
-			generator = crcFactory.getCrc16Generator();
-			
-		} else if(integType == IntegrityType.CRC32.getType()){
-			generator = crcFactory.getCrc32Generator();
-		} else if(integType == IntegrityType.CRC64.getType()){
-			generator = crcFactory.getCrc64Generator();
-		}else {
-			throw new IllegalArgumentException();
-		}
-
-		long crc = generator.calculateCrc(file.readAll());
-
 		Builder<IntegrityDefinitionDao, IntegrityDefinition> integDefBuilder = builderFactory
 				.getBuilder(IntegrityDefinitionDao.class,
 						IntegrityDefinition.class);
@@ -162,7 +144,7 @@ public class SoftwareDefinitionFileBuilder implements
 				softwareDefinitionFileDao.getSdfIntegrityDefinition(), file);
 
 		// write the LSP integrity def
-		long lspCrc = lspCrcCalculator.calculateCrc(file, softwareDefinitionFileDao, generator);
+		
 		file.writeLspIntegrityDefinitionPointer();
 		softwareDefinitionFileDao.getLspIntegrityDefinition()
 				.setIntegrityValue(Converter.longToBytes(lspCrc));
@@ -174,6 +156,40 @@ public class SoftwareDefinitionFileBuilder implements
 		file.writeUint32(file.length());
 		file.seek(file.length());
 
+		writeSdfIntegrityDefinitionCrc(file, softwareDefinitionFileDao);
+		writeLspIntegrityDefinitionCrc(file, softwareDefinitionFileDao);
+
 		return (int) file.length();
+	}
+
+	private void writeLspIntegrityDefinitionCrc(BdfFile file,
+			SoftwareDefinitionFileDao softwareDefinitionFileDao) {
+
+		long lspCrc = lspCrcCalculator.calculateCrc(file,
+				softwareDefinitionFileDao, generator);
+
+	}
+
+	private void writeSdfIntegrityDefinitionCrc(BdfFile file,
+			SoftwareDefinitionFileDao softwareDefinitionFileDao) {
+		// calculate CRC up to this point
+		long integType = softwareDefinitionFileDao.getSdfIntegrityDefinition()
+				.getIntegrityType();
+		CrcGenerator generator;
+
+		if (integType == IntegrityType.CRC16.getType()) {
+			generator = crcFactory.getCrc16Generator();
+
+		} else if (integType == IntegrityType.CRC32.getType()) {
+			generator = crcFactory.getCrc32Generator();
+		} else if (integType == IntegrityType.CRC64.getType()) {
+			generator = crcFactory.getCrc64Generator();
+		} else {
+			throw new IllegalArgumentException();
+		}
+
+		//Fix this by removing the readAll and using the file pointers and calcs
+		//long crc = generator.calculateCrc(file.readAll());
+
 	}
 }
