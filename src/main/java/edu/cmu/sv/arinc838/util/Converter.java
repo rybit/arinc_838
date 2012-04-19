@@ -1,7 +1,6 @@
 package edu.cmu.sv.arinc838.util;
 
 import java.math.BigInteger;
-import java.nio.ByteBuffer;
 
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 
@@ -56,17 +55,5 @@ public class Converter {
 		}
 
 		return value;
-	}
-
-	public static byte[] longToBytes(long i) {
-		ByteBuffer bb = ByteBuffer.allocate(4);
-		bb.putInt((int) i);
-		return bb.array();
-
-	}
-
-	public static long bytesToLong(byte[] bytes) {
-		ByteBuffer bb = ByteBuffer.wrap(bytes);
-		return bb.getInt();
 	}
 }

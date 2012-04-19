@@ -67,6 +67,8 @@ public class SoftwareDefinitionFileDao {
 	}
 	
 	public void initialize(SoftwareDefinitionFileDao sdfFile) {
+		this.setPath(sdfFile.getPath());
+		
 		fileDefinitions.clear();
 		for (FileDefinitionDao fileDef : sdfFile.getFileDefinitions()) {
 			fileDefinitions.add(fileDef);

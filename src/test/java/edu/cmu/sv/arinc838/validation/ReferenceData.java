@@ -79,7 +79,7 @@ public class ReferenceData {
 		
 		IntegrityDefinitionDao lspInteg = new IntegrityDefinitionDao();
 		lspInteg.setIntegrityType((long)3);
-		lspInteg.setIntegrityValue(Converter.hexToBytes("b0ed0636"));		
+		lspInteg.setIntegrityValue(Converter.hexToBytes("3833F842"));		
 		SDF_TEST_FILE.setLspIntegrityDefinition(lspInteg);
 	}
 }

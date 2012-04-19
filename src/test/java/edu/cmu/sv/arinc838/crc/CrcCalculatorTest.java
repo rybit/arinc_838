@@ -30,18 +30,16 @@ public class CrcCalculatorTest {
 
 	@Test
 	public void testCalculateLspCrc() throws IOException {
-		long crc = CrcCalculator.calculateLspCrc(sdf, bdf);
-		long expectedCrc = Converter.checksumBytesToLong(sdf
-				.getLspIntegrityDefinition());
-		assertEquals(crc, expectedCrc, "LSP CRC did not calculate correctly");
+		byte[] crc = CrcCalculator.calculateLspCrc(sdf, bdf);
+		assertEquals(crc, sdf.getLspIntegrityDefinition().getIntegrityValue(),
+				"LSP CRC did not calculate correctly");
 	}
 
 	@Test
 	public void testCalculateSdfCrc() throws IOException {
-		long crc = CrcCalculator.calculateSdfCrc(sdf, bdf);
-		long expectedCrc = Converter.checksumBytesToLong(sdf
-				.getSdfIntegrityDefinition());
-		assertEquals(crc, expectedCrc, "SDF CRC did not calculate correctly");
+		byte[] crc = CrcCalculator.calculateSdfCrc(sdf, bdf);
+		assertEquals(crc, sdf.getSdfIntegrityDefinition().getIntegrityValue(),
+				"SDF CRC did not calculate correctly");
 	}
 
 	@Test
@@ -53,10 +51,10 @@ public class CrcCalculatorTest {
 		IntegrityDefinitionDao integ = new IntegrityDefinitionDao();
 		integ.setIntegrityType(IntegrityType.CRC16.getType());
 		integ.setIntegrityValue(Converter.hexToBytes("1DA3"));
-		long crc = CrcCalculator.calculateCrc(integ, data);
+		byte[] crc = CrcCalculator.calculateCrc(integ, data);
 
-		long expectedCrc = Converter.checksumBytesToLong(integ);
-		assertEquals(crc, expectedCrc, "CRC16 did not calculate correctly");
+		assertEquals(crc, integ.getIntegrityValue(),
+				"CRC16 did not calculate correctly");
 	}
 
 	@Test
@@ -68,10 +66,10 @@ public class CrcCalculatorTest {
 		IntegrityDefinitionDao integ = new IntegrityDefinitionDao();
 		integ.setIntegrityType(IntegrityType.CRC32.getType());
 		integ.setIntegrityValue(Converter.hexToBytes("322AB4A6"));
-		long crc = CrcCalculator.calculateCrc(integ, data);
+		byte[] crc = CrcCalculator.calculateCrc(integ, data);
 
-		long expectedCrc = Converter.checksumBytesToLong(integ);
-		assertEquals(crc, expectedCrc, "CRC32 did not calculate correctly");
+		assertEquals(crc, integ.getIntegrityValue(),
+				"CRC32 did not calculate correctly");
 	}
 
 	@Test
@@ -83,9 +81,9 @@ public class CrcCalculatorTest {
 		IntegrityDefinitionDao integ = new IntegrityDefinitionDao();
 		integ.setIntegrityType(IntegrityType.CRC64.getType());
 		integ.setIntegrityValue(Converter.hexToBytes("034528B5989BED4D"));
-		long crc = CrcCalculator.calculateCrc(integ, data);
+		byte[] crc = CrcCalculator.calculateCrc(integ, data);
 
-		long expectedCrc = Converter.checksumBytesToLong(integ);
-		assertEquals(crc, expectedCrc, "CRC64 did not calculate correctly");
+		assertEquals(crc, integ.getIntegrityValue(),
+				"CRC64 did not calculate correctly");
 	}
 }

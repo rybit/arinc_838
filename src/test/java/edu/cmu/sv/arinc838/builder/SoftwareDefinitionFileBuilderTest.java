@@ -13,7 +13,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
@@ -35,8 +34,6 @@ import com.arinc.arinc838.ThwDefinition;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.crc.Crc16Generator;
-import edu.cmu.sv.arinc838.crc.Crc32Generator;
-import edu.cmu.sv.arinc838.crc.Crc64Generator;
 import edu.cmu.sv.arinc838.crc.CrcGeneratorFactory;
 import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
@@ -63,7 +60,6 @@ public class SoftwareDefinitionFileBuilderTest {
 	private CrcGeneratorFactory crcFactory;
 	private Crc16Generator crc16Generator;
 	private final long sdfCrcValue = 65535;
-	private final long lspCrcValue = 12345;
 
 	@BeforeMethod
 	public void beforeMethod() throws Exception {
@@ -216,8 +212,8 @@ public class SoftwareDefinitionFileBuilderTest {
 		when(file.length()).thenReturn(0L, 14L);
 		when(sdfIntegDao.getIntegrityType()).thenReturn(
 				IntegrityType.CRC16.getType());
-		when(file.readAll()).thenReturn(
-				new byte[] { (byte) 222, (byte) 173, (byte) 190, (byte) 239 });
+		when(lspIntegDao.getIntegrityType()).thenReturn(
+				IntegrityType.CRC32.getType());
 
 		int bytesWritten = swDefFileBuilder.buildBinary(sdfDao, file);
 
@@ -244,16 +240,26 @@ public class SoftwareDefinitionFileBuilderTest {
 
 		order.verify(file).writeSdfIntegrityDefinitionPointer();
 		order.verify(sdfIntegDao).setIntegrityValue(
-				Converter.longToBytes(0L));
+				new byte[2]); // 16-bit CRC for SDF Integrity Definition
 		order.verify(integDefBuilder).buildBinary(sdfIntegDao, file);
 
 		order.verify(file).writeLspIntegrityDefinitionPointer();
 		order.verify(lspIntegDao).setIntegrityValue(
-				Converter.longToBytes(0L));
+				new byte[4]); // 32-bit CRC for LSP Integrity Definition
 
 		order.verify(integDefBuilder).buildBinary(lspIntegDao, file);
 		order.verify(file).seek(0);
 		order.verify(file).writeUint32(file.length());
+		
+		// verify writing of SDF CRC
+		order.verify(sdfIntegDao).setIntegrityValue(any(byte[].class));
+		order.verify(file).seek(file.readSdfIntegrityDefinitionPointer() + 6);
+		order.verify(file).write(sdfIntegDao.getIntegrityValue());
+		
+		// verify writing of LSP CRC
+		order.verify(lspIntegDao).setIntegrityValue(any(byte[].class));
+		order.verify(file).seek(file.readLspIntegrityDefinitionPointer() + 6);
+		order.verify(file).write(lspIntegDao.getIntegrityValue());
 	}
 
 	@Test(expectedExceptions = IllegalArgumentException.class)
@@ -270,32 +276,24 @@ public class SoftwareDefinitionFileBuilderTest {
 
 	@Test
 	public void testThatCorrectSdfCrcIsWrittenBasedOnType32() throws Exception {
-		crcFactory = mock(CrcGeneratorFactory.class);
-		Crc32Generator crc32Generator = mock(Crc32Generator.class);
-		when(crcFactory.getCrc32Generator()).thenReturn(crc32Generator);
-
 		swDefFileBuilder = new SoftwareDefinitionFileBuilder(
 				new BuilderFactory());
 		BdfFile file = new BdfFile(File.createTempFile("tmp", "bin"));
 		sdfDao.getSdfIntegrityDefinition().setIntegrityType(
 				IntegrityType.CRC32.getType());
 		swDefFileBuilder.buildBinary(sdfDao, file);
-		verify(crc32Generator).calculateCrc(any(byte[].class));
+		assertEquals(sdfDao.getSdfIntegrityDefinition().getIntegrityValue().length, 4);
 	}
 
 	@Test
 	public void testThatCorrectSdfCrcIsWrittenBasedOnType64() throws Exception {
-		crcFactory = mock(CrcGeneratorFactory.class);
-		Crc64Generator crc64Generator = mock(Crc64Generator.class);
-		when(crcFactory.getCrc64Generator()).thenReturn(crc64Generator);
-
 		swDefFileBuilder = new SoftwareDefinitionFileBuilder(
 				new BuilderFactory());
 		BdfFile file = new BdfFile(File.createTempFile("tmp", "bin"));
 		sdfDao.getSdfIntegrityDefinition().setIntegrityType(
 				IntegrityType.CRC64.getType());
 		swDefFileBuilder.buildBinary(sdfDao, file);
-		verify(crc64Generator).calculateCrc(any(byte[].class));
+		assertEquals(sdfDao.getSdfIntegrityDefinition().getIntegrityValue().length, 8);
 	}
 	
 	//TODO: Add tests for the correct LSPCalculator  

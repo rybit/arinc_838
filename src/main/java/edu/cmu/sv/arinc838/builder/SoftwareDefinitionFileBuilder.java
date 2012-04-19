@@ -11,14 +11,12 @@ import com.arinc.arinc838.ThwDefinition;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.crc.CrcCalculator;
-import edu.cmu.sv.arinc838.crc.CrcGenerator;
-import edu.cmu.sv.arinc838.crc.CrcGeneratorFactory;
 import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
+import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao.IntegrityType;
 import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 import edu.cmu.sv.arinc838.dao.SoftwareDescriptionDao;
 import edu.cmu.sv.arinc838.dao.TargetHardwareDefinitionDao;
-import edu.cmu.sv.arinc838.util.Converter;
 
 public class SoftwareDefinitionFileBuilder implements
 		Builder<SoftwareDefinitionFileDao, SdfFile> {
@@ -130,15 +128,21 @@ public class SoftwareDefinitionFileBuilder implements
 
 		// write the SDF integrity def
 		file.writeSdfIntegrityDefinitionPointer();
+		int sdfCrcByteCount = IntegrityType.fromLong(
+				softwareDefinitionFileDao.getSdfIntegrityDefinition()
+						.getIntegrityType()).getByteCount();
 		softwareDefinitionFileDao.getSdfIntegrityDefinition()
-				.setIntegrityValue(Converter.longToBytes(0L));
+				.setIntegrityValue(new byte[sdfCrcByteCount]);
 		integDefBuilder.buildBinary(
 				softwareDefinitionFileDao.getSdfIntegrityDefinition(), file);
 
 		// write the LSP integrity def
 		file.writeLspIntegrityDefinitionPointer();
+		int lspCrcByteCount = IntegrityType.fromLong(
+				softwareDefinitionFileDao.getLspIntegrityDefinition()
+						.getIntegrityType()).getByteCount();
 		softwareDefinitionFileDao.getLspIntegrityDefinition()
-				.setIntegrityValue(Converter.longToBytes(0L));
+				.setIntegrityValue(new byte[lspCrcByteCount]);
 		integDefBuilder.buildBinary(
 				softwareDefinitionFileDao.getLspIntegrityDefinition(), file);
 
@@ -155,10 +159,9 @@ public class SoftwareDefinitionFileBuilder implements
 
 	private void writeSdfIntegrityDefinitionCrc(SoftwareDefinitionFileDao sdf,
 			BdfFile bdf) throws IOException {
-		long crc = CrcCalculator.calculateSdfCrc(sdf, bdf);
+		byte[] crc = CrcCalculator.calculateSdfCrc(sdf, bdf);
 
-		sdf.getSdfIntegrityDefinition().setIntegrityValue(
-				Converter.longToBytes(crc));
+		sdf.getSdfIntegrityDefinition().setIntegrityValue(crc);
 
 		// Seek to the SDF integrity pointer, plus 6 bytes (4 for type + 2 for
 		// size)
@@ -168,10 +171,9 @@ public class SoftwareDefinitionFileBuilder implements
 
 	private void writeLspIntegrityDefinitionCrc(SoftwareDefinitionFileDao sdf,
 			BdfFile bdf) throws IOException {
-		long crc = CrcCalculator.calculateLspCrc(sdf, bdf);
+		byte[] crc = CrcCalculator.calculateLspCrc(sdf, bdf);
 
-		sdf.getLspIntegrityDefinition().setIntegrityValue(
-				Converter.longToBytes(crc));
+		sdf.getLspIntegrityDefinition().setIntegrityValue(crc);
 
 		// Seek to the LSP integrity pointer, plus 6 bytes (4 for type + 2 for
 		// size)

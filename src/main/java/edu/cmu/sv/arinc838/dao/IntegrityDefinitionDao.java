@@ -19,12 +19,14 @@ import edu.cmu.sv.arinc838.binary.BdfFile;
 public class IntegrityDefinitionDao {
 
 	public static enum IntegrityType {
-		CRC16(2), CRC32(3), CRC64(6);
+		CRC16(2, 2), CRC32(3, 4), CRC64(6, 8);
 
 		private long type;
+		private int byteCount;
 
-		private IntegrityType(long type) {
+		private IntegrityType(long type, int byteCount) {
 			this.type = type;
+			this.byteCount = byteCount;
 		}
 
 		public long getType() {
@@ -49,6 +51,10 @@ public class IntegrityDefinitionDao {
 				return CRC64;
 			}
 			return null;
+		}
+		
+		public int getByteCount() {
+			return byteCount;
 		}
 	}
 

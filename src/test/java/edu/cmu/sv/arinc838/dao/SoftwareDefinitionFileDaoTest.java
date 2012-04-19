@@ -385,5 +385,14 @@ public class SoftwareDefinitionFileDaoTest {
 		firstOnDisk.delete();
 		secondOnDisk.delete();
 	}
+	
+	@Test
+	public void testInitializeSoftwareDefinitionFileDaoSetsPath() {
+		swDefFileDao.setPath("foo");
+		SoftwareDefinitionFileDao sdfDao2 = new SoftwareDefinitionFileDao();
+		sdfDao2.initialize(swDefFileDao);
+		assertEquals(sdfDao2.getPath(), "foo");
+		
+	}
 
 }

@@ -45,6 +45,6 @@
 	</sdf-integrity-definition>
 	<lsp-integrity-definition>
 		<integrity-type>3</integrity-type>
-		<integrity-value>0000000A</integrity-value>
+		<integrity-value>3833F842</integrity-value>
 	</lsp-integrity-definition>
 </sdf:sdf-file>

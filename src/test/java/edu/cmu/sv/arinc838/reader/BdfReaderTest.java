@@ -19,7 +19,7 @@ public class BdfReaderTest {
 		BdfReader reader = new BdfReader();
 		ArrayList<Exception> errorList = new ArrayList<Exception>();
 		SoftwareDefinitionFileDao sdfDao = reader.read(
-				"src/test/resources/ACM4712345678.BDF", errorList);
+				"src/test/resources/ACM47-1234-5678/ACM4712345678.BDF", errorList);
 		assertEquals(errorList.size(), 0, "Unexpected errors during read");
 
 		assertEquals(sdfDao.getFileFormatVersion(),
@@ -94,8 +94,8 @@ public class BdfReaderTest {
 		BdfReader reader = new BdfReader();
 		ArrayList<Exception> errorList = new ArrayList<Exception>();
 		SoftwareDefinitionFileDao sdfDao = reader.read(
-				"src/test/resources/ACM4712345678.BDF", errorList);
+				"src/test/resources/ACM47-1234-5678/ACM4712345678.BDF", errorList);
 		
-		assertTrue(sdfDao.getPath().endsWith("resources"));
+		assertTrue(sdfDao.getPath().endsWith("ACM47-1234-5678"));
 	}
 }
