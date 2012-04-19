@@ -76,7 +76,7 @@ public class SoftwareDefinitionFileValidatorTest {
 
 			@Override
 			public List<Exception> validateTargetHardwareDefinitions(
-					List<TargetHardwareDefinitionDao> thwDefs) {
+					List<TargetHardwareDefinitionDao> thwDefs, String sourceFile) {
 				thwDefs.isEmpty();
 				return errorList("2");
 			}
@@ -116,6 +116,45 @@ public class SoftwareDefinitionFileValidatorTest {
 		verify(sdfDao.getLspIntegrityDefinition()).getIntegrityType();
 		verify(dataVal)
 				.validateFileFormatVersion(sdfDao.getFileFormatVersion());
+	}
+
+	@Test
+	public void testValidateSdfFileXmlvsBinary() {
+
+		SoftwareDefinitionFileDao sdfDao = ReferenceData.SDF_TEST_FILE;
+
+		DataValidator dataVal = new DataValidator() {
+			@Override
+			public List<Exception> validateStr64kXml(String value) {
+				ArrayList<Exception> errors = new ArrayList<Exception>();
+				errors.add(new Exception("xml"));
+
+				return errors;
+			}
+
+			@Override
+			public List<Exception> validateStr64kBinary(String value) {
+				ArrayList<Exception> errors = new ArrayList<Exception>();
+				errors.add(new Exception("binary"));
+
+				return errors;
+			}
+		};
+		SoftwareDefinitionFileValidator sdfVal = new SoftwareDefinitionFileValidator(
+				dataVal);
+
+		List<Exception> errors = sdfVal.validateSdfFile(sdfDao,
+				sdfDao.getXmlFileName());
+		assertEquals(errors.size(), 3);
+		for (Exception e : errors) {
+			assertEquals(e.getMessage(), "xml");
+		}
+		errors = sdfVal.validateSdfFile(sdfDao, sdfDao.getBinaryFileName());
+		assertEquals(errors.size(), 3);
+		for (Exception e : errors) {
+			assertEquals(e.getMessage(), "binary");
+		}
+
 	}
 
 	@Test
@@ -202,7 +241,7 @@ public class SoftwareDefinitionFileValidatorTest {
 				dataVal);
 
 		List<Exception> errors = sdfVal
-				.validateTargetHardwareDefinitions(thwDefs);
+				.validateTargetHardwareDefinitions(thwDefs, "file.XDF");
 		assertEquals(errors.size(), 3);
 		for (int i = 0; i < errors.size(); i++) {
 			assertEquals(errors.get(i).getMessage(), i + "");

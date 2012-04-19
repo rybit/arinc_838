@@ -132,10 +132,10 @@ public class FileDefinitionDao {
 	
 	public boolean equals(FileDefinitionDao obj){
 		return obj != null &&
-				this == obj ||
+				(this == obj ||
 				(this.getFileIntegrityDefinition().equals(obj.getFileIntegrityDefinition()) &&
 				((this.isFileLoadable() && obj.isFileLoadable() || (!this.isFileLoadable() && !obj.isFileLoadable()))) &&
 				this.getFileName().equals(obj.getFileName()) &&
-				(this.getFileSize() == obj.getFileSize()));
+				(this.getFileSize() == obj.getFileSize())));
 	}
 }

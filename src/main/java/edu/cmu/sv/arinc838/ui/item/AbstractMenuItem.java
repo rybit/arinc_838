@@ -18,7 +18,7 @@ public abstract class AbstractMenuItem implements MenuItem {
 	
 	private String prompt;
 
-	AbstractMenuItem(String prompt) {
+	public AbstractMenuItem(String prompt) {
 		this.prompt = prompt;
 	}
 

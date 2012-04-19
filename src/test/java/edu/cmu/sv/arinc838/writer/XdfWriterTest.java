@@ -9,7 +9,8 @@
  */
 package edu.cmu.sv.arinc838.writer;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 import java.io.File;
 import java.util.List;
@@ -28,23 +29,33 @@ import com.arinc.arinc838.ThwDefinition;
 
 import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 import edu.cmu.sv.arinc838.util.Converter;
+import edu.cmu.sv.arinc838.validation.DataValidator;
 import edu.cmu.sv.arinc838.validation.ReferenceData;
+import edu.cmu.sv.arinc838.validation.SoftwareDefinitionFileValidator;
 
 public class XdfWriterTest {
 
 	@Test
 	public void xdfWriteTest() throws Exception {
 		SdfFile file = getTestFile();
-		File writtenXmlFile = File.createTempFile("test_xdf_writer", "xml");
-		// write the file based on the input
-		XdfWriter writer = new XdfWriter();
-		writer.write(writtenXmlFile, file);
+		File writtenXmlFile = new File(
+				ReferenceData.SOFTWARE_PART_NUMBER_REFERENCE.replace("-", "") + ".XDF");
 
-		// read the file back in
-		SdfFile jaxbFile = readJaxb(writtenXmlFile);
+		try {
+			// write the file based on the input
+			XdfWriter writer = new XdfWriter();
+			writer.write(writtenXmlFile, file);
 
-		// verify the files match
-		vefifyMatch(file, jaxbFile);
+			// read the file back in
+			SdfFile jaxbFile = readJaxb(writtenXmlFile);
+
+			// verify the files match
+			verifyMatch(file, writtenXmlFile.getName(), jaxbFile,
+					writtenXmlFile.getName());
+
+		} finally {
+			writtenXmlFile.delete();
+		}
 	}
 
 	@Test
@@ -57,21 +68,36 @@ public class XdfWriterTest {
 		assertEquals(fileName, sdfDao.getXmlFileName());
 	}
 
-	private void vefifyMatch(SdfFile file1, SdfFile file2) {
+	private void verifyMatch(SdfFile file1, String fileName1, SdfFile file2,
+			String fileName2) throws Exception {
+		// verify validity of both files
+		SoftwareDefinitionFileValidator validator = new SoftwareDefinitionFileValidator(
+				new DataValidator());
+		List<Exception> errors = validator.validateSdfFile(
+				new SoftwareDefinitionFileDao(file1, ""), fileName1);
+		assertEquals(errors.size(), 0);
+		assertEquals(validator.validateXmlFileHeader(new File (fileName1)).size(), 0);
+		errors = validator.validateSdfFile(
+				new SoftwareDefinitionFileDao(file2, ""), fileName2);
+		assertEquals(errors.size(), 0);
+		assertEquals(validator.validateXmlFileHeader(new File (fileName2)).size(), 0);
+
 		assertEquals(file1.getFileFormatVersion(), file2.getFileFormatVersion());
 
-		assertEquals(file1.getLspIntegrityDefinition().getIntegrityType(), file2.getLspIntegrityDefinition()
-				.getIntegrityType());
-		assertEquals(file1.getLspIntegrityDefinition().getIntegrityValue(), file2.getLspIntegrityDefinition()
-				.getIntegrityValue());
-		assertEquals(file1.getSoftwareDescription().getSoftwarePartnumber(), file2.getSoftwareDescription()
-				.getSoftwarePartnumber());
-		assertEquals(file1.getSoftwareDescription().getSoftwareTypeDescription(), file2.getSoftwareDescription()
+		assertEquals(file1.getLspIntegrityDefinition().getIntegrityType(),
+				file2.getLspIntegrityDefinition().getIntegrityType());
+		assertEquals(file1.getLspIntegrityDefinition().getIntegrityValue(),
+				file2.getLspIntegrityDefinition().getIntegrityValue());
+		assertEquals(file1.getSoftwareDescription().getSoftwarePartnumber(),
+				file2.getSoftwareDescription().getSoftwarePartnumber());
+		assertEquals(file1.getSoftwareDescription()
+				.getSoftwareTypeDescription(), file2.getSoftwareDescription()
 				.getSoftwareTypeDescription());
-		assertEquals(file1.getSoftwareDescription().getSoftwareTypeId(), file2.getSoftwareDescription()
-				.getSoftwareTypeId());
+		assertEquals(file1.getSoftwareDescription().getSoftwareTypeId(), file2
+				.getSoftwareDescription().getSoftwareTypeId());
 
-		assertEquals(file1.getFileDefinitions().size(), file2.getFileDefinitions().size());
+		assertEquals(file1.getFileDefinitions().size(), file2
+				.getFileDefinitions().size());
 		List<FileDefinition> file1FileDefs = file1.getFileDefinitions();
 		List<FileDefinition> file2FileDefs = file2.getFileDefinitions();
 		for (int i = 0; i < file1FileDefs.size(); i++) {
@@ -79,13 +105,15 @@ public class XdfWriterTest {
 			FileDefinition fdef2 = file2FileDefs.get(i);
 			assertEquals(fdef1.getFileName(), fdef2.getFileName());
 			assertEquals(fdef1.getFileSize(), fdef2.getFileSize());
-			assertEquals(fdef1.getFileIntegrityDefinition().getIntegrityType(), fdef2.getFileIntegrityDefinition()
-					.getIntegrityType());
-			assertEquals(fdef1.getFileIntegrityDefinition().getIntegrityValue(), fdef2.getFileIntegrityDefinition()
-					.getIntegrityValue());
+			assertEquals(fdef1.getFileIntegrityDefinition().getIntegrityType(),
+					fdef2.getFileIntegrityDefinition().getIntegrityType());
+			assertEquals(
+					fdef1.getFileIntegrityDefinition().getIntegrityValue(),
+					fdef2.getFileIntegrityDefinition().getIntegrityValue());
 		}
 
-		assertEquals(file1.getThwDefinitions().size(), file2.getThwDefinitions().size());
+		assertEquals(file1.getThwDefinitions().size(), file2
+				.getThwDefinitions().size());
 		List<ThwDefinition> file1ThwDefs = file1.getThwDefinitions();
 		List<ThwDefinition> file2ThwDefs = file2.getThwDefinitions();
 		for (int i = 0; i < file1ThwDefs.size(); i++) {
@@ -122,13 +150,14 @@ public class XdfWriterTest {
 
 		FileDefinition file = new FileDefinition();
 		file.setFileIntegrityDefinition(lspInteg);
-		file.setFileName("test");
+		file.setFileName("test.rom");
 		file.setFileSize(42);
 		file.setFileLoadable(true);
 
 		swDefFile.getFileDefinitions().add(file);
 
-		swDefFile.setFileFormatVersion(SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION);
+		swDefFile
+				.setFileFormatVersion(SoftwareDefinitionFileDao.DEFAULT_FILE_FORMAT_VERSION);
 		return swDefFile;
 	}
 
@@ -140,11 +169,11 @@ public class XdfWriterTest {
 
 		String tempPath = System.getProperty("java.io.tmpdir");
 		String filename = tempPath + builder.getXmlFileName();
-		
+
 		writer.write(tempPath, builder);
 
-		File file = new File (filename);
-		assertTrue (file.exists());
+		File file = new File(filename);
+		assertTrue(file.exists());
 		file.delete();
 	}
 }

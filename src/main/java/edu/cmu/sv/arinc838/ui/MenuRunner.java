@@ -70,7 +70,12 @@ public class MenuRunner {
 
 	public static int inInt(BufferedReader br) throws Exception {
 		String inString = br.readLine();
-		return Integer.valueOf(inString.trim()).intValue();
+		int value = -1;
+		if(inString != null) {
+			value = Integer.valueOf(inString.trim()).intValue();
+		}
+		
+		return value;
 	}
 
 	public static void main(String[] args) {
