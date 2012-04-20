@@ -43,34 +43,27 @@ public class SoftwareDefinitionFileValidator {
 	 * 
 	 * @param xmlFile
 	 * @return
+	 * @throws Exception
 	 */
-	public List<Exception> validateXmlFileHeader(File xmlFile) {
-		XMLStreamReader xsr;
+	public List<Exception> validateXmlFileHeader(File xmlFile) throws Exception {
+		XMLStreamReader xsr = null;
+		FileInputStream fileInputStream = null;
 		List<Exception> errors = new ArrayList<Exception>();
 
 		try {
+			fileInputStream = new FileInputStream(xmlFile);
 			xsr = XMLInputFactory.newInstance().createXMLStreamReader(
-					new FileInputStream(xmlFile));
+					fileInputStream);
 			xsr.nextTag(); // move to the root
 		} catch (Exception e) {
+			if (xsr != null) {
+				xsr.close();
+			}
+			if (fileInputStream != null) {
+				fileInputStream.close();
+			}
 			errors.add(e);
 			return errors; // can't work if the xsr can't be created
-		}
-
-		if (!DataValidator.XML_ENCODING.equalsIgnoreCase(xsr
-				.getCharacterEncodingScheme())) {
-			Exception e = new IllegalArgumentException(
-					"The XML Encoding is wrong." + "Expected: "
-							+ DataValidator.XML_ENCODING + " found: "
-							+ xsr.getCharacterEncodingScheme());
-			errors.add(e);
-		}
-		if (!DataValidator.XML_VERSION.equalsIgnoreCase(xsr.getVersion())) {
-			Exception e = new IllegalArgumentException(
-					"The XML version is wrong." + "Expected: "
-							+ DataValidator.XML_VERSION + " found: "
-							+ xsr.getVersion());
-			errors.add(e);
 		}
 
 		// attribute check
@@ -79,6 +72,8 @@ public class SoftwareDefinitionFileValidator {
 		// namespace check
 		errors.addAll(dataVal.validateXmlHeaderNamespaces(xsr));
 
+		xsr.close();
+		fileInputStream.close();
 		return errors;
 	}
 
@@ -92,11 +87,14 @@ public class SoftwareDefinitionFileValidator {
 			errors.add(e);
 		}
 
+		boolean isXdfFile = sourceFile.split("\\.")[1].equals("XDF");
+
 		errors.addAll(validateSoftwareDescription(
 				sdfDao.getSoftwareDescription(), sourceFile));
 		errors.addAll(validateTargetHardwareDefinitions(
 				sdfDao.getTargetHardwareDefinitions(), sourceFile));
-		errors.addAll(validateFileDefinitions(sdfDao.getFileDefinitions()));
+		errors.addAll(validateFileDefinitions(sdfDao.getFileDefinitions(),
+				sdfDao, isXdfFile));
 		errors.addAll(validateSdfIntegrityDefinition(sdfDao, bdfFile));
 		errors.addAll(validateLspIntegrityDefinition(sdfDao, bdfFile));
 
@@ -163,7 +161,8 @@ public class SoftwareDefinitionFileValidator {
 	}
 
 	public List<Exception> validateFileDefinitions(
-			List<FileDefinitionDao> fileDefs) {
+			List<FileDefinitionDao> fileDefs, SoftwareDefinitionFileDao sdfDao,
+			boolean isXdf) {
 		List<Exception> errors = new ArrayList<Exception>();
 
 		try {
@@ -175,7 +174,7 @@ public class SoftwareDefinitionFileValidator {
 		errors.addAll(dataVal.validateDataFileNamesAreUnique(fileDefs));
 
 		for (FileDefinitionDao fileDef : fileDefs) {
-			errors.addAll(validateFileDefinition(fileDef));
+			errors.addAll(validateFileDefinition(fileDef, sdfDao, isXdf));
 		}
 
 		return errors;
@@ -188,10 +187,12 @@ public class SoftwareDefinitionFileValidator {
 		errors.addAll(validateIntegrityDefStructure(sdf
 				.getSdfIntegrityDefinition()));
 
-		try {
-			CrcValidator.validateSdfCrc(sdf, bdf);
-		} catch (Exception e) {
-			errors.add(e);
+		if (bdf != null) {
+			try {
+				CrcValidator.validateSdfCrc(sdf, bdf);
+			} catch (Exception e) {
+				errors.add(e);
+			}
 		}
 
 		return errors;
@@ -204,16 +205,19 @@ public class SoftwareDefinitionFileValidator {
 		errors.addAll(validateIntegrityDefStructure(sdf
 				.getLspIntegrityDefinition()));
 
-		try {
-			CrcValidator.validateLspCrc(sdf, bdf);
-		} catch (Exception e) {
-			errors.add(e);
+		if (bdf != null) {
+			try {
+				CrcValidator.validateLspCrc(sdf, bdf);
+			} catch (Exception e) {
+				errors.add(e);
+			}
 		}
 
 		return errors;
 	}
 
-	public List<Exception> validateFileDefinition(FileDefinitionDao fileDef) {
+	public List<Exception> validateFileDefinition(FileDefinitionDao fileDef,
+			SoftwareDefinitionFileDao sdfDao, boolean isXdf) {
 		List<Exception> errors = new ArrayList<Exception>();
 
 		errors.addAll(dataVal.validateDataFileName(fileDef.getFileName()));
@@ -226,15 +230,17 @@ public class SoftwareDefinitionFileValidator {
 
 		byte[] data = null;
 
-		// TODO we need to handle paths correctly since all we have is the file
-		// name
-		try {
-			data = CrcCalculator.readFile(new File(fileDef.getFileName()));
+		if (!isXdf) {
+			try {
+				data = CrcCalculator.readFile(new File(sdfDao.getPath(),
+						fileDef.getFileName()));
 
-		} catch (IOException e) {
-			errors.add(e);
-			data = null; // don't validate CRC if there was an error reading the
-							// file
+			} catch (IOException e) {
+				errors.add(e);
+				data = null; // don't validate CRC if there was an error reading
+								// the
+								// file
+			}
 		}
 
 		errors.addAll(validateIntegrityDefinition(

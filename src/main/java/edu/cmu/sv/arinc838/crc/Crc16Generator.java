@@ -1,8 +1,9 @@
 package edu.cmu.sv.arinc838.crc;
 
-public class Crc16Generator  {
+public class Crc16Generator implements CrcGenerator {
 
-	public static int calculateCrc(byte[] bytes) {
+	@Override
+	public long calculateCrc(byte[] bytes) {
 		int crc = 0xFFFF; // initial value
 		int polynomial = 0x1021; // 0001 0000 0010 0001 (0, 5, 12)
 

@@ -10,11 +10,13 @@ import org.testng.annotations.Test;
 public class Crc16GeneratorTest {
 	@Test
 	public void calculateCrcTest() throws Exception {
+
+		CrcGenerator generator = new Crc16Generator();
+
 		Map<BigInteger, byte[]> expectedCrcs = CrcCalculatorTestCommon
 				.getExpectedCrcs("crc16");
 		for (BigInteger expectedCrc : expectedCrcs.keySet()) {
-			long crc = Crc16Generator.calculateCrc(expectedCrcs
-					.get(expectedCrc));
+			long crc = generator.calculateCrc(expectedCrcs.get(expectedCrc));
 			assertEquals(crc, expectedCrc.longValue());
 		}
 	}

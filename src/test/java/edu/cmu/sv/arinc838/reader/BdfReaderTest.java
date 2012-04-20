@@ -1,6 +1,7 @@
 package edu.cmu.sv.arinc838.reader;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
 
 import java.util.ArrayList;
 
@@ -18,7 +19,7 @@ public class BdfReaderTest {
 		BdfReader reader = new BdfReader();
 		ArrayList<Exception> errorList = new ArrayList<Exception>();
 		SoftwareDefinitionFileDao sdfDao = reader.read(
-				"src/test/resources/ACM4712345678.BDF", errorList);
+				"src/test/resources/ACM47-1234-5678/ACM4712345678.BDF", errorList);
 		assertEquals(errorList.size(), 0, "Unexpected errors during read");
 
 		assertEquals(sdfDao.getFileFormatVersion(),
@@ -84,7 +85,17 @@ public class BdfReaderTest {
 		reader.read(
 				"src/test/resources/error/ACM4712345678.BDF", errorList);
 
-		assertEquals(errorList.size(), 2,
+		assertEquals(errorList.size(), 6, // 6 = 1 Part number + 1 part number characters don't match + LSP CRC + SDF CRC + 2x FileDefinition CRC
 				"Did not get expected number of errors");
+	}
+	
+	@Test
+	public void testSetsPath(){
+		BdfReader reader = new BdfReader();
+		ArrayList<Exception> errorList = new ArrayList<Exception>();
+		SoftwareDefinitionFileDao sdfDao = reader.read(
+				"src/test/resources/ACM47-1234-5678/ACM4712345678.BDF", errorList);
+		
+		assertTrue(sdfDao.getPath().endsWith("ACM47-1234-5678"));
 	}
 }

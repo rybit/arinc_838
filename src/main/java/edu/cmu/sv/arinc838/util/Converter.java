@@ -6,7 +6,6 @@ import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao.IntegrityType;
-import edu.cmu.sv.arinc838.validation.CrcValidator;
 
 public class Converter {
 	/**
@@ -32,9 +31,10 @@ public class Converter {
 	public static String bytesToHex(byte[] bytes) {
 		return new HexBinaryAdapter().marshal(bytes);
 	}
-	
+
 	public static long checksumBytesToLong(IntegrityDefinitionDao integDef) {
-		return checksumBytesToLong(integDef.getIntegrityValue(), integDef.getIntegrityType());
+		return checksumBytesToLong(integDef.getIntegrityValue(),
+				integDef.getIntegrityType());
 	}
 
 	public static long checksumBytesToLong(byte[] crcValue, long type) {
@@ -42,10 +42,10 @@ public class Converter {
 
 		switch (IntegrityType.fromLong(type)) {
 		case CRC16:
-			value &= 0xFFFF;
+			value &= 0xFFFFL;
 			break;
 		case CRC32:
-			value &= 0xFFFFFFFF;
+			value &= 0xFFFFFFFFL;
 			break;
 		case CRC64:
 			break;

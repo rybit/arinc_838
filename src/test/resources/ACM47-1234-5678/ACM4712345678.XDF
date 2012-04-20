@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<sdf:sdf-file xmlns:sdf="http://www.arinc.com/arinc838"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.arinc.com ">
+<sdf:sdf-file xmlns:sdf="http://www.arinc.com/arinc838" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.arinc.com">
 
 	<file-format-version>00008100</file-format-version>
 	<software-description>
@@ -41,10 +39,10 @@
 	</file-definitions>
 	<sdf-integrity-definition>
 		<integrity-type>3</integrity-type>
-		<integrity-value>42f4237f</integrity-value>
+		<integrity-value>42F4237F</integrity-value>
 	</sdf-integrity-definition>
 	<lsp-integrity-definition>
 		<integrity-type>3</integrity-type>
-		<integrity-value>0000000A</integrity-value>
+		<integrity-value>3833F842</integrity-value>
 	</lsp-integrity-definition>
 </sdf:sdf-file>

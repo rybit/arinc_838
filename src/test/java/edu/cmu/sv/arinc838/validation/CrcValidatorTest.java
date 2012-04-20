@@ -11,9 +11,6 @@ import java.math.BigInteger;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import edu.cmu.sv.arinc838.crc.Crc16Generator;
-import edu.cmu.sv.arinc838.crc.Crc32Generator;
-import edu.cmu.sv.arinc838.crc.Crc64Generator;
 import edu.cmu.sv.arinc838.util.Converter;
 
 public class CrcValidatorTest {

@@ -10,6 +10,7 @@
 package edu.cmu.sv.arinc838.validation;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
 import edu.cmu.sv.arinc838.crc.Crc16Generator;
@@ -34,7 +35,7 @@ public class CrcValidator {
 			throw new IllegalArgumentException("Data parameter cannot be null");
 		}
 
-		int crcActual = Crc16Generator.calculateCrc(data);
+		int crcActual = (int) new Crc16Generator().calculateCrc(data);
 		if (crcActual != crcValue) {
 			throw new ChecksumValidationException(
 					"CRC16 check failed! Expected 0x"
@@ -53,7 +54,7 @@ public class CrcValidator {
 			throw new IllegalArgumentException("Data parameter cannot be null");
 		}
 
-		long crcActual = Crc32Generator.calculateCrc(data);
+		long crcActual = new Crc32Generator().calculateCrc(data);
 		if (crcActual != crcValue) {
 			throw new ChecksumValidationException(
 					"CRC32 check failed! Expected 0x"
@@ -72,7 +73,7 @@ public class CrcValidator {
 			throw new IllegalArgumentException("Data parameter cannot be null");
 		}
 
-		long crcActual = Crc64Generator.calculateCrc(data);
+		long crcActual = new Crc64Generator().calculateCrc(data);
 		if (crcActual != crcValue) {
 			throw new ChecksumValidationException(
 					"CRC64 check failed! Expected 0x"
@@ -86,7 +87,7 @@ public class CrcValidator {
 		return crcActual;
 	}
 	
-	public static long validateLspCrc(SoftwareDefinitionFileDao sdf, BdfFile bdf)
+	public static byte[] validateLspCrc(SoftwareDefinitionFileDao sdf, BdfFile bdf)
 			throws IOException {
 		if (sdf == null) {
 			throw new IllegalArgumentException("SDF parameter cannot be null");
@@ -96,12 +97,11 @@ public class CrcValidator {
 			throw new IllegalArgumentException("BDF parameter cannot be null");
 		}
 
-		long crc = CrcCalculator.calculateLspCrc(sdf, bdf);
-		long sdfCrc = Converter.checksumBytesToLong(sdf
-				.getSdfIntegrityDefinition());
-		if (crc != sdfCrc) {
-			String crcHex = Long.toHexString(crc);
-			String sdfCrcHex = Long.toHexString(sdfCrc);
+		byte[] crc = CrcCalculator.calculateLspCrc(sdf, bdf);
+		byte[] sdfCrc = sdf.getLspIntegrityDefinition().getIntegrityValue();
+		if (!Arrays.equals(crc, sdfCrc)) {
+			String crcHex = Converter.bytesToHex(crc);
+			String sdfCrcHex = Converter.bytesToHex(sdfCrc);
 			throw new ChecksumValidationException(
 					"LSP CRC did not validate! Expected 0x" + sdfCrcHex
 							+ ", but got 0x" + crcHex);
@@ -110,7 +110,7 @@ public class CrcValidator {
 		return crc;
 	}
 
-	public static long validateSdfCrc(SoftwareDefinitionFileDao sdf, BdfFile bdf)
+	public static byte[] validateSdfCrc(SoftwareDefinitionFileDao sdf, BdfFile bdf)
 			throws IOException {
 		if (sdf == null) {
 			throw new IllegalArgumentException("SDF parameter cannot be null");
@@ -120,12 +120,11 @@ public class CrcValidator {
 			throw new IllegalArgumentException("BDF parameter cannot be null");
 		}
 
-		long crc = CrcCalculator.calculateSdfCrc(sdf, bdf);
-		long sdfCrc = Converter.checksumBytesToLong(sdf
-				.getSdfIntegrityDefinition());
-		if (crc != sdfCrc) {
-			String crcHex = Long.toHexString(crc);
-			String sdfCrcHex = Long.toHexString(sdfCrc);
+		byte[] crc = CrcCalculator.calculateSdfCrc(sdf, bdf);
+		byte[] sdfCrc = sdf.getSdfIntegrityDefinition().getIntegrityValue();
+		if (!Arrays.equals(crc, sdfCrc)) {
+			String crcHex = Converter.bytesToHex(crc);
+			String sdfCrcHex = Converter.bytesToHex(sdfCrc);
 			throw new ChecksumValidationException(
 					"SDF CRC did not validate! Expected 0x" + sdfCrcHex
 							+ ", but got 0x" + crcHex);

@@ -13,6 +13,7 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import edu.cmu.sv.arinc838.binary.BdfFile;
@@ -23,7 +24,7 @@ import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 
 public class CrcCalculator {
 
-	public static long calculateLspCrc(SoftwareDefinitionFileDao sdf,
+	public static byte[] calculateLspCrc(SoftwareDefinitionFileDao sdf,
 			BdfFile bdf) throws IOException {
 		int bdfLength = (int) bdf.readLspIntegrityDefinitionPointer() + 6;
 		byte[] bdfData = new byte[bdfLength];
@@ -33,7 +34,7 @@ public class CrcCalculator {
 		int length = bdfData.length;
 		ArrayList<byte[]> fileDefData = new  ArrayList<byte[]>();
 		for(FileDefinitionDao fileDef : sdf.getFileDefinitions()) {
-			byte[] data = readFile(new File(fileDef.getFileName()));
+			byte[] data = readFile(new File(sdf.getPath(), fileDef.getFileName()));
 			length += data.length;
 			fileDefData.add(data);
 		}
@@ -48,10 +49,10 @@ public class CrcCalculator {
 
 		System.arraycopy(bdfData, 0, fullData, offset, bdfData.length);
 		
-		return calculateCrc(sdf.getSdfIntegrityDefinition(), fullData);
+		return calculateCrc(sdf.getLspIntegrityDefinition(), fullData);
 	}
 
-	public static long calculateSdfCrc(SoftwareDefinitionFileDao sdf,
+	public static byte[] calculateSdfCrc(SoftwareDefinitionFileDao sdf,
 			BdfFile bdf) throws IOException {
 		byte[] data = new byte[(int) bdf.readSdfIntegrityDefinitionPointer() + 6];
 		bdf.seek(0);
@@ -70,24 +71,28 @@ public class CrcCalculator {
 		return data;
 	}
 
-	public static long calculateCrc(IntegrityDefinitionDao integ, byte[] data) {
+	public static byte[] calculateCrc(IntegrityDefinitionDao integ, byte[] data) {
 		IntegrityType type = IntegrityType.fromLong(integ.getIntegrityType());
-		long crc = -1;
+		ByteBuffer buffer = null;
+		CrcGeneratorFactory factory = new CrcGeneratorFactory();
 		switch (type) {
 		case CRC16:
-			crc = Crc16Generator.calculateCrc(data) & 0xFFFF;
+			buffer = ByteBuffer.allocate(2);
+			buffer.putShort((short) (factory.getCrc16Generator().calculateCrc(data) & 0xFFFFL));
 			break;
 		case CRC32:
-			crc = Crc32Generator.calculateCrc(data) & 0xFFFFFFFF;
+			buffer = ByteBuffer.allocate(4);
+			buffer.putInt((int) (factory.getCrc32Generator().calculateCrc(data) & 0xFFFFFFFFL));
 			break;
 		case CRC64:
-			crc = Crc64Generator.calculateCrc(data);
+			buffer = ByteBuffer.allocate(8);
+			buffer.putLong(factory.getCrc64Generator().calculateCrc(data));
 			break;
 		default:
 			break;
 		}
 
-		return crc;
+		return buffer.array();
 	}
 
 }

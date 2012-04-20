@@ -48,9 +48,14 @@ public class SoftwareDefinitionFileDaoTest {
 	private SoftwareDefinitionFileDao swDefFileDao;
 	private SoftwareDefinitionFileDao readBinaryFile;
 	private BdfFile binaryFile;
+	
+	
+	private String path;
 
 	@BeforeMethod
 	public void beforeMethod() throws Exception {
+		File tempFile = File.createTempFile("tmp", ".bin");
+
 		integrity = new IntegrityDefinition();
 		integrity.setIntegrityType(IntegrityType.CRC16.getType());
 		integrity.setIntegrityValue(Converter.hexToBytes("0000000A"));
@@ -62,7 +67,10 @@ public class SoftwareDefinitionFileDaoTest {
 		description.setSoftwareTypeId(Converter.hexToBytes("0000000A"));
 
 		fileDef = new FileDefinition();
-		fileDef.setFileName("file");
+		// we have to create a temp file for this, otherwise we'll get a FileNotFoundException during the 
+		// LSP CRC calculation
+		File fileDefTemp = File.createTempFile("tmp", ".bin");
+		fileDef.setFileName(fileDefTemp.getName());
 		fileDef.setFileIntegrityDefinition(integrity);
 		fileDef.setFileSize(1234);
 
@@ -86,13 +94,16 @@ public class SoftwareDefinitionFileDaoTest {
 		swDefFile.getThwDefinitions().add(hardwareDef);
 		swDefFile.getThwDefinitions().add(hardwareDef);
 
+		path = tempFile.getParent();
+		binaryFile = new BdfFile(tempFile);
+		
 		swDefFileDao = new SoftwareDefinitionFileDao(
-				swDefFile);
-		binaryFile = new BdfFile(File.createTempFile("tmp", "bin"));
+				swDefFile, path);
+		
 		SoftwareDefinitionFileBuilder swDefFileBuilder = new SoftwareDefinitionFileBuilder(
 				new BuilderFactory());
 		swDefFileBuilder.buildBinary(swDefFileDao, binaryFile);
-		readBinaryFile = new SoftwareDefinitionFileDao(binaryFile);
+		readBinaryFile = new SoftwareDefinitionFileDao(binaryFile, path);
 	}
 
 	@Test
@@ -163,7 +174,7 @@ public class SoftwareDefinitionFileDaoTest {
 
 	@Test
 	public void testXmlConstructor() {
-		swDefFileDao = new SoftwareDefinitionFileDao(swDefFile);
+		swDefFileDao = new SoftwareDefinitionFileDao(swDefFile, path);
 
 		assertEquals(swDefFileDao.getSoftwareDescription(),
 				new SoftwareDescriptionDao(swDefFile.getSoftwareDescription()));
@@ -217,6 +228,19 @@ public class SoftwareDefinitionFileDaoTest {
 		assertEquals(description.getSoftwarePartnumber(), swDefFile
 				.getSoftwareDescription().getSoftwarePartnumber());
 	}
+	
+	@Test
+	public void getPath(){
+		assertEquals(swDefFileDao.getPath(), path);
+	}
+	
+	@Test
+	public void setPath(){
+		String myPath = "my path";
+		swDefFileDao.setPath(myPath);
+		
+		assertEquals(swDefFileDao.getPath(), myPath);
+	}
 
 	@Test
 	public void testHasBinaryFileName() {
@@ -250,15 +274,15 @@ public class SoftwareDefinitionFileDaoTest {
 	@Test
 	public void testEquals() {
 		SoftwareDefinitionFileDao copy = new SoftwareDefinitionFileDao(
-				swDefFile);
-		swDefFileDao = new SoftwareDefinitionFileDao(swDefFile);
+				swDefFile, path);
+		swDefFileDao = new SoftwareDefinitionFileDao(swDefFile, path);
 
 		assertEquals(swDefFileDao, copy);
 	}
 
 	@Test
 	public void testHashcode() {
-		swDefFileDao = new SoftwareDefinitionFileDao(swDefFile);
+		swDefFileDao = new SoftwareDefinitionFileDao(swDefFile, path);
 		assertEquals(swDefFileDao.hashCode(), swDefFileDao.getXmlFileName()
 				.hashCode());
 	}
@@ -344,7 +368,7 @@ public class SoftwareDefinitionFileDaoTest {
 		File firstOnDisk = new File(path + writer.getFilename(swDefFileDao));
 
 		BdfFile file = new BdfFile(firstOnDisk);
-		SoftwareDefinitionFileDao actual = new SoftwareDefinitionFileDao(file);
+		SoftwareDefinitionFileDao actual = new SoftwareDefinitionFileDao(file, path);
 
 		RandomAccessFile first = new RandomAccessFile(firstOnDisk, "r");
 		byte[] firstBytes = new byte[(int) first.length()];
@@ -360,6 +384,15 @@ public class SoftwareDefinitionFileDaoTest {
 
 		firstOnDisk.delete();
 		secondOnDisk.delete();
+	}
+	
+	@Test
+	public void testInitializeSoftwareDefinitionFileDaoSetsPath() {
+		swDefFileDao.setPath("foo");
+		SoftwareDefinitionFileDao sdfDao2 = new SoftwareDefinitionFileDao();
+		sdfDao2.initialize(swDefFileDao);
+		assertEquals(sdfDao2.getPath(), "foo");
+		
 	}
 
 }
