@@ -74,11 +74,11 @@ public class XdfWriterTest {
 		SoftwareDefinitionFileValidator validator = new SoftwareDefinitionFileValidator(
 				new DataValidator());
 		List<Exception> errors = validator.validateSdfFile(
-				new SoftwareDefinitionFileDao(file1, ""), fileName1);
+				new SoftwareDefinitionFileDao(file1, ""), fileName1, null);
 		assertEquals(errors.size(), 0);
 		assertEquals(validator.validateXmlFileHeader(new File (fileName1)).size(), 0);
 		errors = validator.validateSdfFile(
-				new SoftwareDefinitionFileDao(file2, ""), fileName2);
+				new SoftwareDefinitionFileDao(file2, ""), fileName2, null);
 		assertEquals(errors.size(), 0);
 		assertEquals(validator.validateXmlFileHeader(new File (fileName2)).size(), 0);
 

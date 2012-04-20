@@ -44,8 +44,7 @@ public class XdfReader implements SdfReader {
 					.getParentFile().getAbsolutePath());
 			if (errorList != null) {
 				errorList.addAll(validator.validateXmlFileHeader(file));
-				errorList.addAll(validator.validateSdfFile(sdfDao,
-						file.getName()));
+				errorList.addAll(validator.validateSdfFile(sdfDao, file.getName(), null));
 			}
 		} catch (Exception e) {
 			if (errorList != null) {

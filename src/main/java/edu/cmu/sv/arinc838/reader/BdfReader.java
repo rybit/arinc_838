@@ -37,7 +37,7 @@ public class BdfReader implements SdfReader {
 					.getAbsolutePath());
 			if (errorList != null) {
 				errorList.addAll(validator.validateSdfFile(sdfDao,
-						file.getName()));
+						file.getName(), bdf));
 			}
 		} catch (Exception e) {
 			if (errorList != null) {

@@ -12,7 +12,7 @@ public class Crc64GeneratorTest {
 	public void calculateCrcTest() throws Exception {
 		Crc64Generator generator = new Crc64Generator();
 
-		Map<BigInteger, byte[]> expectedCrcs = CrcGeneratorTestCommon
+		Map<BigInteger, byte[]> expectedCrcs = CrcCalculatorTestCommon
 				.getExpectedCrcs("crc64");
 		for (BigInteger expectedCrc : expectedCrcs.keySet()) {
 			long crc = generator.calculateCrc(expectedCrcs.get(expectedCrc));

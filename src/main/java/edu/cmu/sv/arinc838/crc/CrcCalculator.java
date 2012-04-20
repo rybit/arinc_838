@@ -49,7 +49,7 @@ public class CrcCalculator {
 
 		System.arraycopy(bdfData, 0, fullData, offset, bdfData.length);
 		
-		return calculateCrc(sdf.getSdfIntegrityDefinition(), fullData);
+		return calculateCrc(sdf.getLspIntegrityDefinition(), fullData);
 	}
 
 	public static byte[] calculateSdfCrc(SoftwareDefinitionFileDao sdf,

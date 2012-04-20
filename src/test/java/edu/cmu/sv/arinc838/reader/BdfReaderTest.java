@@ -85,7 +85,7 @@ public class BdfReaderTest {
 		reader.read(
 				"src/test/resources/error/ACM4712345678.BDF", errorList);
 
-		assertEquals(errorList.size(), 2,
+		assertEquals(errorList.size(), 6, // 6 = 1 Part number + 1 part number characters don't match + LSP CRC + SDF CRC + 2x FileDefinition CRC
 				"Did not get expected number of errors");
 	}
 	

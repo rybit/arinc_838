@@ -11,17 +11,22 @@ package edu.cmu.sv.arinc838.validation;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
+import edu.cmu.sv.arinc838.binary.BdfFile;
+import edu.cmu.sv.arinc838.crc.CrcCalculator;
 import edu.cmu.sv.arinc838.dao.FileDefinitionDao;
 import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
+import edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao.IntegrityType;
 import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 import edu.cmu.sv.arinc838.dao.SoftwareDescriptionDao;
 import edu.cmu.sv.arinc838.dao.TargetHardwareDefinitionDao;
+import edu.cmu.sv.arinc838.util.Converter;
 
 public class SoftwareDefinitionFileValidator {
 
@@ -38,7 +43,7 @@ public class SoftwareDefinitionFileValidator {
 	 * 
 	 * @param xmlFile
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public List<Exception> validateXmlFileHeader(File xmlFile) throws Exception {
 		XMLStreamReader xsr = null;
@@ -47,13 +52,14 @@ public class SoftwareDefinitionFileValidator {
 
 		try {
 			fileInputStream = new FileInputStream(xmlFile);
-			xsr = XMLInputFactory.newInstance().createXMLStreamReader(fileInputStream);
+			xsr = XMLInputFactory.newInstance().createXMLStreamReader(
+					fileInputStream);
 			xsr.nextTag(); // move to the root
 		} catch (Exception e) {
-			if(xsr != null) {
+			if (xsr != null) {
 				xsr.close();
 			}
-			if(fileInputStream != null) {
+			if (fileInputStream != null) {
 				fileInputStream.close();
 			}
 			errors.add(e);
@@ -72,7 +78,7 @@ public class SoftwareDefinitionFileValidator {
 	}
 
 	public List<Exception> validateSdfFile(SoftwareDefinitionFileDao sdfDao,
-			String sourceFile) {
+			String sourceFile, BdfFile bdfFile) {
 		List<Exception> errors = new ArrayList<Exception>();
 
 		try {
@@ -81,15 +87,16 @@ public class SoftwareDefinitionFileValidator {
 			errors.add(e);
 		}
 
+		boolean isXdfFile = sourceFile.split("\\.")[1].equals("XDF");
+
 		errors.addAll(validateSoftwareDescription(
 				sdfDao.getSoftwareDescription(), sourceFile));
-		errors.addAll(validateTargetHardwareDefinitions(sdfDao
-				.getTargetHardwareDefinitions(), sourceFile));
-		errors.addAll(validateFileDefinitions(sdfDao.getFileDefinitions()));
-		errors.addAll(validateSdfIntegrityDefinition(sdfDao
-				.getSdfIntegrityDefinition()));
-		errors.addAll(validateLspIntegrityDefinition(sdfDao
-				.getLspIntegrityDefinition()));
+		errors.addAll(validateTargetHardwareDefinitions(
+				sdfDao.getTargetHardwareDefinitions(), sourceFile));
+		errors.addAll(validateFileDefinitions(sdfDao.getFileDefinitions(),
+				sdfDao, isXdfFile));
+		errors.addAll(validateSdfIntegrityDefinition(sdfDao, bdfFile));
+		errors.addAll(validateLspIntegrityDefinition(sdfDao, bdfFile));
 
 		return errors;
 	}
@@ -154,7 +161,8 @@ public class SoftwareDefinitionFileValidator {
 	}
 
 	public List<Exception> validateFileDefinitions(
-			List<FileDefinitionDao> fileDefs) {
+			List<FileDefinitionDao> fileDefs, SoftwareDefinitionFileDao sdfDao,
+			boolean isXdf) {
 		List<Exception> errors = new ArrayList<Exception>();
 
 		try {
@@ -166,23 +174,50 @@ public class SoftwareDefinitionFileValidator {
 		errors.addAll(dataVal.validateDataFileNamesAreUnique(fileDefs));
 
 		for (FileDefinitionDao fileDef : fileDefs) {
-			errors.addAll(validateFileDefinition(fileDef));
+			errors.addAll(validateFileDefinition(fileDef, sdfDao, isXdf));
 		}
 
 		return errors;
 	}
 
 	public List<Exception> validateSdfIntegrityDefinition(
-			IntegrityDefinitionDao sdfInteg) {
-		return validateIntegrityDefinition(sdfInteg);
+			SoftwareDefinitionFileDao sdf, BdfFile bdf) {
+		List<Exception> errors = new ArrayList<Exception>();
+
+		errors.addAll(validateIntegrityDefStructure(sdf
+				.getSdfIntegrityDefinition()));
+
+		if (bdf != null) {
+			try {
+				CrcValidator.validateSdfCrc(sdf, bdf);
+			} catch (Exception e) {
+				errors.add(e);
+			}
+		}
+
+		return errors;
 	}
 
 	public List<Exception> validateLspIntegrityDefinition(
-			IntegrityDefinitionDao lspInteg) {
-		return validateIntegrityDefinition(lspInteg);
+			SoftwareDefinitionFileDao sdf, BdfFile bdf) {
+		List<Exception> errors = new ArrayList<Exception>();
+
+		errors.addAll(validateIntegrityDefStructure(sdf
+				.getLspIntegrityDefinition()));
+
+		if (bdf != null) {
+			try {
+				CrcValidator.validateLspCrc(sdf, bdf);
+			} catch (Exception e) {
+				errors.add(e);
+			}
+		}
+
+		return errors;
 	}
 
-	public List<Exception> validateFileDefinition(FileDefinitionDao fileDef) {
+	public List<Exception> validateFileDefinition(FileDefinitionDao fileDef,
+			SoftwareDefinitionFileDao sdfDao, boolean isXdf) {
 		List<Exception> errors = new ArrayList<Exception>();
 
 		errors.addAll(dataVal.validateDataFileName(fileDef.getFileName()));
@@ -193,13 +228,66 @@ public class SoftwareDefinitionFileValidator {
 			errors.add(e);
 		}
 
-		errors.addAll(validateIntegrityDefinition(fileDef
-				.getFileIntegrityDefinition()));
+		byte[] data = null;
+
+		if (!isXdf) {
+			try {
+				data = CrcCalculator.readFile(new File(sdfDao.getPath(),
+						fileDef.getFileName()));
+
+			} catch (IOException e) {
+				errors.add(e);
+				data = null; // don't validate CRC if there was an error reading
+								// the
+								// file
+			}
+		}
+
+		errors.addAll(validateIntegrityDefinition(
+				fileDef.getFileIntegrityDefinition(), data));
 
 		return errors;
 	}
 
 	public List<Exception> validateIntegrityDefinition(
+			IntegrityDefinitionDao integDef, byte[] data) {
+		List<Exception> errors = new ArrayList<Exception>();
+
+		errors.addAll(validateIntegrityDefStructure(integDef));
+
+		if (data != null) {
+			try {
+				IntegrityType type = IntegrityType.fromLong(integDef
+						.getIntegrityType());
+
+				long value = Converter.checksumBytesToLong(integDef);
+
+				switch (type) {
+				case CRC16:
+					CrcValidator.validateCrc16((int) value, data);
+					break;
+				case CRC32:
+					CrcValidator.validateCrc32(value, data);
+					break;
+				case CRC64:
+					CrcValidator.validateCrc64(value, data);
+					break;
+				default:
+					errors.add(new IllegalArgumentException(
+							"Invalid integrity type "
+									+ integDef.getIntegrityType()));
+
+				}
+
+			} catch (Exception e) {
+				errors.add(e);
+			}
+		}
+
+		return errors;
+	}
+
+	protected List<Exception> validateIntegrityDefStructure(
 			IntegrityDefinitionDao integDef) {
 		List<Exception> errors = new ArrayList<Exception>();
 
