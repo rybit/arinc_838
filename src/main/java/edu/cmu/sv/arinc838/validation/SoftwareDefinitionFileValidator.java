@@ -27,6 +27,7 @@ import edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 import edu.cmu.sv.arinc838.dao.SoftwareDescriptionDao;
 import edu.cmu.sv.arinc838.dao.TargetHardwareDefinitionDao;
 import edu.cmu.sv.arinc838.util.Converter;
+import edu.cmu.sv.arinc838.validation.CrcValidator.ChecksumValidationException;
 
 public class SoftwareDefinitionFileValidator {
 
@@ -225,7 +226,11 @@ public class SoftwareDefinitionFileValidator {
 		try {
 			dataVal.validateUint32(fileDef.getFileSize());
 		} catch (IllegalArgumentException e) {
-			errors.add(e);
+			IllegalArgumentException exceptionToAdd = new IllegalArgumentException(
+					"Checksum for file " + fileDef.getFileName()
+							+ " was invalid! Error was '" + e.getMessage()
+							+ "'.");
+			errors.add(exceptionToAdd);
 		}
 
 		byte[] data = null;
@@ -236,15 +241,37 @@ public class SoftwareDefinitionFileValidator {
 						fileDef.getFileName()));
 
 			} catch (IOException e) {
-				errors.add(e);
+				IOException exceptionToAdd = new IOException(
+						"Error reading file " + fileDef.getFileName()
+								+ "! Error was '" + e.getMessage() + "'.");
+				errors.add(exceptionToAdd);
 				data = null; // don't validate CRC if there was an error reading
 								// the
 								// file
 			}
 		}
 
-		errors.addAll(validateIntegrityDefinition(
-				fileDef.getFileIntegrityDefinition(), data));
+		List<Exception> integDefErrors = validateIntegrityDefinition(
+				fileDef.getFileIntegrityDefinition(), data);
+		if (integDefErrors != null) {
+
+			for (Exception e : integDefErrors) {
+				Exception exceptionToAdd = e;
+				if (e.getClass() == ChecksumValidationException.class) {
+					exceptionToAdd = new ChecksumValidationException(
+							"Checksum for file " + fileDef.getFileName()
+									+ " was invalid! Error was '"
+									+ e.getMessage() + "'.");
+				} else if (e.getClass() == IllegalArgumentException.class) {
+					exceptionToAdd = new IllegalArgumentException(
+							"Checksum for file " + fileDef.getFileName()
+									+ " was invalid! Error was '"
+									+ e.getMessage() + "'.");
+				}
+
+				errors.add(exceptionToAdd);
+			}
+		}
 
 		return errors;
 	}

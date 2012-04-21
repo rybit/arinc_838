@@ -372,7 +372,7 @@ public class SoftwareDefinitionFileValidatorTest {
 
 		List<Exception> errors = sdfVal.validateFileDefinition(fileDef, sdfDao, false);
 		assertEquals(errors.size(), 2);
-		assertEquals(errors.get(0).getMessage(), "0");
+		assertEquals(errors.get(0).getMessage(), "Checksum for file someFile was invalid! Error was '0'.");
 	}
 
 	@Test
