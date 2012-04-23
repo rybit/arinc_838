@@ -17,6 +17,7 @@ public class InitialMenu implements Menu {
 		new SaveItem ("Save the file as XML", new XdfWriter ()),
 		new SaveItem ("Save the file as Binary", new BdfWriter ()),
 		new BranchItem ("Convert", new ConversionMenu ()),
+		new BranchItem ("Compare", new ComparisonMenu ()),
 		new ExitItem()
 	};
 	
