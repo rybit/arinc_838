@@ -1,6 +1,7 @@
 package edu.cmu.sv.arinc838.validation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -33,14 +34,14 @@ public class SdfChecker {
 
 	public List<String> compare(SoftwareDefinitionFileDao mine, SoftwareDefinitionFileDao theirs) {
 		List<String> results = new ArrayList<String>();
-		if (nullCheck (mine, theirs, results)) {
+		if (nullCheck (mine, theirs)) {
+			results.add("Can't compare software definitions, null detected. " + mine + ", " + theirs);
 			return results;
 		}
 
-		// unnecessary to check - they are just convenience functions 
-		//check(mine.getBinaryFileName(), theirs.getBinaryFileName(), "binary file name", results);
-		//check(mine.getXmlFileName(), theirs.getXmlFileName(), "XML file name", results);
-		check(mine.getFileFormatVersion(), theirs.getFileFormatVersion(), "file format version", results);
+		if (!compareBytes (mine.getFileFormatVersion(), theirs.getFileFormatVersion())) {
+			results.add("The file format versions differ");
+		}
 
 		results.addAll(check(mine.getFileDefinitions(), theirs.getFileDefinitions(), "file definition",
 				new CompareRef<FileDefinitionDao>() {
@@ -68,13 +69,16 @@ public class SdfChecker {
 
 	protected List<String> compare(SoftwareDescriptionDao mine, SoftwareDescriptionDao theirs) {
 		List<String> results = new ArrayList<String>();
-		if (nullCheck (mine, theirs, results)) {
+		if (nullCheck (mine, theirs)) {
+			results.add("Can't compare software descriptions, null detected. " + mine + ", " + theirs);
 			return results;
 		}
 		
 		check(mine.getSoftwarePartnumber(), theirs.getSoftwarePartnumber(), "software part number", results);
 		check(mine.getSoftwareTypeDescription(), theirs.getSoftwareTypeDescription(), "software type description", results);
-		check(mine.getSoftwareTypeId(), theirs.getSoftwareTypeId(), "software type id", results);
+		if (!compareBytes(mine.getSoftwareTypeId(), theirs.getSoftwareTypeId())) {
+			results.add("The software type ids differ");
+		}
 		
 		return results;
 	}
@@ -82,19 +86,24 @@ public class SdfChecker {
 	protected List<String> compare(IntegrityDefinitionDao mine, IntegrityDefinitionDao theirs) {
 		List<String> results = new ArrayList<String>();
 
-		if (nullCheck (mine, theirs, results)) {
+		if (nullCheck (mine, theirs)) {
+			results.add("Can't compare integrity definitions, null detected. " + mine + ", " + theirs);
 			return results;
 		}
 		
 		check (mine.getIntegrityType(), theirs.getIntegrityType(), "integrity type", results);
-		check (mine.getIntegrityValue(), theirs.getIntegrityValue(), "integrity value", results);
+		if (!compareBytes(mine.getIntegrityValue(), theirs.getIntegrityValue())) {
+			results.add("The integrity values differ");
+		}
+		
 		return results;
 	}
 
 	protected List<String> compare(FileDefinitionDao mine, FileDefinitionDao theirs) {
 		List<String> results = new ArrayList<String>();
 		
-		if (nullCheck (mine, theirs, results)) {
+		if (nullCheck (mine, theirs)) {
+			results.add("Can't compare file definitions, null detected. " + mine + ", " + theirs);
 			return results;
 		}
 		
@@ -110,7 +119,8 @@ public class SdfChecker {
 	protected List<String> compare(TargetHardwareDefinitionDao mine, TargetHardwareDefinitionDao theirs) {
 		List<String> results = new ArrayList<String>();
 		
-		if (nullCheck (mine, theirs, results)) {
+		if (nullCheck (mine, theirs)) {
+			results.add("Can't compare target hardware definitions, null detected. " + mine + ", " + theirs);
 			return results;
 		}
 		
@@ -138,9 +148,8 @@ public class SdfChecker {
 	 * @param results
 	 * @return
 	 */
-	protected <T> boolean nullCheck (T mine, T theirs, List<String> results) {
+	protected <T> boolean nullCheck (T mine, T theirs) {
 		if ((mine == null && theirs != null) || (mine != null && theirs== null)) {
-			results.add("Can't compare software descriptions, null detected. " + mine + ", " + theirs);
 			return true;
 		} else if (mine == null && theirs == null) {
 			return true;
@@ -168,7 +177,24 @@ public class SdfChecker {
 		}
 		return true;
 	}
-
+	
+	protected boolean compareBytes(byte[] mine, byte[] theirs) {
+		if (nullCheck (mine, theirs)) {
+			return false;
+		}
+		if (mine.length != theirs.length) {
+			return false;
+		}
+		
+		for (int i = 0; i < mine.length; i++) {
+			if (mine[i] != theirs[i]) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
 	protected <L extends List<I>, I> List<String> check(L mine, L theirs, String type, CompareRef<I> dc) {
 		List<String> ret = new ArrayList<String>();
 
