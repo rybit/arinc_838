@@ -283,7 +283,7 @@ public class SdfCheckerTest {
 	
 	@Test
 	public void testNullCheck (){
-		assertTrue (checker.nullCheck(null, null));
+		assertNull (checker.nullCheck(null, null));
 		assertTrue (checker.nullCheck(null, new Object ()));
 		assertTrue (checker.nullCheck(new Object (), null));
 		assertFalse (checker.nullCheck(new Object (), new Object ()));
