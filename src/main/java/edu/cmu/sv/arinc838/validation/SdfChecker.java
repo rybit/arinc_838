@@ -1,7 +1,6 @@
 package edu.cmu.sv.arinc838.validation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
