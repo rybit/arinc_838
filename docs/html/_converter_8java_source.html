@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<title>ARINC 838: /Users/mike/Documents/workspace/arinc838/src/main/java/edu/cmu/sv/arinc838/util/Converter.java Source File</title>
+<title>ARINC 838: D:/code/Java/arinc_838/src/main/java/edu/cmu/sv/arinc838/util/Converter.java Source File</title>
 
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
@@ -33,7 +33,7 @@
   
   <td style="padding-left: 0.5em;">
    <div id="projectname">ARINC 838
-   &#160;<span id="projectnumber">0.1</span>
+   &#160;<span id="projectnumber">0.2</span>
    </div>
    <div id="projectbrief">A prototype system capable of installing various types of software onto a mock avionics unit following the ARINC 838 standard.</div>
   </td>
@@ -108,25 +108,59 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div class="header">
   <div class="headertitle">
-<div class="title">/Users/mike/Documents/workspace/arinc838/src/main/java/edu/cmu/sv/arinc838/util/Converter.java</div>  </div>
+<div class="title">D:/code/Java/arinc_838/src/main/java/edu/cmu/sv/arinc838/util/Converter.java</div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><pre class="fragment"><a name="l00001"></a>00001 <span class="keyword">package </span>edu.cmu.sv.arinc838.util;
 <a name="l00002"></a>00002 
-<a name="l00003"></a>00003 <span class="keyword">import</span> javax.xml.bind.annotation.adapters.HexBinaryAdapter;
+<a name="l00003"></a>00003 <span class="keyword">import</span> java.math.BigInteger;
 <a name="l00004"></a>00004 
-<a name="l00005"></a><a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1util_1_1_converter.html">00005</a> <span class="keyword">public</span> <span class="keyword">class </span><a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1util_1_1_converter.html">Converter</a> {
-<a name="l00006"></a>00006         <span class="keyword">public</span> <span class="keyword">static</span> byte[] hexToBytes(String hexString) {
-<a name="l00007"></a>00007              <span class="keywordflow">return</span> <span class="keyword">new</span> HexBinaryAdapter().unmarshal(hexString);
-<a name="l00008"></a>00008         }       
-<a name="l00009"></a>00009 }
+<a name="l00005"></a>00005 <span class="keyword">import</span> javax.xml.bind.annotation.adapters.HexBinaryAdapter;
+<a name="l00006"></a>00006 
+<a name="l00007"></a>00007 <span class="keyword">import</span> edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
+<a name="l00008"></a>00008 <span class="keyword">import</span> edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao.IntegrityType;
+<a name="l00009"></a>00009 
+<a name="l00010"></a><a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1util_1_1_converter.html">00010</a> <span class="keyword">public</span> <span class="keyword">class </span><a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1util_1_1_converter.html">Converter</a> {
+<a name="l00019"></a><a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1util_1_1_converter.html#a85f1ab7cc4385e15bd434e855df6d08a">00019</a>         <span class="keyword">public</span> <span class="keyword">static</span> byte[] <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1util_1_1_converter.html#a85f1ab7cc4385e15bd434e855df6d08a">hexToBytes</a>(String hexString) {
+<a name="l00020"></a>00020                 <span class="keywordflow">return</span> <span class="keyword">new</span> HexBinaryAdapter().unmarshal(hexString);
+<a name="l00021"></a>00021         }
+<a name="l00022"></a>00022 
+<a name="l00031"></a><a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1util_1_1_converter.html#a630b801eb2356a97e6f832e7770d5344">00031</a>         <span class="keyword">public</span> <span class="keyword">static</span> String <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1util_1_1_converter.html#a630b801eb2356a97e6f832e7770d5344">bytesToHex</a>(byte[] bytes) {
+<a name="l00032"></a>00032                 <span class="keywordflow">return</span> <span class="keyword">new</span> HexBinaryAdapter().marshal(bytes);
+<a name="l00033"></a>00033         }
+<a name="l00034"></a>00034 
+<a name="l00035"></a>00035         <span class="keyword">public</span> <span class="keyword">static</span> <span class="keywordtype">long</span> checksumBytesToLong(<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1dao_1_1_integrity_definition_dao.html">IntegrityDefinitionDao</a> integDef) {
+<a name="l00036"></a>00036                 <span class="keywordflow">return</span> checksumBytesToLong(integDef.getIntegrityValue(),
+<a name="l00037"></a>00037                                 integDef.getIntegrityType());
+<a name="l00038"></a>00038         }
+<a name="l00039"></a>00039 
+<a name="l00040"></a>00040         <span class="keyword">public</span> <span class="keyword">static</span> <span class="keywordtype">long</span> checksumBytesToLong(byte[] crcValue, <span class="keywordtype">long</span> type) {
+<a name="l00041"></a>00041                 <span class="keywordtype">long</span> value = <span class="keyword">new</span> BigInteger(crcValue).longValue();
+<a name="l00042"></a>00042 
+<a name="l00043"></a>00043                 <span class="keywordflow">switch</span> (IntegrityType.fromLong(type)) {
+<a name="l00044"></a>00044                 <span class="keywordflow">case</span> CRC16:
+<a name="l00045"></a>00045                         value &amp;= 0xFFFFL;
+<a name="l00046"></a>00046                         <span class="keywordflow">break</span>;
+<a name="l00047"></a>00047                 <span class="keywordflow">case</span> CRC32:
+<a name="l00048"></a>00048                         value &amp;= 0xFFFFFFFFL;
+<a name="l00049"></a>00049                         <span class="keywordflow">break</span>;
+<a name="l00050"></a>00050                 <span class="keywordflow">case</span> CRC64:
+<a name="l00051"></a>00051                         <span class="keywordflow">break</span>;
+<a name="l00052"></a>00052                 <span class="keywordflow">default</span>:
+<a name="l00053"></a>00053                         <span class="keywordflow">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="stringliteral">&quot;Unknown CRC type: &quot;</span> + type);
+<a name="l00054"></a>00054 
+<a name="l00055"></a>00055                 }
+<a name="l00056"></a>00056 
+<a name="l00057"></a>00057                 <span class="keywordflow">return</span> value;
+<a name="l00058"></a>00058         }
+<a name="l00059"></a>00059 }
 </pre></div></div><!-- contents -->
 </div>
   <div id="nav-path" class="navpath">
     <ul>
       <li class="navelem"><b>Converter.java</b>      </li>
 
-    <li class="footer">Generated on Sat Mar 3 2012 13:00:59 for ARINC 838 by
+    <li class="footer">Generated on Mon Apr 23 2012 22:00:37 for ARINC 838 by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.0 </li>
    </ul>

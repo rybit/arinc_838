@@ -33,7 +33,7 @@
   
   <td style="padding-left: 0.5em;">
    <div id="projectname">ARINC 838
-   &#160;<span id="projectnumber">0.1</span>
+   &#160;<span id="projectnumber">0.2</span>
    </div>
    <div id="projectbrief">A prototype system capable of installing various types of software onto a mock avionics unit following the ARINC 838 standard.</div>
   </td>
@@ -111,8 +111,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div class="header">
   <div class="summary">
-<a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pub-static-attribs">Static Public Attributes</a>  </div>
+<a href="#pub-methods">Public Member Functions</a>  </div>
   <div class="headertitle">
 <div class="title">edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder Class Reference</div>  </div>
 </div><!--header-->
@@ -122,75 +121,18 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a6d4ea30f6bb861dcc766d714f837e587"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6d4ea30f6bb861dcc766d714f837e587"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>SoftwareDefinitionFileBuilder</b> (<a class="el" href="classcom_1_1arinc_1_1arinc838_1_1_sdf_file.html">SdfFile</a> swDefFile)</td></tr>
-<tr class="memitem:a23eac2a3704e2f9d8175b2a0f5ff1d21"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a23eac2a3704e2f9d8175b2a0f5ff1d21"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>SoftwareDefinitionFileBuilder</b> (<a class="el" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1binary_1_1_bdf_file.html">BdfFile</a> bdfFile)  throws IOException </td></tr>
-<tr class="memitem:a511a463853f913468b453e7eccef0bb5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a511a463853f913468b453e7eccef0bb5"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>initialize</b> (<a class="el" href="classcom_1_1arinc_1_1arinc838_1_1_sdf_file.html">SdfFile</a> swDefFile)</td></tr>
-<tr class="memitem:a4b43fdc14a7248496296aafd76966438"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4b43fdc14a7248496296aafd76966438"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>initialize</b> (<a class="el" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1binary_1_1_bdf_file.html">BdfFile</a> file)  throws IOException </td></tr>
-<tr class="memitem:a5e332316b16280a662415ad79ceafed0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5e332316b16280a662415ad79ceafed0"></a>
-byte[]&#160;</td><td class="memItemRight" valign="bottom"><b>getFileFormatVersion</b> ()</td></tr>
-<tr class="memitem:a7bc3354421390cf9f3d2c06cecc09b5b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7bc3354421390cf9f3d2c06cecc09b5b"></a>
-<a class="el" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_description_builder.html">SoftwareDescriptionBuilder</a>&#160;</td><td class="memItemRight" valign="bottom"><b>getSoftwareDescription</b> ()</td></tr>
-<tr class="memitem:a358a20b27a068a90b491dca095832e56"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a358a20b27a068a90b491dca095832e56"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setSoftwareDescription</b> (<a class="el" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_description_builder.html">SoftwareDescriptionBuilder</a> sd)</td></tr>
-<tr class="memitem:a1842b80f354a88f2fbdd5d6523a02fde"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1842b80f354a88f2fbdd5d6523a02fde"></a>
-List<br class="typebreak"/>
-&lt; <a class="el" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_target_hardware_definition_builder.html">TargetHardwareDefinitionBuilder</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getTargetHardwareDefinitions</b> ()</td></tr>
-<tr class="memitem:a8dc3d65d0e1682e16e156f8eeb71b3e4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8dc3d65d0e1682e16e156f8eeb71b3e4"></a>
-List&lt; <a class="el" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_file_definition_builder.html">FileDefinitionBuilder</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getFileDefinitions</b> ()</td></tr>
-<tr class="memitem:a1e3d8ae60fe8eaaffc4a36bfab614d2c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1e3d8ae60fe8eaaffc4a36bfab614d2c"></a>
-<a class="el" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_integrity_definition_builder.html">IntegrityDefinitionBuilder</a>&#160;</td><td class="memItemRight" valign="bottom"><b>getSdfIntegrityDefinition</b> ()</td></tr>
-<tr class="memitem:ab79fa33baea5f23a96ca0262a70a06f2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab79fa33baea5f23a96ca0262a70a06f2"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setSdfIntegrityDefinition</b> (<a class="el" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_integrity_definition_builder.html">IntegrityDefinitionBuilder</a> value)</td></tr>
-<tr class="memitem:a417b3ae8a2aaf3ce4ca0c95303478689"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a417b3ae8a2aaf3ce4ca0c95303478689"></a>
-<a class="el" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_integrity_definition_builder.html">IntegrityDefinitionBuilder</a>&#160;</td><td class="memItemRight" valign="bottom"><b>getLspIntegrityDefinition</b> ()</td></tr>
-<tr class="memitem:a9339cc0772426a8d09807a5f131a00f7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9339cc0772426a8d09807a5f131a00f7"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setLspIntegrityDefinition</b> (<a class="el" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_integrity_definition_builder.html">IntegrityDefinitionBuilder</a> value)</td></tr>
-<tr class="memitem:acd752c423dc7974e0aab85c164c2ac6c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acd752c423dc7974e0aab85c164c2ac6c"></a>
-<a class="el" href="classcom_1_1arinc_1_1arinc838_1_1_sdf_file.html">SdfFile</a>&#160;</td><td class="memItemRight" valign="bottom"><b>buildXml</b> ()</td></tr>
-<tr class="memitem:a672f6614ec3b908b2369b30484bc7c4d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a672f6614ec3b908b2369b30484bc7c4d"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>buildBinary</b> (<a class="el" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1binary_1_1_bdf_file.html">BdfFile</a> file)  throws IOException </td></tr>
-<tr class="memitem:a3ae60e6c6914b8fc8b0eabddcd933c93"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3ae60e6c6914b8fc8b0eabddcd933c93"></a>
-String&#160;</td><td class="memItemRight" valign="bottom"><b>getBinaryFileName</b> ()</td></tr>
-<tr class="memitem:a90eff80367f2717170d018c291a11ee5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a90eff80367f2717170d018c291a11ee5"></a>
-String&#160;</td><td class="memItemRight" valign="bottom"><b>getXmlFileName</b> ()</td></tr>
-<tr class="memitem:a77e33606c693a9955901c30dde145d16"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a77e33606c693a9955901c30dde145d16"></a>
-boolean&#160;</td><td class="memItemRight" valign="bottom"><b>equals</b> (Object obj)</td></tr>
-<tr class="memitem:a3383231426a58be89815313b7cc500d6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3383231426a58be89815313b7cc500d6"></a>
-boolean&#160;</td><td class="memItemRight" valign="bottom"><b>equals</b> (<a class="el" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html">SoftwareDefinitionFileBuilder</a> obj)</td></tr>
-<tr class="memitem:acb440ef258ceaa7195d0c4822fe2799b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acb440ef258ceaa7195d0c4822fe2799b"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>hashCode</b> ()</td></tr>
-<tr><td colspan="2"><h2><a name="pub-static-attribs"></a>
-Static Public Attributes</h2></td></tr>
-<tr class="memitem:adac30b6abad2ea38a95ceda3ec630e2e"><td class="memItemLeft" align="right" valign="top">static final byte[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#adac30b6abad2ea38a95ceda3ec630e2e">DEFAULT_FILE_FORMAT_VERSION</a></td></tr>
+<tr class="memitem:abc8228aac73ec6384852abcde5d3ee30"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abc8228aac73ec6384852abcde5d3ee30"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>SoftwareDefinitionFileBuilder</b> (<a class="el" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_builder_factory.html">BuilderFactory</a> builderFact)</td></tr>
+<tr class="memitem:a94fd0ff3618dbea9d761084043f16d6b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a94fd0ff3618dbea9d761084043f16d6b"></a>
+SdfFile&#160;</td><td class="memItemRight" valign="bottom"><b>buildXml</b> (<a class="el" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1dao_1_1_software_definition_file_dao.html">SoftwareDefinitionFileDao</a> softwareDefinitionFileDao)</td></tr>
+<tr class="memitem:ab945b99da4eef597fa59ebbfcc1fda6d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab945b99da4eef597fa59ebbfcc1fda6d"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>buildBinary</b> (<a class="el" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1dao_1_1_software_definition_file_dao.html">SoftwareDefinitionFileDao</a> softwareDefinitionFileDao, <a class="el" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1binary_1_1_bdf_file.html">BdfFile</a> file)  throws IOException, IllegalArgumentException </td></tr>
 </table>
 <hr/><a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock">
-<p>Definition at line <a class="el" href="_software_definition_file_builder_8java_source.html#l00025">25</a> of file <a class="el" href="_software_definition_file_builder_8java_source.html">SoftwareDefinitionFileBuilder.java</a>.</p>
-</div><hr/><h2>Member Data Documentation</h2>
-<a class="anchor" id="adac30b6abad2ea38a95ceda3ec630e2e"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">final byte [] <a class="el" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html#adac30b6abad2ea38a95ceda3ec630e2e">edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder.DEFAULT_FILE_FORMAT_VERSION</a><code> [static]</code></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-<b>Initial value:</b><div class="fragment"><pre class="fragment"> Converter
-                        .hexToBytes(<span class="stringliteral">&quot;00008100&quot;</span>)
-</pre></div><p>The default file format version as defined in the spec. Value is {} </p>
-
-<p>Definition at line <a class="el" href="_software_definition_file_builder_8java_source.html#l00030">30</a> of file <a class="el" href="_software_definition_file_builder_8java_source.html">SoftwareDefinitionFileBuilder.java</a>.</p>
-
-</div>
-</div>
-<hr/>The documentation for this class was generated from the following file:<ul>
-<li>/Users/mike/Documents/workspace/arinc838/src/main/java/edu/cmu/sv/arinc838/builder/<a class="el" href="_software_definition_file_builder_8java_source.html">SoftwareDefinitionFileBuilder.java</a></li>
+<p>Definition at line <a class="el" href="_software_definition_file_builder_8java_source.html#l00021">21</a> of file <a class="el" href="_software_definition_file_builder_8java_source.html">SoftwareDefinitionFileBuilder.java</a>.</p>
+</div><hr/>The documentation for this class was generated from the following file:<ul>
+<li>D:/code/Java/arinc_838/src/main/java/edu/cmu/sv/arinc838/builder/<a class="el" href="_software_definition_file_builder_8java_source.html">SoftwareDefinitionFileBuilder.java</a></li>
 </ul>
 </div><!-- contents -->
 </div>
@@ -203,7 +145,7 @@ Static Public Attributes</h2></td></tr>
       <li class="navelem"><b>builder</b>      </li>
       <li class="navelem"><a class="el" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html">SoftwareDefinitionFileBuilder</a>      </li>
 
-    <li class="footer">Generated on Sat Mar 3 2012 13:00:59 for ARINC 838 by
+    <li class="footer">Generated on Mon Apr 23 2012 22:00:37 for ARINC 838 by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.0 </li>
    </ul>

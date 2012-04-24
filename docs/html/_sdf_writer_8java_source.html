@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<title>ARINC 838: /Users/mike/Documents/workspace/arinc838/src/main/java/edu/cmu/sv/arinc838/writer/SdfWriter.java Source File</title>
+<title>ARINC 838: D:/code/Java/arinc_838/src/main/java/edu/cmu/sv/arinc838/writer/SdfWriter.java Source File</title>
 
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
@@ -33,7 +33,7 @@
   
   <td style="padding-left: 0.5em;">
    <div id="projectname">ARINC 838
-   &#160;<span id="projectnumber">0.1</span>
+   &#160;<span id="projectnumber">0.2</span>
    </div>
    <div id="projectbrief">A prototype system capable of installing various types of software onto a mock avionics unit following the ARINC 838 standard.</div>
   </td>
@@ -108,16 +108,16 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div class="header">
   <div class="headertitle">
-<div class="title">/Users/mike/Documents/workspace/arinc838/src/main/java/edu/cmu/sv/arinc838/writer/SdfWriter.java</div>  </div>
+<div class="title">D:/code/Java/arinc_838/src/main/java/edu/cmu/sv/arinc838/writer/SdfWriter.java</div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><pre class="fragment"><a name="l00001"></a>00001 <span class="keyword">package </span>edu.cmu.sv.arinc838.writer;
 <a name="l00002"></a>00002 
-<a name="l00003"></a>00003 <span class="keyword">import</span> edu.cmu.sv.arinc838.builder.SoftwareDefinitionFileBuilder;
+<a name="l00003"></a>00003 <span class="keyword">import</span> edu.cmu.sv.arinc838.dao.SoftwareDefinitionFileDao;
 <a name="l00004"></a>00004 
 <a name="l00005"></a><a class="code" href="interfaceedu_1_1cmu_1_1sv_1_1arinc838_1_1writer_1_1_sdf_writer.html">00005</a> <span class="keyword">public</span> <span class="keyword">interface </span><a class="code" href="interfaceedu_1_1cmu_1_1sv_1_1arinc838_1_1writer_1_1_sdf_writer.html">SdfWriter</a> {
-<a name="l00006"></a>00006 
-<a name="l00007"></a>00007         <span class="keyword">public</span> String write (String path, <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_software_definition_file_builder.html">SoftwareDefinitionFileBuilder</a> builder) <span class="keywordflow">throws</span> Exception;      
+<a name="l00006"></a>00006         <span class="keyword">public</span> <span class="keywordtype">void</span> write (String path, <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1dao_1_1_software_definition_file_dao.html">SoftwareDefinitionFileDao</a> sdfDao) <span class="keywordflow">throws</span> Exception;
+<a name="l00007"></a>00007         <span class="keyword">public</span> String getFilename (<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1dao_1_1_software_definition_file_dao.html">SoftwareDefinitionFileDao</a> sdfDao);
 <a name="l00008"></a>00008 }
 </pre></div></div><!-- contents -->
 </div>
@@ -125,7 +125,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul>
       <li class="navelem"><b>SdfWriter.java</b>      </li>
 
-    <li class="footer">Generated on Sat Mar 3 2012 13:00:59 for ARINC 838 by
+    <li class="footer">Generated on Mon Apr 23 2012 22:00:37 for ARINC 838 by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.0 </li>
    </ul>

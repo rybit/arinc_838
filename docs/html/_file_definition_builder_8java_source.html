@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<title>ARINC 838: /Users/mike/Documents/workspace/arinc838/src/main/java/edu/cmu/sv/arinc838/builder/FileDefinitionBuilder.java Source File</title>
+<title>ARINC 838: D:/code/Java/arinc_838/src/main/java/edu/cmu/sv/arinc838/builder/FileDefinitionBuilder.java Source File</title>
 
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
@@ -33,7 +33,7 @@
   
   <td style="padding-left: 0.5em;">
    <div id="projectname">ARINC 838
-   &#160;<span id="projectnumber">0.1</span>
+   &#160;<span id="projectnumber">0.2</span>
    </div>
    <div id="projectbrief">A prototype system capable of installing various types of software onto a mock avionics unit following the ARINC 838 standard.</div>
   </td>
@@ -108,162 +108,71 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div class="header">
   <div class="headertitle">
-<div class="title">/Users/mike/Documents/workspace/arinc838/src/main/java/edu/cmu/sv/arinc838/builder/FileDefinitionBuilder.java</div>  </div>
+<div class="title">D:/code/Java/arinc_838/src/main/java/edu/cmu/sv/arinc838/builder/FileDefinitionBuilder.java</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><pre class="fragment"><a name="l00001"></a>00001 <span class="comment">/*</span>
-<a name="l00002"></a>00002 <span class="comment"> * Copyright (c) 2012 Chris Ellison, Mike Deats, Liron Yahdav, Ryan Neal,</span>
-<a name="l00003"></a>00003 <span class="comment"> * Brandon Sutherlin, Scott Griffin</span>
-<a name="l00004"></a>00004 <span class="comment"> * </span>
-<a name="l00005"></a>00005 <span class="comment"> * This software is released under the MIT license</span>
-<a name="l00006"></a>00006 <span class="comment"> * (http://www.opensource.org/licenses/mit-license.php)</span>
-<a name="l00007"></a>00007 <span class="comment"> * </span>
-<a name="l00008"></a>00008 <span class="comment"> * Created on Feb 7, 2012</span>
-<a name="l00009"></a>00009 <span class="comment"> */</span>
-<a name="l00010"></a>00010 <span class="keyword">package </span>edu.cmu.sv.arinc838.builder;
+<div class="fragment"><pre class="fragment"><a name="l00001"></a>00001 <span class="keyword">package </span>edu.cmu.sv.arinc838.builder;
+<a name="l00002"></a>00002 
+<a name="l00003"></a>00003 <span class="keyword">import</span> java.io.IOException;
+<a name="l00004"></a>00004 
+<a name="l00005"></a>00005 <span class="keyword">import</span> com.arinc.arinc838.FileDefinition;
+<a name="l00006"></a>00006 <span class="keyword">import</span> com.arinc.arinc838.IntegrityDefinition;
+<a name="l00007"></a>00007 
+<a name="l00008"></a>00008 <span class="keyword">import</span> edu.cmu.sv.arinc838.binary.BdfFile;
+<a name="l00009"></a>00009 <span class="keyword">import</span> edu.cmu.sv.arinc838.dao.FileDefinitionDao;
+<a name="l00010"></a>00010 <span class="keyword">import</span> edu.cmu.sv.arinc838.dao.IntegrityDefinitionDao;
 <a name="l00011"></a>00011 
-<a name="l00012"></a>00012 <span class="keyword">import</span> java.io.IOException;
-<a name="l00013"></a>00013 
-<a name="l00014"></a>00014 <span class="keyword">import</span> com.arinc.arinc838.FileDefinition;
-<a name="l00015"></a>00015 
-<a name="l00016"></a>00016 <span class="keyword">import</span> edu.cmu.sv.arinc838.binary.BdfFile;
-<a name="l00017"></a>00017 <span class="keyword">import</span> edu.cmu.sv.arinc838.validation.DataValidator;
-<a name="l00018"></a>00018 
-<a name="l00051"></a><a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_file_definition_builder.html">00051</a> <span class="keyword">public</span> <span class="keyword">class </span><a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_file_definition_builder.html">FileDefinitionBuilder</a> <span class="keyword">implements</span> Builder&lt;FileDefinition&gt;{
-<a name="l00052"></a>00052         <span class="keyword">private</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_integrity_definition_builder.html">IntegrityDefinitionBuilder</a> integDefBuilder;
-<a name="l00053"></a>00053         <span class="keyword">private</span> <span class="keywordtype">boolean</span> loadable;
-<a name="l00054"></a>00054         <span class="keyword">private</span> String fileName;
-<a name="l00055"></a>00055         <span class="keyword">private</span> <span class="keywordtype">long</span> fileSize;
-<a name="l00056"></a>00056         <span class="keyword">private</span> <span class="keywordtype">boolean</span> isLast;
-<a name="l00057"></a>00057 
-<a name="l00058"></a>00058         <span class="keyword">public</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_file_definition_builder.html">FileDefinitionBuilder</a>() {
-<a name="l00059"></a>00059                 ;
-<a name="l00060"></a>00060         }
-<a name="l00061"></a>00061 
-<a name="l00062"></a>00062         <span class="keyword">public</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_file_definition_builder.html">FileDefinitionBuilder</a>(<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_file_definition.html">FileDefinition</a> fileDef) {
-<a name="l00063"></a>00063                 integDefBuilder = <span class="keyword">new</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_integrity_definition_builder.html">IntegrityDefinitionBuilder</a>(fileDef.<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_file_definition.html#ae3a0b9a8b2d75710e613aa0b597535c9">getFileIntegrityDefinition</a>());
-<a name="l00064"></a>00064                 loadable = fileDef.<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_file_definition.html#a708ef513a88c253110d68a0f36a519d2">isFileLoadable</a>();
-<a name="l00065"></a>00065                 fileName = fileDef.<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_file_definition.html#a1fd3e207e13732c4f4322936e8621230">getFileName</a>();
-<a name="l00066"></a>00066                 fileSize = fileDef.<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_file_definition.html#a3458fd397cb80bc3896ca5acdbbe7104">getFileSize</a>();
-<a name="l00067"></a>00067                 
-<a name="l00068"></a>00068                 integDefBuilder = <span class="keyword">new</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_integrity_definition_builder.html">IntegrityDefinitionBuilder</a>(fileDef.<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_file_definition.html#ae3a0b9a8b2d75710e613aa0b597535c9">getFileIntegrityDefinition</a>());
-<a name="l00069"></a>00069         }
-<a name="l00070"></a>00070 
-<a name="l00071"></a>00071         <span class="keyword">public</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_file_definition_builder.html">FileDefinitionBuilder</a>(<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1binary_1_1_bdf_file.html">BdfFile</a> bdfFile) <span class="keywordflow">throws</span> IOException {
-<a name="l00072"></a>00072                 setFileLoadable(bdfFile.readBoolean());
-<a name="l00073"></a>00073                 setFileName(bdfFile.<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1binary_1_1_bdf_file.html#aa5e88a8b7875f01bc31cb72c71e52d88">readStr64k</a>());
-<a name="l00074"></a>00074                 setFileSize(bdfFile.readUint32());
-<a name="l00075"></a>00075                 setFileIntegrityDefinition(<span class="keyword">new</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_integrity_definition_builder.html">IntegrityDefinitionBuilder</a>(bdfFile));
-<a name="l00076"></a>00076         }
-<a name="l00077"></a>00077 
-<a name="l00078"></a>00078         <span class="keyword">public</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_integrity_definition_builder.html">IntegrityDefinitionBuilder</a> getFileIntegrityDefinition() {
-<a name="l00079"></a>00079                 <span class="keywordflow">return</span> integDefBuilder;
-<a name="l00080"></a>00080         }
-<a name="l00081"></a>00081 
-<a name="l00082"></a>00082         <span class="keyword">public</span> <span class="keywordtype">void</span> setFileIntegrityDefinition(<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_integrity_definition_builder.html">IntegrityDefinitionBuilder</a> value) {
-<a name="l00083"></a>00083                 this.integDefBuilder = value;
-<a name="l00084"></a>00084         }
-<a name="l00085"></a>00085 
-<a name="l00086"></a>00086         <span class="keyword">public</span> <span class="keywordtype">boolean</span> isFileLoadable() {
-<a name="l00087"></a>00087                 <span class="keywordflow">return</span> loadable;
-<a name="l00088"></a>00088         }
-<a name="l00089"></a>00089 
-<a name="l00090"></a>00090         <span class="keyword">public</span> <span class="keywordtype">void</span> setFileLoadable(<span class="keywordtype">boolean</span> loadable) {
-<a name="l00091"></a>00091                 this.loadable = loadable;
-<a name="l00092"></a>00092         }
-<a name="l00093"></a>00093 
-<a name="l00094"></a>00094         <span class="keyword">public</span> String getFileName() {
-<a name="l00095"></a>00095                 <span class="keywordflow">return</span> fileName;
-<a name="l00096"></a>00096         }
-<a name="l00097"></a>00097 
-<a name="l00098"></a>00098         <span class="keyword">public</span> <span class="keywordtype">void</span> setFileName(String fileName) {
-<a name="l00099"></a>00099                 this.fileName = <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1validation_1_1_data_validator.html">DataValidator</a>.<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1validation_1_1_data_validator.html#a23f88bd552fdb2fb4cb00a38b525046c">validateStr64kXml</a>(fileName);
-<a name="l00100"></a>00100         }
-<a name="l00101"></a>00101 
-<a name="l00102"></a>00102         <span class="keyword">public</span> <span class="keywordtype">long</span> getFileSize() {
-<a name="l00103"></a>00103                 <span class="keywordflow">return</span> fileSize;
-<a name="l00104"></a>00104         }
-<a name="l00105"></a>00105 
-<a name="l00106"></a>00106         <span class="keyword">public</span> <span class="keywordtype">void</span> setFileSize(<span class="keywordtype">long</span> fileSize) {
-<a name="l00107"></a>00107                 this.fileSize = <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1validation_1_1_data_validator.html">DataValidator</a>.<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1validation_1_1_data_validator.html#aaabc891f0cc828059c629fd39654079c">validateUint32</a>(fileSize);
-<a name="l00108"></a>00108         }
-<a name="l00109"></a>00109 
-<a name="l00110"></a>00110         @Override
-<a name="l00111"></a>00111         <span class="keyword">public</span> <a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_file_definition.html">FileDefinition</a> buildXml() {
-<a name="l00112"></a>00112                 <a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_file_definition.html">FileDefinition</a> retDef = <span class="keyword">new</span> <a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_file_definition.html">FileDefinition</a>();
-<a name="l00113"></a>00113 
-<a name="l00114"></a>00114                 retDef.<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_file_definition.html#a4e8c58841c4df06380f7cb17ccc987bc">setFileLoadable</a>(loadable);
-<a name="l00115"></a>00115                 retDef.<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_file_definition.html#ada37103eacc88e13b9a4e401f654f361">setFileName</a>(fileName);
-<a name="l00116"></a>00116                 retDef.<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_file_definition.html#a602229decd506328264e620b735eadb2">setFileSize</a>(fileSize);
-<a name="l00117"></a>00117 
-<a name="l00118"></a>00118                 retDef.<a class="code" href="classcom_1_1arinc_1_1arinc838_1_1_file_definition.html#a0dc5caec90385b40dc30bd6d15290ffb">setFileIntegrityDefinition</a>(integDefBuilder.buildXml());
-<a name="l00119"></a>00119 
-<a name="l00120"></a>00120                 <span class="keywordflow">return</span> retDef;
-<a name="l00121"></a>00121         }
-<a name="l00122"></a>00122         
-<a name="l00123"></a>00123         @Override
-<a name="l00124"></a>00124         <span class="keyword">public</span> <span class="keywordtype">int</span> buildBinary(<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1binary_1_1_bdf_file.html">BdfFile</a> bdfFile) <span class="keywordflow">throws</span> IOException {
-<a name="l00125"></a>00125                 <span class="keywordtype">int</span> initialPosition = (int) bdfFile.getFilePointer();
-<a name="l00126"></a>00126                 
-<a name="l00127"></a>00127                 bdfFile.writeUint32(0); <span class="comment">//Place holder for APTPTR to the next file definition</span>
-<a name="l00128"></a>00128                 bdfFile.writeBoolean(isFileLoadable());
-<a name="l00129"></a>00129                 bdfFile.writeStr64k(getFileName());
-<a name="l00130"></a>00130                 bdfFile.writeUint32(getFileSize());
-<a name="l00131"></a>00131                 getFileIntegrityDefinition().buildBinary(bdfFile);
-<a name="l00132"></a>00132 
-<a name="l00133"></a>00133                 <span class="keywordtype">int</span> finalPosition = (int) bdfFile.getFilePointer();
-<a name="l00134"></a>00134                 
-<a name="l00135"></a>00135                 <span class="comment">//If not last file def then fill in the pointer to the next file def</span>
-<a name="l00136"></a>00136                 <span class="keywordflow">if</span> (!isLast()) {
-<a name="l00137"></a>00137                         bdfFile.seek(initialPosition);
-<a name="l00138"></a>00138                         bdfFile.writeUint32(finalPosition);
-<a name="l00139"></a>00139                         bdfFile.seek(finalPosition);
-<a name="l00140"></a>00140                 }
-<a name="l00141"></a>00141 
-<a name="l00142"></a>00142                 <span class="keywordflow">return</span> (<span class="keywordtype">int</span>) (finalPosition - initialPosition);
-<a name="l00143"></a>00143         }
-<a name="l00144"></a>00144 
-<a name="l00145"></a>00145         <span class="keyword">public</span> <span class="keywordtype">boolean</span> isLast() {
-<a name="l00146"></a>00146                 <span class="keywordflow">return</span> isLast;
-<a name="l00147"></a>00147         }
-<a name="l00148"></a>00148 
-<a name="l00149"></a>00149         <span class="keyword">public</span> <span class="keywordtype">void</span> setIsLast(<span class="keywordtype">boolean</span> value) {
-<a name="l00150"></a>00150                 isLast = value; 
-<a name="l00151"></a>00151         }
-<a name="l00152"></a>00152         
-<a name="l00153"></a>00153         @Override
-<a name="l00154"></a>00154         <span class="keyword">public</span> <span class="keywordtype">int</span> hashCode() {
-<a name="l00155"></a>00155                 <span class="keywordflow">if</span>(this.getFileIntegrityDefinition() != null){
-<a name="l00156"></a>00156                         <span class="keywordflow">return</span> this.getFileIntegrityDefinition().hashCode();
-<a name="l00157"></a>00157                 }
-<a name="l00158"></a>00158                 
-<a name="l00159"></a>00159                 <span class="keywordflow">return</span> 0;
-<a name="l00160"></a>00160         }
-<a name="l00161"></a>00161         
-<a name="l00162"></a>00162         @Override
-<a name="l00163"></a>00163         <span class="keyword">public</span> <span class="keywordtype">boolean</span> equals(Object obj) {
-<a name="l00164"></a>00164                 <span class="keywordflow">return</span> obj !=  null &amp;&amp;
-<a name="l00165"></a>00165                                 <span class="keyword">this</span> == obj ||
-<a name="l00166"></a>00166                                 (obj instanceof <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_file_definition_builder.html">FileDefinitionBuilder</a> &amp;&amp;
-<a name="l00167"></a>00167                                 equals((<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_file_definition_builder.html">FileDefinitionBuilder</a>)obj));            
-<a name="l00168"></a>00168         }
-<a name="l00169"></a>00169         
-<a name="l00170"></a>00170         <span class="keyword">public</span> <span class="keywordtype">boolean</span> equals(<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_file_definition_builder.html">FileDefinitionBuilder</a> obj){
-<a name="l00171"></a>00171                 <span class="keywordflow">return</span> obj != null &amp;&amp;
-<a name="l00172"></a>00172                                 <span class="keyword">this</span> == obj ||
-<a name="l00173"></a>00173                                 (this.getFileIntegrityDefinition().equals(obj.getFileIntegrityDefinition()) &amp;&amp;
-<a name="l00174"></a>00174                                 ((this.isFileLoadable() &amp;&amp; obj.isFileLoadable() || (!this.isFileLoadable() &amp;&amp; !obj.isFileLoadable()))) &amp;&amp;
-<a name="l00175"></a>00175                                 this.getFileName().equals(obj.getFileName()) &amp;&amp;
-<a name="l00176"></a>00176                                 (this.getFileSize() == obj.getFileSize()));
-<a name="l00177"></a>00177         }
-<a name="l00178"></a>00178 }
+<a name="l00012"></a><a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_file_definition_builder.html">00012</a> <span class="keyword">public</span> <span class="keyword">class </span><a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_file_definition_builder.html">FileDefinitionBuilder</a> <span class="keyword">implements</span> Builder&lt;FileDefinitionDao, FileDefinition&gt; {
+<a name="l00013"></a>00013         <span class="keyword">private</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_builder_factory.html">BuilderFactory</a> builderFactory;
+<a name="l00014"></a>00014 
+<a name="l00015"></a>00015         <span class="keyword">public</span> <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_file_definition_builder.html">FileDefinitionBuilder</a>(<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_builder_factory.html">BuilderFactory</a> builderFactory) {
+<a name="l00016"></a>00016                 this.builderFactory = builderFactory;
+<a name="l00017"></a>00017         }
+<a name="l00018"></a>00018         
+<a name="l00019"></a>00019         @Override
+<a name="l00020"></a>00020         <span class="keyword">public</span> FileDefinition buildXml(<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1dao_1_1_file_definition_dao.html">FileDefinitionDao</a> fileDefinitionDao) {
+<a name="l00021"></a>00021                 FileDefinition retDef = <span class="keyword">new</span> FileDefinition();
+<a name="l00022"></a>00022 
+<a name="l00023"></a>00023                 retDef.setFileLoadable(fileDefinitionDao.isFileLoadable());
+<a name="l00024"></a>00024                 retDef.setFileName(fileDefinitionDao.getFileName());
+<a name="l00025"></a>00025                 retDef.setFileSize(fileDefinitionDao.getFileSize());
+<a name="l00026"></a>00026 
+<a name="l00027"></a>00027                 retDef.setFileIntegrityDefinition(builderFactory.getBuilder(<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1dao_1_1_integrity_definition_dao.html">IntegrityDefinitionDao</a>.class, IntegrityDefinition.class).<a class="code" href="interfaceedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_builder_3_01_dao_type_00_01_jaxb_type_01_4.html#a353d0cee3cb004f28ea2a534b0f5d9dd">buildXml</a>(fileDefinitionDao.getFileIntegrityDefinition()));
+<a name="l00028"></a>00028 
+<a name="l00029"></a>00029                 <span class="keywordflow">return</span> retDef;
+<a name="l00030"></a>00030         }
+<a name="l00031"></a>00031 
+<a name="l00032"></a>00032         @Override
+<a name="l00033"></a>00033         <span class="keyword">public</span> <span class="keywordtype">int</span> buildBinary(<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1dao_1_1_file_definition_dao.html">FileDefinitionDao</a> fileDefinitionDao, <a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1binary_1_1_bdf_file.html">BdfFile</a> bdfFile) <span class="keywordflow">throws</span> IOException {
+<a name="l00034"></a>00034                 <span class="keywordtype">int</span> initialPosition = (int) bdfFile.getFilePointer();
+<a name="l00035"></a>00035 
+<a name="l00036"></a>00036                 bdfFile.writeUint32(0); <span class="comment">// Place holder for APTPTR to the next file</span>
+<a name="l00037"></a>00037                                                                 <span class="comment">// definition</span>
+<a name="l00038"></a>00038                 bdfFile.writeBoolean(fileDefinitionDao.isFileLoadable());
+<a name="l00039"></a>00039                 bdfFile.writeStr64k(fileDefinitionDao.getFileName());
+<a name="l00040"></a>00040                 bdfFile.writeUint32(fileDefinitionDao.getFileSize());
+<a name="l00041"></a>00041                 builderFactory.getBuilder(<a class="code" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1dao_1_1_integrity_definition_dao.html">IntegrityDefinitionDao</a>.class, IntegrityDefinition.class).<a class="code" href="interfaceedu_1_1cmu_1_1sv_1_1arinc838_1_1builder_1_1_builder_3_01_dao_type_00_01_jaxb_type_01_4.html#a7071823147e263067ee7ab26422b0038">buildBinary</a>(fileDefinitionDao.getFileIntegrityDefinition(), bdfFile);
+<a name="l00042"></a>00042 
+<a name="l00043"></a>00043                 <span class="keywordtype">int</span> finalPosition = (int) bdfFile.getFilePointer();
+<a name="l00044"></a>00044 
+<a name="l00045"></a>00045                 <span class="comment">// If not last file def then fill in the pointer to the next file def</span>
+<a name="l00046"></a>00046                 <span class="keywordflow">if</span> (!fileDefinitionDao.isLast()) {
+<a name="l00047"></a>00047                         bdfFile.seek(initialPosition);
+<a name="l00048"></a>00048                         bdfFile.writeUint32(finalPosition);
+<a name="l00049"></a>00049                         bdfFile.seek(finalPosition);
+<a name="l00050"></a>00050                 }
+<a name="l00051"></a>00051 
+<a name="l00052"></a>00052                 <span class="keywordflow">return</span> (<span class="keywordtype">int</span>) (finalPosition - initialPosition);
+<a name="l00053"></a>00053         }
+<a name="l00054"></a>00054 
+<a name="l00055"></a>00055 }
 </pre></div></div><!-- contents -->
 </div>
   <div id="nav-path" class="navpath">
     <ul>
       <li class="navelem"><b>FileDefinitionBuilder.java</b>      </li>
 
-    <li class="footer">Generated on Sat Mar 3 2012 13:00:59 for ARINC 838 by
+    <li class="footer">Generated on Mon Apr 23 2012 22:00:36 for ARINC 838 by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.0 </li>
    </ul>

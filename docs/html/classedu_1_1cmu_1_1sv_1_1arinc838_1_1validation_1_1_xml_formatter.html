@@ -33,7 +33,7 @@
   
   <td style="padding-left: 0.5em;">
    <div id="projectname">ARINC 838
-   &#160;<span id="projectnumber">0.1</span>
+   &#160;<span id="projectnumber">0.2</span>
    </div>
    <div id="projectbrief">A prototype system capable of installing various types of software onto a mock avionics unit following the ARINC 838 standard.</div>
   </td>
@@ -145,11 +145,11 @@ Static Public Member Functions</h2></td></tr>
 <p>Returns a string with special XML characters escaped: </p>
 <ol>
 <li>
-'&lt;' becomes '&amp;lt' </li>
+'&lt;' becomes { '&amp;lt'} </li>
 <li>
-'&gt;' becomes '&amp;gt' </li>
+'&gt;' becomes { '&amp;gt'} </li>
 <li>
-'&amp;' becomes '&amp;amp' </li>
+'&amp;' becomes { '&amp;amp'} </li>
 </ol>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
@@ -180,11 +180,11 @@ Static Public Member Functions</h2></td></tr>
 <p>Returns a string with escaped special XML characters reverted to plain characters: </p>
 <ol>
 <li>
-'&amp;lt' becomes '&lt;' </li>
+{ '&amp;lt'} becomes '&lt;' </li>
 <li>
-'&amp;gt' becomes '&gt;' </li>
+{ '&amp;gt'} becomes '&gt;' </li>
 <li>
-'&amp;amp' becomes '&amp;' </li>
+{ '&amp;amp'} becomes '&amp;' </li>
 </ol>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
@@ -199,7 +199,7 @@ Static Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/Users/mike/Documents/workspace/arinc838/src/main/java/edu/cmu/sv/arinc838/validation/<a class="el" href="_xml_formatter_8java_source.html">XmlFormatter.java</a></li>
+<li>D:/code/Java/arinc_838/src/main/java/edu/cmu/sv/arinc838/validation/<a class="el" href="_xml_formatter_8java_source.html">XmlFormatter.java</a></li>
 </ul>
 </div><!-- contents -->
 </div>
@@ -212,7 +212,7 @@ Static Public Member Functions</h2></td></tr>
       <li class="navelem"><b>validation</b>      </li>
       <li class="navelem"><a class="el" href="classedu_1_1cmu_1_1sv_1_1arinc838_1_1validation_1_1_xml_formatter.html">XmlFormatter</a>      </li>
 
-    <li class="footer">Generated on Sat Mar 3 2012 13:01:00 for ARINC 838 by
+    <li class="footer">Generated on Mon Apr 23 2012 22:00:37 for ARINC 838 by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.0 </li>
    </ul>

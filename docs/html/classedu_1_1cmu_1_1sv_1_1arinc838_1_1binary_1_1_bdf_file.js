@@ -2,6 +2,7 @@ var classedu_1_1cmu_1_1sv_1_1arinc838_1_1binary_1_1_bdf_file =
 [
     [ "BdfFile", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1binary_1_1_bdf_file.html#ac286097986fe83bc2fdf0b6bc4755277", null ],
     [ "asUint32", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1binary_1_1_bdf_file.html#ab8719d5c031900ab6ffa90eb65351148", null ],
+    [ "readAll", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1binary_1_1_bdf_file.html#a87829e988309a3d5a355c2adce701374", null ],
     [ "readFileDefinitionsPointer", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1binary_1_1_bdf_file.html#a802c40ca7c33b62ca2de6dd8d49dff8f", null ],
     [ "readHexbin32", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1binary_1_1_bdf_file.html#a4662c9fc230b348b7234884e746dcac3", null ],
     [ "readHexbin64k", "classedu_1_1cmu_1_1sv_1_1arinc838_1_1binary_1_1_bdf_file.html#a33abd958d88bdb958b9b55a3f2be6178", null ],
