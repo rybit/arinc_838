@@ -34,7 +34,10 @@ public class SdfChecker {
 
 	public List<String> compare(SoftwareDefinitionFileDao mine, SoftwareDefinitionFileDao theirs) {
 		List<String> results = new ArrayList<String>();
-		if (nullCheck (mine, theirs)) {
+		Boolean nc = nullCheck (mine, theirs);
+		if (nc == null) {
+			return results;
+		} else if (nc == true) {
 			results.add("Can't compare software definitions, null detected. " + mine + ", " + theirs);
 			return results;
 		}
@@ -69,7 +72,11 @@ public class SdfChecker {
 
 	protected List<String> compare(SoftwareDescriptionDao mine, SoftwareDescriptionDao theirs) {
 		List<String> results = new ArrayList<String>();
-		if (nullCheck (mine, theirs)) {
+
+		Boolean nc = nullCheck (mine, theirs);
+		if (nc == null) {
+			return results;
+		} else if (nc == true) {
 			results.add("Can't compare software descriptions, null detected. " + mine + ", " + theirs);
 			return results;
 		}
@@ -86,7 +93,10 @@ public class SdfChecker {
 	protected List<String> compare(IntegrityDefinitionDao mine, IntegrityDefinitionDao theirs) {
 		List<String> results = new ArrayList<String>();
 
-		if (nullCheck (mine, theirs)) {
+		Boolean nc = nullCheck (mine, theirs);
+		if (nc == null) {
+			return results;
+		} else if (nc == true) {
 			results.add("Can't compare integrity definitions, null detected. " + mine + ", " + theirs);
 			return results;
 		}
@@ -101,8 +111,11 @@ public class SdfChecker {
 
 	protected List<String> compare(FileDefinitionDao mine, FileDefinitionDao theirs) {
 		List<String> results = new ArrayList<String>();
-		
-		if (nullCheck (mine, theirs)) {
+
+		Boolean nc = nullCheck (mine, theirs);
+		if (nc == null) {
+			return results;
+		} else if (nc == true) {
 			results.add("Can't compare file definitions, null detected. " + mine + ", " + theirs);
 			return results;
 		}
@@ -119,7 +132,10 @@ public class SdfChecker {
 	protected List<String> compare(TargetHardwareDefinitionDao mine, TargetHardwareDefinitionDao theirs) {
 		List<String> results = new ArrayList<String>();
 		
-		if (nullCheck (mine, theirs)) {
+		Boolean nc = nullCheck (mine, theirs);
+		if (nc == null) {
+			return results;
+		} else if (nc == true) {
 			results.add("Can't compare target hardware definitions, null detected. " + mine + ", " + theirs);
 			return results;
 		}
@@ -148,11 +164,11 @@ public class SdfChecker {
 	 * @param results
 	 * @return
 	 */
-	protected <T> boolean nullCheck (T mine, T theirs) {
+	protected <T> Boolean nullCheck (T mine, T theirs) {
 		if ((mine == null && theirs != null) || (mine != null && theirs== null)) {
 			return true;
 		} else if (mine == null && theirs == null) {
-			return true;
+			return null;
 		}		
 		
 		return false;
